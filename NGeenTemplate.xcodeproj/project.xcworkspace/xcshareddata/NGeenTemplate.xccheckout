@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>386CADE4-E316-4E0E-B529-0AE06C56BFC5</string>
+	<key>IDESourceControlProjectName</key>
+	<string>NGeenTemplate</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>19536A011C666D85A5F1980FC4DE26F8FCE9FB2D</key>
+		<string>ssh://bitbucket.org/jorjuela33/ngeen.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>NGeenTemplate.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>19536A011C666D85A5F1980FC4DE26F8FCE9FB2D</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://bitbucket.org/jorjuela33/ngeen.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>19536A011C666D85A5F1980FC4DE26F8FCE9FB2D</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>19536A011C666D85A5F1980FC4DE26F8FCE9FB2D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ngeen</string>
+		</dict>
+	</array>
+</dict>
+</plist>

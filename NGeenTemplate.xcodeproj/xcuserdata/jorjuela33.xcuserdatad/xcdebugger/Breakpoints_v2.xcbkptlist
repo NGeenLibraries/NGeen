@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "NGeen/Cache/Cache.swift"
+            timestampString = "426747460.082619"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "225"
+            endingLineNumber = "225"
+            landmarkName = "removeOldEntities()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "NGeen/Cache/Cache.swift"
+            timestampString = "426747460.082619"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "235"
+            endingLineNumber = "235"
+            landmarkName = "removeOldEntities()"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplate.Cache.removeOldEntities (NGeenTemplate.Cache)() -&gt; ()"
+                  moduleName = "NGeenTemplate"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747345.47438"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "233"
+                  endingLineNumber = "233"
+                  offsetFromSymbolStart = "4607">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplateTests.Cache.removeOldEntities (NGeenTemplateTests.Cache)() -&gt; ()"
+                  moduleName = "NGeenTemplateTests"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747345.716572"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "233"
+                  endingLineNumber = "233"
+                  offsetFromSymbolStart = "4607">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "NGeen/Cache/Cache.swift"
+            timestampString = "426747460.082619"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "238"
+            endingLineNumber = "238"
+            landmarkName = "removeOldEntities()"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplate.Cache.removeOldEntities (NGeenTemplate.Cache)() -&gt; ()"
+                  moduleName = "NGeenTemplate"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747345.493403"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "236"
+                  endingLineNumber = "236"
+                  offsetFromSymbolStart = "4874">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplateTests.Cache.removeOldEntities (NGeenTemplateTests.Cache)() -&gt; ()"
+                  moduleName = "NGeenTemplateTests"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747345.716794"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "236"
+                  endingLineNumber = "236"
+                  offsetFromSymbolStart = "4874">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "NGeen/Cache/Cache.swift"
+            timestampString = "426747460.082619"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "241"
+            endingLineNumber = "241"
+            landmarkName = "removeOldEntities()"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplate.Cache.removeOldEntities (NGeenTemplate.Cache)() -&gt; ()"
+                  moduleName = "NGeenTemplate"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747345.494066"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "239"
+                  endingLineNumber = "239"
+                  offsetFromSymbolStart = "5113">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplateTests.Cache.removeOldEntities (NGeenTemplateTests.Cache)() -&gt; ()"
+                  moduleName = "NGeenTemplateTests"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747345.717002"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "239"
+                  endingLineNumber = "239"
+                  offsetFromSymbolStart = "5113">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "NGeen/Cache/Cache.swift"
+            timestampString = "426747460.082619"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "270"
+            endingLineNumber = "270"
+            landmarkName = "saveEntity(_:)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplate.Cache.saveEntity (NGeenTemplate.Cache)(NGeenTemplate.CacheEntity) -&gt; ()"
+                  moduleName = "NGeenTemplate"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747345.495634"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "268"
+                  endingLineNumber = "268"
+                  offsetFromSymbolStart = "7438">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplateTests.Cache.saveEntity (NGeenTemplateTests.Cache)(NGeenTemplateTests.CacheEntity) -&gt; ()"
+                  moduleName = "NGeenTemplateTests"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747345.718209"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "268"
+                  endingLineNumber = "268"
+                  offsetFromSymbolStart = "7438">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "NGeen/Cache/Cache.swift"
+            timestampString = "426747460.082619"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "287"
+            endingLineNumber = "287"
+            landmarkName = "updateEntity(_:)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplate.Cache.updateEntity (NGeenTemplate.Cache)(NGeenTemplate.CacheEntity) -&gt; ()"
+                  moduleName = "NGeenTemplate"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747345.496452"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "285"
+                  endingLineNumber = "285"
+                  offsetFromSymbolStart = "3380">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplateTests.Cache.updateEntity (NGeenTemplateTests.Cache)(NGeenTemplateTests.CacheEntity) -&gt; ()"
+                  moduleName = "NGeenTemplateTests"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747345.718714"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "285"
+                  endingLineNumber = "285"
+                  offsetFromSymbolStart = "3380">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "NGeen/Cache/Cache.swift"
+            timestampString = "426747460.082619"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "291"
+            endingLineNumber = "291"
+            landmarkName = "updateEntity(_:)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplate.Cache.updateEntity (NGeenTemplate.Cache)(NGeenTemplate.CacheEntity) -&gt; ()"
+                  moduleName = "NGeenTemplate"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747345.496974"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "289"
+                  endingLineNumber = "289"
+                  offsetFromSymbolStart = "3636">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplateTests.Cache.updateEntity (NGeenTemplateTests.Cache)(NGeenTemplateTests.CacheEntity) -&gt; ()"
+                  moduleName = "NGeenTemplateTests"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747345.718872"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "289"
+                  endingLineNumber = "289"
+                  offsetFromSymbolStart = "3636">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "NGeen/Cache/Cache.swift"
+            timestampString = "426747460.082619"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "193"
+            endingLineNumber = "193"
+            landmarkName = "readEntityForKey(_:)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplate.Cache.readEntityForKey (NGeenTemplate.Cache)(Swift.String) -&gt; Swift.Optional&lt;NGeenTemplate.CacheEntity&gt;"
+                  moduleName = "NGeenTemplate"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747345.497468"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "191"
+                  endingLineNumber = "191"
+                  offsetFromSymbolStart = "2135">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplateTests.Cache.readEntityForKey (NGeenTemplateTests.Cache)(Swift.String) -&gt; Swift.Optional&lt;NGeenTemplateTests.CacheEntity&gt;"
+                  moduleName = "NGeenTemplateTests"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747345.719039"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "191"
+                  endingLineNumber = "191"
+                  offsetFromSymbolStart = "2135">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "NGeen/Cache/Cache.swift"
+            timestampString = "426747460.082619"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "266"
+            endingLineNumber = "266"
+            landmarkName = "saveEntity(_:)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplate.Cache.saveEntity (NGeenTemplate.Cache)(NGeenTemplate.CacheEntity) -&gt; ()"
+                  moduleName = "NGeenTemplate"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747353.309438"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "264"
+                  endingLineNumber = "264"
+                  offsetFromSymbolStart = "7182">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "NGeenTemplateTests.Cache.saveEntity (NGeenTemplateTests.Cache)(NGeenTemplateTests.CacheEntity) -&gt; ()"
+                  moduleName = "NGeenTemplateTests"
+                  urlString = "file:///Users/jorjuela33/Desktop/Projects/iOS/ngeen/NGeen/Cache/Cache.swift"
+                  timestampString = "426747353.309565"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "264"
+                  endingLineNumber = "264"
+                  offsetFromSymbolStart = "7182">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "NGeen/Cache/Cache.swift"
+            timestampString = "426747516.127662"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "153"
+            endingLineNumber = "153"
+            landmarkName = "dropTrimTable()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
