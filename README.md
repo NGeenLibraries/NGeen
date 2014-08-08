@@ -123,21 +123,32 @@ var parameters: Dictionary<String, String> = ["foo": "bar", "baz1": "1", "baz2":
 
 ```swift
 ApiStore.defaultStore().setPathItems(parameters)
+```
 Or
+
+```swift
 ApiStore.defaultStore().setQueryItem("foo", forKey: "bar")
 ApiStore.defaultStore().setQueryItem("1", forKey: "baz1")
 ApiStore.defaultStore().setQueryItem("2", forKey: "baz2")
 ApiStore.defaultStore().setQueryItem("3", forKey: "baz3") 
+```
 Or
+
+```swift
 apiQuery.setQueryItems(parameters)
+```
+
 Or
+
+```swift
 apiQuery.setQueryItem("foo", forKey: "bar")
 apiQuery.setQueryItem("1", forKey: "baz1")
 apiQuery.setQueryItem("2", forKey: "baz2")
 apiQuery.setQueryItem("3", forKey: "baz3")
 ```
-
+```swift
     GET http://example.com?foo=bar&baz1=1&baz2=2&baz3=3
+```
 
 #### URL Form Parameter Encoding
 
