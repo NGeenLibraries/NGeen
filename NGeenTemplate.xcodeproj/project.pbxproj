@@ -41,7 +41,6 @@
 		67E0BB97199406D000110068 /* ModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E0BB96199406D000110068 /* ModelTests.swift */; };
 		67E0BB981994071900110068 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4114AE519804388002F46A9 /* Model.swift */; };
 		67E0BB9B1994085300110068 /* ModelMockup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E0BB9A1994085300110068 /* ModelMockup.swift */; };
-		67E0BB9D199442CF00110068 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E0BB9C199442CF00110068 /* Task.swift */; };
 		6E7A4E0A196CE87300A93332 /* ApiStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375DB47F1951DD7A0094B34C /* ApiStore.swift */; };
 		6EDABFD0196BAF6E004EE3F7 /* ApiStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDABFCF196BAF6E004EE3F7 /* ApiStoreTests.swift */; };
 		E4114AE619804388002F46A9 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4114AE519804388002F46A9 /* Model.swift */; };
@@ -136,7 +135,6 @@
 		67CE34CD19954ABD00B0F97C /* ApiStoreConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ApiStoreConfiguration.swift; path = Configuration/ApiStoreConfiguration.swift; sourceTree = "<group>"; };
 		67E0BB96199406D000110068 /* ModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModelTests.swift; path = NGeen/Model/ModelTests.swift; sourceTree = "<group>"; };
 		67E0BB9A1994085300110068 /* ModelMockup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModelMockup.swift; path = NGeen/Model/Mockup/ModelMockup.swift; sourceTree = "<group>"; };
-		67E0BB9C199442CF00110068 /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		6EDABFCF196BAF6E004EE3F7 /* ApiStoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ApiStoreTests.swift; path = NGeen/Store/Api/ApiStoreTests.swift; sourceTree = "<group>"; };
 		E4114AE519804388002F46A9 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		E4C872161981A8210084202C /* ApiEndpoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ApiEndpoint.swift; path = Endpoint/ApiEndpoint.swift; sourceTree = "<group>"; };
@@ -376,7 +374,6 @@
 		3DB0463D194F827B0028FEB1 = {
 			isa = PBXGroup;
 			children = (
-				67E0BB9C199442CF00110068 /* Task.swift */,
 				3798B79319509098003BD8F3 /* Frameworks */,
 				375DB46A1951DC920094B34C /* NGeen */,
 				3DB04648194F827B0028FEB1 /* NGeenTemplate */,
@@ -606,7 +603,6 @@
 				375DB4801951DD7A0094B34C /* ApiStore.swift in Sources */,
 				E4114AE619804388002F46A9 /* Model.swift in Sources */,
 				3DB0464C194F827B0028FEB1 /* AppDelegate.swift in Sources */,
-				67E0BB9D199442CF00110068 /* Task.swift in Sources */,
 				3DA18F3F1965D5A500D71EBB /* CacheEntity.swift in Sources */,
 				3DA18F391965C6A000D71EBB /* Cache.swift in Sources */,
 				378A4F67195B1CFB00BE5BA3 /* Protocols.swift in Sources */,

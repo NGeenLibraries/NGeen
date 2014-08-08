@@ -18,24 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         self.window!.backgroundColor = UIColor.whiteColor()
         self.window!.makeKeyAndVisible()
-        var headers: Dictionary<String, String> = ["X-Parse-Application-Id": "BgJnryEVJitvxnMKKMjJyMm6vrBwIgDFAARtVqXn", "X-Parse-REST-API-Key": "euJT7bCipxE82sx5j6L8sHTFXm0HxNUiiBvR03ug"]
-        var apiStoreConfiguration: ApiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "api.parse.com", httpProtocol: "https")
-        var endPoint: ApiEndpoint =  ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, modelClass: Task.self, path: "/1/classes/Task")
-        ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
-        ApiStore.defaultStore().setCacheStoragePolicy(NSURLCacheStoragePolicy.Allowed)
-        ApiStore.defaultStore().setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataElseLoad)
-        ApiStore.defaultStore().setEndpoint(endPoint)
-        ApiStore.defaultStore().setModelsPath("results")
-        ApiStore.defaultStore().setResponseType(ResponseType.models)
-        var parameters: Dictionary<String, String> = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]
-        ApiStore.defaultStore().setPathItems(parameters)
-        //ApiStore.defaultStore().setBodyItem("jorge", forKey: "name")
-        //ApiStore.defaultStore().setBodyItem("jorge", forKey: "type")
-        var apiQuery: ApiQuery = ApiStore.defaultStore().createQuery()
-        apiQuery.read(completionHandler: {(object, error) in
-            let task: Task = (object as Array<AnyObject>).first as Task
-        })
-        
+
         return true
     }
 
