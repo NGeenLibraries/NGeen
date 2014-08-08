@@ -18,17 +18,17 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 ## Architecture
 
 ### Base
-- #### Constants
+- Constants
 	- Constants
-- #### DataTypes
+- DataTypes
 	- DataTypes
-- #### Protocols
+- Protocols
 	- Protocols	
 
 ### Cache
-- #### DiskCache
+- DiskCache
 	- DiskCache
-- #### Entity
+- Entity
 	- Entity
 - Cache
 
@@ -37,23 +37,23 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 - Model
 
 ### Network
-- #### Request	
+- Request	
 	- Request
 
 ### Query
-- #### Api	
+- Api	
 	- ApiQuery
-- #### DataBase	
+- DataBase	
 	- DataBaseQuery
 
 ### Store
-- #### Api	
-	- ##### Config
+- Api	
+	- Config
 		- ApiStoreConfiguration	
-	- ##### Endpoint
+	- Endpoint
 		- ApiEndpoint
 	- ApiStore
-- #### DataBase	
+- DataBase	
 	- DataBaseStore
 
 ## Usage
