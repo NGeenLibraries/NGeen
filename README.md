@@ -63,11 +63,8 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 #### `GET` Request
 
 ```swift 
-var apiStoreConfiguration: ApiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "example.com", httpProtocol: "http")
 var endPoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, path: "resources.json")
-ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
 ApiStore.defaultStore().setEndpoint(endPoint)
-ApiStore.defaultStore().setResponseType(ResponseType.dictionary)
 var apiQuery: ApiQuery = ApiStore.defaultStore().createQuery()
 apiQuery.read(completionHandler: {(object, error) in
 	println("RESPONSE: ", object)
@@ -77,12 +74,9 @@ apiQuery.read(completionHandler: {(object, error) in
 #### `POST` URL-Form-Encoded Request
 
 ```swift
-var apiStoreConfiguration: ApiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "example.com", httpProtocol: "http")
 var endPoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "resources.json")
 ApiStore.defaultStore().setBodyItem("foo", forKey: "bar")
-ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
 ApiStore.defaultStore().setEndpoint(endPoint)
-ApiStore.defaultStore().setResponseType(ResponseType.dictionary)
 var apiQuery: ApiQuery = ApiStore.defaultStore().createQuery()
 apiQuery.create(completionHandler: {(object, error) in
 	println("RESPONSE: ", object)
@@ -92,13 +86,8 @@ apiQuery.create(completionHandler: {(object, error) in
 #### `POST` Multi-Part Request
 
 ```swift
-var apiStoreConfiguration: ApiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "example.com", httpProtocol: "http")
-var endPoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.multiPartForm, httpMethod: HttpMethod.post, path: "resources.json")
-ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
 ApiStore.defaultStore().setBodyItem("foo", forKey: "bar")
-ApiStore.defaultStore().setEndpoint(endPoint)
 ApiStore.defaultStore().setFileData(data, forName: "image", fileName: "image.jpg", mimeType: "image/jpg")
-ApiStore.defaultStore().setResponseType(ResponseType.dictionary)
 var apiQuery: ApiQuery = ApiStore.defaultStore().createQuery()
 apiQuery.create(completionHandler: {(object, error) in
 	println("RESPONSE: ", object)
@@ -150,9 +139,6 @@ GET http://example.com?foo=bar&baz1=1&baz2=2&baz3=3
 #### URL Form Parameter Encoding
 
 ```swift
-var endPoint: ApiEndpoint =  ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "resources.json")
-ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
-ApiStore.defaultStore().setEndpoint(endPoint)
 ApiStore.defaultStore().setBodyItems(parameters)
 apiQuery.create(completionHandler: {(object, error) in
 	println("RESPONSE: ", object)
@@ -168,7 +154,6 @@ apiQuery.create(completionHandler: {(object, error) in
 
 ```swift
 var endPoint: ApiEndpoint =  ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.post, path: "resources.json")
-ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
 ApiStore.defaultStore().setEndpoint(endPoint)
 ApiStore.defaultStore().setBodyItems(parameters)
 apiQuery.create(completionHandler: {(object, error) in
