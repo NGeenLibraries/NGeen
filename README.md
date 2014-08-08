@@ -67,7 +67,7 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 
 #### `GET` Request
 
-```swift ://example.com/
+```swift 
 var apiStoreConfiguration: ApiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "example.com", httpProtocol: "http")
 var endPoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, path: "resources.json")
 ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
