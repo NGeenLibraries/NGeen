@@ -19,46 +19,46 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 
 ### Base
 
-- ### Constants
+- Constants
 	- Constants
-- ### DataTypes
+- DataTypes
 	- DataTypes
-- ### Protocols
+- Protocols
 	- Protocols	
 
 ### Cache
 
-- ### DiskCache
+- DiskCache
 	- DiskCache
-- ### Entity
+- Entity
 	- Entity
 - Cache
 
-- ### Model
+### Model
 
 - Model
 
-- ### Network
+### Network
 	
-- ### Request	
+- Request	
 	- Request
 
-- ### Query
+### Query
 
-- ### Api	
+- Api	
 	- ApiQuery
-- ### DataBase	
+- DataBase	
 	- DataBaseQuery
 
-- ### Store
+### Store
 
-- ### Api	
-	- ### Config
+- Api	
+	- Config
 		- ApiStoreConfiguration	
-	- ### Endpoint
+	- Endpoint
 		- ApiEndpoint
 	- ApiStore
-- ### DataBase	
+- DataBase	
 	- DataBaseStore
 
 ## Usage
@@ -67,7 +67,7 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 
 #### `GET` Request
 
-```swift ://example.com/
+```swift 
 var apiStoreConfiguration: ApiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "example.com", httpProtocol: "http")
 var endPoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, path: "resources.json")
 ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
@@ -123,21 +123,32 @@ var parameters: Dictionary<String, String> = ["foo": "bar", "baz1": "1", "baz2":
 
 ```swift
 ApiStore.defaultStore().setPathItems(parameters)
+```
 Or
+
+```swift
 ApiStore.defaultStore().setQueryItem("foo", forKey: "bar")
 ApiStore.defaultStore().setQueryItem("1", forKey: "baz1")
 ApiStore.defaultStore().setQueryItem("2", forKey: "baz2")
 ApiStore.defaultStore().setQueryItem("3", forKey: "baz3") 
+```
 Or
+
+```swift
 apiQuery.setQueryItems(parameters)
+```
+
 Or
+
+```swift
 apiQuery.setQueryItem("foo", forKey: "bar")
 apiQuery.setQueryItem("1", forKey: "baz1")
 apiQuery.setQueryItem("2", forKey: "baz2")
 apiQuery.setQueryItem("3", forKey: "baz3")
 ```
-
-    GET http://example.com?foo=bar&baz1=1&baz2=2&baz3=3
+```swift
+GET http://example.com?foo=bar&baz1=1&baz2=2&baz3=3
+```
 
 #### URL Form Parameter Encoding
 
