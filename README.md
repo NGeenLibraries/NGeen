@@ -19,46 +19,46 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 
 ### Base
 
-- ### Constants
+- Constants
 	- Constants
-- ### DataTypes
+- DataTypes
 	- DataTypes
-- ### Protocols
+- Protocols
 	- Protocols	
 
 ### Cache
 
-- ### DiskCache
+- DiskCache
 	- DiskCache
-- ### Entity
+- Entity
 	- Entity
 - Cache
 
-- ### Model
+### Model
 
 - Model
 
-- ### Network
+### Network
 	
-- ### Request	
+- Request	
 	- Request
 
-- ### Query
+### Query
 
-- ### Api	
+- Api	
 	- ApiQuery
-- ### DataBase	
+- DataBase	
 	- DataBaseQuery
 
-- ### Store
+### Store
 
-- ### Api	
-	- ### Config
+- Api	
+	- Config
 		- ApiStoreConfiguration	
-	- ### Endpoint
+	- Endpoint
 		- ApiEndpoint
 	- ApiStore
-- ### DataBase	
+- DataBase	
 	- DataBaseStore
 
 ## Usage
@@ -147,7 +147,7 @@ apiQuery.setQueryItem("2", forKey: "baz2")
 apiQuery.setQueryItem("3", forKey: "baz3")
 ```
 ```swift
-    GET http://example.com?foo=bar&baz1=1&baz2=2&baz3=3
+GET http://example.com?foo=bar&baz1=1&baz2=2&baz3=3
 ```
 
 #### URL Form Parameter Encoding
