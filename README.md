@@ -18,19 +18,17 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 ## Architecture
 
 ### Base
-
-- Constants
+- ###### Constants
 	- Constants
-- DataTypes
+- ###### DataTypes
 	- DataTypes
-- Protocols
+- ###### Protocols
 	- Protocols	
 
 ### Cache
-
-- DiskCache
+- ###### DiskCache
 	- DiskCache
-- Entity
+- ###### Entity
 	- Entity
 - Cache
 
@@ -39,26 +37,23 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 - Model
 
 ### Network
-	
-- Request	
+- ###### Request	
 	- Request
 
 ### Query
-
-- Api	
+- ###### Api	
 	- ApiQuery
-- DataBase	
+- ###### DataBase	
 	- DataBaseQuery
 
 ### Store
-
-- Api	
-	- Config
+- ###### Api	
+	- ###### Config
 		- ApiStoreConfiguration	
-	- Endpoint
+	- ###### Endpoint
 		- ApiEndpoint
 	- ApiStore
-- DataBase	
+- ###### DataBase	
 	- DataBaseStore
 
 ## Usage
@@ -121,12 +116,12 @@ var parameters: Dictionary<String, String> = ["foo": "bar", "baz1": "1", "baz2":
 
 #### Query String Parameter Encoding
 
-*** Using the Api Store adding a dictionary of items
+###### Using the Api Store adding a dictionary of items
 
 ```swift
 ApiStore.defaultStore().setPathItems(parameters)
 ```
-*** Using the Api Store adding item one by one 
+###### Using the Api Store adding item by item
 
 ```swift
 ApiStore.defaultStore().setQueryItem("foo", forKey: "bar")
@@ -134,13 +129,13 @@ ApiStore.defaultStore().setQueryItem("1", forKey: "baz1")
 ApiStore.defaultStore().setQueryItem("2", forKey: "baz2")
 ApiStore.defaultStore().setQueryItem("3", forKey: "baz3") 
 ```
-*** Using the Api Query adding a dictionary of items
+###### Using the Api Query adding a dictionary of items
 
 ```swift
 apiQuery.setQueryItems(parameters)
 ```
 
-*** Using the Api Query adding item one by one 
+###### Using the Api Query adding item by item
 
 ```swift
 apiQuery.setQueryItem("foo", forKey: "bar")
