@@ -183,7 +183,7 @@ ApiStore.defaultStore().setResponseType(ResponseType.models)
 ```
 #### Caching
 
-The library provides cache for requests based on sqlite and files regardless if the server returns the cache content in the headers, to allow this capacity just add the following code to the configuration.
+The library provides cache for requests based on sqlite and files, regardless if the server returns the cache content in the headers, to allow this capacity just add the following code to the configuration.
 
 ```swift 
 ApiStore.defaultStore().setCacheStoragePolicy(NSURLCacheStoragePolicy.Allowed)
