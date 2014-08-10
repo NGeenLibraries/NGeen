@@ -78,16 +78,11 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     * no need params.
     *
+    * return ApiQuery
     */
     
     func createQuery() -> ApiQuery {
-        if let endPoints: NSMutableDictionary = self.endPoints[kDefaultServerName] as? NSMutableDictionary {
-            var key: String =  (endPoints.allKeys as NSArray).lastObject as String
-            return ApiQuery(configuration: self.configurationForKey(kDefaultServerName), endPoint: endPoints[key] as ApiEndpoint)
-        } else {
-            assert(false, "The endopoint can't be null", file: __FILE__, line: __LINE__)
-        }
-        return  ApiQuery(configuration: self.configurationForKey(kDefaultServerName), endPoint: ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, path: ""))
+        return self.createQueryForSever(kDefaultServerName)
     }
     
     /**
@@ -95,15 +90,49 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     * @param key The id for the query
     *
-    * return QueryProtocol
+    * return ApiQuery
     */
     
-    func createQueryWithConfigurationKey(key: String) -> ApiQuery {
-        if let endPoint: ApiEndpoint = self.endPoints[key] as? ApiEndpoint {
+    func createQueryForSever(server: String) -> ApiQuery {
+        if let endPoints: NSDictionary = self.endPoints[server] as? NSDictionary {
             var key: String =  (endPoints.allKeys as NSArray).lastObject as String
-            return ApiQuery(configuration: self.configurationForKey(key), endPoint: endPoints[key] as ApiEndpoint)
+            return ApiQuery(configuration: self.configurationForKey(server), endPoint: endPoints[key] as ApiEndpoint)
         } else {
-            assert(false, "The endopoint can't be null", file: __FILE__, line: __LINE__)
+            assert(false, "The endpoint can't be null", file: __FILE__, line: __LINE__)
+        }
+        return  ApiQuery(configuration: self.configurationForKey(kDefaultServerName), endPoint: ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, path: ""))
+    }
+    
+    /**
+    * The function create and return a query for the default server configuration
+    * and the given endopint path
+    *
+    * @param path The path of the endpoint.
+    * @param method The http method type for the request.
+    *
+    * return ApiQuery
+    */
+    
+    func createQueryForPath(path: String, httpMethod method: HttpMethod) -> ApiQuery {
+        return self.createQueryForPath(path, httpMethod: method, server: kDefaultServerName)
+    }
+    
+    /**
+    * The function create and return the query for the given key
+    *
+    * @param path The path of the endpoint.
+    * @param method The http method type for the request.
+    * @param name The name of the server to get the endpoints.
+    *
+    * return ApiQuery
+    */
+    
+    func createQueryForPath(path: String, httpMethod method: HttpMethod, server name: String) -> ApiQuery {
+        println(self.endPoints)
+        if let endPoints: NSDictionary = self.endPoints[name] as? NSDictionary {
+            return ApiQuery(configuration: self.configurationForKey(name), endPoint: endPoints[ApiEndpoint.keyForPath(path, httpMethod: method)] as ApiEndpoint)
+        } else {
+            assert(false, "The endpoint can't be null", file: __FILE__, line: __LINE__)
         }
         return  ApiQuery(configuration: self.configurationForKey(kDefaultServerName), endPoint: ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, path: ""))
     }
@@ -136,29 +165,29 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     /**
     * The function return the endpoint for a given model class
     *
-    * @param modelClass The class key to search the endpoint
+    * @param path The path key to search the endpoint
     * @param method The method for the endpoint
     *
     * return Endpoint
     */
     
-    func endpointForModelClass(modelClass: AnyClass, httpMethod method: HttpMethod) -> ApiEndpoint? {
-         return self.endpointForModelClass(modelClass, httpMethod: method, serverName: kDefaultServerName)
+    func endpointForPath(path: String, httpMethod method: HttpMethod) -> ApiEndpoint? {
+         return self.endpointForPath(path, httpMethod: method, serverName: kDefaultServerName)
     }
     
     /**
     * The function return the endpoint for a given model class and server name
     *
-    * @param modelClass The class key to search the endpoint
+    * @param path The path key to search the endpoint
     * @param method The method for the endpoint
     * @param name The name of the server for the endpoint
     *
     * return Endpoint
     */
     
-    func endpointForModelClass(modelClass: AnyClass, httpMethod method: HttpMethod, serverName name: String) -> ApiEndpoint? {
+    func endpointForPath(path: String, httpMethod method: HttpMethod, serverName name: String) -> ApiEndpoint? {
         if let serverEndpoints: NSMutableDictionary = self.endPoints[name] as? NSMutableDictionary {
-            return serverEndpoints[ApiEndpoint.keyForModelClass(modelClass, httpMethod: method)] as? ApiEndpoint
+            return serverEndpoints[ApiEndpoint.keyForPath(path, httpMethod: method)] as? ApiEndpoint
         }
         return nil
     }

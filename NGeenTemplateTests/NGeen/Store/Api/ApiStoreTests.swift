@@ -34,7 +34,7 @@ class ApiStoreTests: XCTestCase {
         self.apiConfiguration = ApiStoreConfiguration()
         self.store = ApiStore(config: self.apiConfiguration!)
         self.store?.setConfiguration(self.apiConfiguration!, forKey: kConfigKey)
-        self.store?.setEndpoint(ApiEndpoint())
+        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, path: "example"))
     }
     
     override func tearDown() {
@@ -53,6 +53,20 @@ class ApiStoreTests: XCTestCase {
         XCTAssert(self.store!.createQuery().isKindOfClass(ApiQuery.self), "Invalid api query class", file: __FILE__, line: __LINE__)
     }
     
+    func testThatCreateQueryForPath() {
+        let endpoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "example")
+        let fooEndpoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "foo")
+        self.store?.setEndpoints([endpoint, fooEndpoint])
+        XCTAssertTrue(self.store!.createQueryForPath(endpoint.path!, httpMethod: HttpMethod.get).isKindOfClass(ApiQuery.self), "Invalid api query class", file: __FILE__, line: __LINE__)
+    }
+    
+    func testThatCreateQueryForPathAndServer() {
+        let endpoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "example")
+        let fooEndpoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "foo")
+        self.store?.setEndpoints([endpoint, fooEndpoint], forServer: kConfigKey)
+        XCTAssertTrue(self.store!.createQueryForPath(endpoint.path!, httpMethod: HttpMethod.get, server: kConfigKey).isKindOfClass(ApiQuery.self), "Invalid api query class", file: __FILE__, line: __LINE__)
+    }
+    
     func testThatConfiguration() {
         XCTAssert(self.store!.configuration().conformsToProtocol(ConfigurationStoreProtocol) , "Invalid configuration type", file: __FILE__, line: __LINE__)
     }
@@ -61,17 +75,17 @@ class ApiStoreTests: XCTestCase {
         XCTAssert(self.store!.configuration().conformsToProtocol(ConfigurationStoreProtocol), "Invalid configuration type", file: __FILE__, line: __LINE__)
     }
     
-    func testThatEndpointForModelClass() {
-        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: ""), forServer: kDefaultServerName)
-        if let endPoint = self.store?.endpointForModelClass(AnyClass.self, httpMethod: HttpMethod.get) {
+    func testThatEndpointForPath() {
+        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "example"), forServer: kDefaultServerName)
+        if let endPoint = self.store?.endpointForPath("example", httpMethod: HttpMethod.get) {
         } else {
             XCTFail("The Endpoint can't be null")
         }
     }
     
-    func testThatEndpointForModelClassAndServer() {
-        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: ""), forServer: kDefaultServerName)
-        if let endPoint = self.store?.endpointForModelClass(AnyClass.self, httpMethod: HttpMethod.get, serverName: kDefaultServerName) {
+    func testThatEndpointForModelPathAndServer() {
+        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "example"), forServer: kDefaultServerName)
+        if let endPoint = self.store?.endpointForPath("example", httpMethod: HttpMethod.get, serverName: kDefaultServerName) {
         } else {
             XCTFail("The Endpoint can't be null")
         }

@@ -36,7 +36,6 @@
 		3DBFC0FA195DEB310031D68A /* ApiQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBFC0F9195DEB310031D68A /* ApiQueryTests.swift */; };
 		3DBFC0FB195DFB6B0031D68A /* ApiQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D4A4C081957F835006810B6 /* ApiQuery.swift */; };
 		3DEBDC60195FD9E900AB95B9 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 378A4F66195B1CFB00BE5BA3 /* Protocols.swift */; };
-		67B19C971997130B00BCA840 /* Alamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B19C961997130B00BCA840 /* Alamofire.swift */; };
 		67CE34CE19954ABD00B0F97C /* ApiStoreConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67CE34CD19954ABD00B0F97C /* ApiStoreConfiguration.swift */; };
 		67CE34CF19954ABD00B0F97C /* ApiStoreConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67CE34CD19954ABD00B0F97C /* ApiStoreConfiguration.swift */; };
 		67E0BB97199406D000110068 /* ModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E0BB96199406D000110068 /* ModelTests.swift */; };
@@ -133,7 +132,6 @@
 		3DB04658194F827B0028FEB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3DB04659194F827B0028FEB1 /* NGeenTemplateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NGeenTemplateTests.swift; sourceTree = "<group>"; };
 		3DBFC0F9195DEB310031D68A /* ApiQueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ApiQueryTests.swift; path = NGeen/Query/Api/ApiQueryTests.swift; sourceTree = "<group>"; };
-		67B19C961997130B00BCA840 /* Alamofire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Alamofire.swift; path = "../../../../../Downloads/Alamofire-master/Source/Alamofire.swift"; sourceTree = "<group>"; };
 		67CE34CD19954ABD00B0F97C /* ApiStoreConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ApiStoreConfiguration.swift; path = Configuration/ApiStoreConfiguration.swift; sourceTree = "<group>"; };
 		67E0BB96199406D000110068 /* ModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModelTests.swift; path = NGeen/Model/ModelTests.swift; sourceTree = "<group>"; };
 		67E0BB9A1994085300110068 /* ModelMockup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModelMockup.swift; path = NGeen/Model/Mockup/ModelMockup.swift; sourceTree = "<group>"; };
@@ -376,7 +374,6 @@
 		3DB0463D194F827B0028FEB1 = {
 			isa = PBXGroup;
 			children = (
-				67B19C961997130B00BCA840 /* Alamofire.swift */,
 				3798B79319509098003BD8F3 /* Frameworks */,
 				375DB46A1951DC920094B34C /* NGeen */,
 				3DB04648194F827B0028FEB1 /* NGeenTemplate */,
@@ -605,7 +602,6 @@
 				67CE34CE19954ABD00B0F97C /* ApiStoreConfiguration.swift in Sources */,
 				375DB4801951DD7A0094B34C /* ApiStore.swift in Sources */,
 				E4114AE619804388002F46A9 /* Model.swift in Sources */,
-				67B19C971997130B00BCA840 /* Alamofire.swift in Sources */,
 				3DB0464C194F827B0028FEB1 /* AppDelegate.swift in Sources */,
 				3DA18F3F1965D5A500D71EBB /* CacheEntity.swift in Sources */,
 				3DA18F391965C6A000D71EBB /* Cache.swift in Sources */,
