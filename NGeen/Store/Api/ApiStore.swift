@@ -499,6 +499,31 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     }
     
     /**
+    * The function store the endpoints in the local dictionary
+    *
+    * @param endpoints The array with the endpoints for the server.
+    *
+    */
+    
+    func setEndpoints(var endpoints: Array<ApiEndpoint>) {
+        self.setEndpoints(endpoints, forServer: kDefaultServerName)
+    }
+    
+    /**
+    * The function store the endpoint for a given server name in the local dictionary
+    *
+    * @param endpoints The array with the endpoints for the server.
+    * @param server The name of the server to store the endpoint.
+    *
+    */
+    
+    func setEndpoints(var endpoints: Array<ApiEndpoint>, forServer server: String) {
+        for endpoint in endpoints {
+            self.setEndpoint(endpoint, forServer: server)
+        }
+    }
+    
+    /**
     * The function set the data for a given image
     *
     * @param data The data with the contents of the image.

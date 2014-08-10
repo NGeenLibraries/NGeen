@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ApiStore.defaultStore().setEndpoint(taskEndpoint)
         ApiStore.defaultStore().setEndpoint(exampleEndpoint)
         ApiStore.defaultStore().setModelsPath("results")
-        ApiStore.defaultStore().setResponseType(ResponseType.dictionary)
+        ApiStore.defaultStore().setResponseType(ResponseType.models)
         let parameters = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]
         ApiStore.defaultStore().setPathItems(parameters)
         //ApiStore.defaultStore().setBodyItem("jorge", forKey: "name")

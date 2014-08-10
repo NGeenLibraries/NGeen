@@ -67,10 +67,7 @@ let apiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "examp
 let taskEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Task")
 let exampleEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Example")
 ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
-ApiStore.defaultStore().setEndpoint(taskEndpoint)
-ApiStore.defaultStore().setEndpoint(exampleEndpoint)
-ApiStore.defaultStore().setModelsPath("results")
-ApiStore.defaultStore().setResponseType(ResponseType.dictionary)
+ApiStore.defaultStore().setEndpoints([exampleEndpoint, taskEndpoint])
 ```
 
 ### HTTP Request Operation 
@@ -175,6 +172,15 @@ apiQuery.create(completionHandler: {(object, error) in
     {"foo": "bar", "baz": [1,2,3]}
 
 ---
+
+#### Models Serialization
+
+To serialize the models from the json response, just add the follow parameters to the configuration.
+
+```swift 
+ApiStore.defaultStore().setModelsPath("results")
+ApiStore.defaultStore().setResponseType(ResponseType.models)
+```
 
 ## License
 
