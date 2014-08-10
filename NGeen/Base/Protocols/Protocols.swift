@@ -95,9 +95,11 @@ protocol ConfigurableStoreProtocol: NSObjectProtocol {
 
 //MARK: Store config
 
-@objc protocol StoreProtocol: NSObjectProtocol {
+protocol StoreProtocol: NSObjectProtocol {
     
     func createQuery() -> QueryProtocol
     func createQueryWithConfigurationKey(key: String) -> QueryProtocol
+    func createQueryForPath(path: String, httpMethod method: HttpMethod) -> QueryProtocol
+    func createQueryForPath(path: String, httpMethod method: HttpMethod, server name: String) -> QueryProtocol
 
 }

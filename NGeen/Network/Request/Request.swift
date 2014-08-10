@@ -125,6 +125,18 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionTaskDelegate {
     }
 
     /**
+    * The function set the authentication credentials for the session
+    *
+    * @param credential The credential for the session.
+    * @param protectionSpace The protectionSpace for the session.
+    *
+    */
+    
+    func setAuthenticationCredential(credential: NSURLCredential, forProtectionSpace protectionSpace: NSURLProtectionSpace) {
+        self.session.configuration.URLCredentialStorage.setCredential(credential, forProtectionSpace: protectionSpace)
+    }
+    
+    /**
     * The function set a value in the headers for the request also save this value in 
     * a local dictionary
     *

@@ -91,16 +91,14 @@ class ApiStoreTests: XCTestCase {
         }
     }
 
-    func testThatSetBodyItems() {
-        var bodies: Dictionary<String, String> = ["Application-Id": "m6vrBwIgDFAARtVqXn", "API-Key": "L8sHTFXm0HxNUiiBvR03ug"]
-        self.store?.setBodyItems(bodies)
-        XCTAssertGreaterThan(self.store!.getBodyItems().count, 0, "The body items should be greater than 0", file: __FILE__, line: __LINE__)
+    func testThatSetAuthenticationCredentials() {
+        self.store!.setAuthenticationCredentials("test", password: "test")
+        XCTAssertEqual(self.store!.getAuthenticationCredentials(), "test:test", "The authentication string should be equal to test:test", file: __FUNCTION__, line: __LINE__)
     }
     
-    func testThatSetBodyItemsForServer() {
-        var bodies: Dictionary<String, String> = ["Application-Id": "m6vrBwIgDFAARtVqXn", "API-Key": "L8sHTFXm0HxNUiiBvR03ug"]
-        self.store?.setBodyItems(bodies, forServer: kConfigKey)
-        XCTAssertGreaterThan(self.store!.getBodyItemsForServer(kConfigKey).count, 0, "The body items should be greater than 0", file: __FILE__, line: __LINE__)
+    func testThatSetAuthenticationCredentialsForServer() {
+        self.store!.setAuthenticationCredentials("test", password: "test", forServer: kConfigKey)
+        XCTAssertEqual(self.store!.getAuthenticationCredentialsForServer(kConfigKey), "test:test", "The authentication string should be equal to test:test", file: __FUNCTION__, line: __LINE__)
     }
     
     func testTharSetCachePolicy() {
@@ -189,46 +187,6 @@ class ApiStoreTests: XCTestCase {
         XCTAssertEqual(self.store!.getModelsPathForServer(kConfigKey), "test.path", "The model path should be equal to test.path", file: __FILE__, line: __LINE__)
     }
     
-    func testThatSetPathItem() {
-        self.store?.setPathItem("test", forKey: "test")
-        XCTAssertGreaterThan(self.store!.getPathItems().count, 0, "The path items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetPathItemForServer() {
-        self.store?.setPathItem("test", forKey: "test", serverName: kConfigKey)
-        XCTAssertGreaterThan(self.store!.getPathItemsForServer(kConfigKey).count, 0, "The path items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetPathItems() {
-        self.store?.setPathItems(["test": "test"])
-        XCTAssertGreaterThan(self.store!.getPathItems().count, 0, "The path items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetPathItemsForServer() {
-        self.store?.setPathItems(["test": "test"], forServer: kConfigKey)
-        XCTAssertGreaterThan(self.store!.getPathItemsForServer(kConfigKey).count, 0, "The path items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetQueryItem() {
-        self.store?.setQueryItem("test", forKey: "test")
-        XCTAssertGreaterThan(self.store!.getQueryItems().count, 0, "The query items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetQueryItemForServer() {
-        self.store?.setQueryItem("test", forKey: "test", serverName: kConfigKey)
-        XCTAssertGreaterThan(self.store!.getQueryItemsForServer(kConfigKey).count, 0, "The query items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-
-    func testThatSetQueryItems() {
-        self.store?.setQueryItems(["test": "test"])
-        XCTAssertGreaterThan(self.store!.getQueryItems().count, 0, "The query items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetQueryItemsForServer() {
-        self.store?.setQueryItems(["test": "test"], forServer: kConfigKey)
-        XCTAssertGreaterThan(self.store!.getQueryItemsForServer(kConfigKey).count, 0, "The query items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-    
     func testThatSetResponseType() {
         self.store?.setResponseType(ResponseType.dictionary)
         XCTAssert(self.store!.getResponseType() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
@@ -237,16 +195,6 @@ class ApiStoreTests: XCTestCase {
     func testThatSetResponseTypeForServer() {
         self.store?.setResponseType(ResponseType.dictionary, forServer: kConfigKey)
         XCTAssert(self.store!.getResponseType() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetTextFileData() {
-        self.store?.setTextData("")
-        XCTAssertGreaterThan(self.store!.getBodyItems().count, 0, "The file data should have 1 item", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetTextFileDataForServerName() {
-        self.store?.setTextData("", forServerName: kConfigKey)
-        XCTAssertGreaterThan(self.store!.getBodyItems().count, 0, "The file data should have 1 item", file: __FILE__, line: __LINE__)
     }
 
 }

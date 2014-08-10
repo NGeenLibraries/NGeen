@@ -191,32 +191,35 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
         }
         return nil
     }
-    
+   
     /**
-    * The function return the body items for the default configuration
+    * The function get the authentication credentials the default server configuration
     *
     * no need params.
     *
-    * @return NSDictionary
+    * return String
     */
     
-    func getBodyItems() -> NSDictionary {
-        return self.getBodyItemsForServer(kDefaultServerName)
+    func getAuthenticationCredentials() -> String {
+        return self.getAuthenticationCredentialsForServer(kDefaultServerName)
     }
     
     /**
-    * The function return the a bodies for a server configuration
+    * The function get the authentication credentials for a given server configuration
     *
-    * @param server The server to get the configuration.
+    * @param server The name of the server to store the configuration.
     *
-    * @return NSDictionary
+    * return String
     */
     
-    func getBodyItemsForServer(server: String) -> NSDictionary {
+    func getAuthenticationCredentialsForServer(server: String) -> String {
         let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        return configuration.bodyItems
+        if let credential: NSURLCredential = configuration.credential {
+            return "\(credential.user):\(credential.password)"
+        }
+        return ""
     }
-    
+
     /**
     * The function return the cache policy for the default server configuration
     *
@@ -321,57 +324,6 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     }
     
     /**
-    * The function return the path items for the default server configuration
-    *
-    * no need params.
-    *
-    * @return Dictionary
-    */
-    
-    func getPathItems() -> Dictionary<String, String> {
-        return self.getPathItemsForServer(kDefaultServerName)
-    }
-    
-    /**
-    * The function return the path items for a server configuration
-    *
-    * @param server The server to get the configuration.
-    *
-    * @return Dictionary
-    */
-    
-    func getPathItemsForServer(server: String) -> Dictionary<String, String> {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        return configuration.pathItems
-    }
-    
-    /**
-    * The function return the query items for the default server configuration
-    *
-    * no need params.
-    * @param key The name for the query field.
-    *
-    * @return Dictionary
-    */
-    
-    func getQueryItems() -> Dictionary<String, String> {
-        return self.getQueryItemsForServer(kDefaultServerName)
-    }
-    
-    /**
-    * The function return the query items for the given server name
-    *
-    * no need params.
-    *
-    * @return Dictionary
-    */
-    
-    func getQueryItemsForServer(server: String) -> Dictionary<String, String> {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        return configuration.queryItems
-    }
-    
-    /**
     * The function return the response type for a server configuration
     *
     * @param no need params.
@@ -397,54 +349,30 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     }
     
     /**
-    * The function set a body for the default server configuration
+    * The function set the authentication credentials for the default server configuration
     *
-    * @param item The item value for the body.
-    * @param key The value for the body field.
-    *
-    */
-    
-    func setBodyItem(item: AnyObject, forKey key: String) {
-        self.setBodyItem(item, forKey: key, serverName: kDefaultServerName)
-    }
-    
-    /**
-    * The function set a body for a server configuration
-    *
-    * @param item The item value for the body.
-    * @param key The value for the body field.
-    * @param name The name of the server to store the configuration.
+    * @param user The user to the credential.
+    * @param password The password to the credential.
     *
     */
     
-    func setBodyItem(item: AnyObject, forKey key: String, serverName server: String) {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        configuration.bodyItems[key] = item
-        self.setConfiguration(configuration, forKey: server)
+    func setAuthenticationCredentials(user: String, password: String) {
+        self.setAuthenticationCredentials(user, password: password, forServer: kDefaultServerName)
     }
     
     /**
-    * The function set the body items for the default server configuration
+    * The function set the authentication credentials for a given server configuration
     *
-    * @param items The items values for the body.
-    *
-    */
-    
-    func setBodyItems(items: Dictionary<String, AnyObject>) {
-        self.setBodyItems(items, forServer: kDefaultServerName)
-    }
-    
-    /**
-    * The function set the body items for a server configuration
-    *
-    * @param items The items values for the body.
+    * @param user The user to the credential.
+    * @param password The password to the credential.
     * @param server The name of the server to store the configuration.
     *
     */
     
-    func setBodyItems(items: Dictionary<String, AnyObject>, forServer server: String) {
+    func setAuthenticationCredentials(user: String, password: String, forServer server: String) {
         let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        configuration.bodyItems = NSMutableDictionary(dictionary: items)
+        configuration.credential = NSURLCredential(user: user, password: password, persistence: NSURLCredentialPersistence.ForSession)
+        configuration.protectionSpace = NSURLProtectionSpace(host: configuration.host, port: 0, `protocol`: configuration.scheme, realm: nil, authenticationMethod: NSURLAuthenticationMethodHTTPBasic)
         self.setConfiguration(configuration, forKey: server)
     }
     
@@ -553,41 +481,6 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     }
     
     /**
-    * The function set the data for a given image
-    *
-    * @param data The data with the contents of the image.
-    * @param name The name for the image in the body.
-    * @param file The file name for the image in the body.
-    * @param mime The mime type of the image.
-    *
-    */
-    
-    func setFileData(data: NSData, forName name: String, fileName file: String, mimeType mime: String) {
-        self.setFileData(data, forName: name, fileName: file, mimeType: mime, serverName: kDefaultServerName)
-    }
-    
-    /**
-    * The function set the data for a given image
-    *
-    * @param data The data with the contents of the image.
-    * @param name The name for the image in the body.
-    * @param file The file name for the image in the body.
-    * @param mime The mime type of the image.
-    * @param server The name of the server to store the configuration.
-    *
-    */
-    
-    func setFileData(data: NSData, forName name: String, fileName file: String, mimeType mime: String, serverName server: String) {
-        assert(file != nil, "You should provide the file name for the file", file: __FILE__, line: __LINE__)
-        assert(name != nil, "You should provide a name for the file", file: __FILE__, line: __LINE__)
-        assert(mime != nil, "You should provide a mime type for the file", file: __FILE__, line: __LINE__)
-        assert(server != nil, "You should provide a server type for the file", file: __FILE__, line: __LINE__)
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        configuration.bodyItems[kDefaultImageKeyData] =  ["data": data, "fileName": file, "name": name, "mimeType": mime]
-        self.setConfiguration(configuration, forKey: server)
-    }
-    
-    /**
     * The function set a headers for the default server configuration
     *
     * @param header The value for the header.
@@ -665,110 +558,6 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     }
     
     /**
-    * The function set a path items for the default server configuration
-    *
-    * @param header The value for the path.
-    * @param key The name for the path field.
-    *
-    */
-    
-    func setPathItem(item: String, forKey key: String) {
-        self.setPathItem(item, forKey: key, serverName: kDefaultServerName)
-    }
-    
-    /**
-    * The function set a path item for the given server name
-    *
-    * @param item The value for the path.
-    * @param key The name for the path field.
-    * @param name The name for the server to store the configuration.
-    *
-    */
-    
-    func setPathItem(item: String, forKey key: String, serverName name: String) {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(name) as ApiStoreConfiguration
-        configuration.pathItems[key] = item
-        self.setConfiguration(configuration, forKey: name)
-    }
-    
-    /**
-    * The function set the path items for the default server configuration
-    *
-    * @param items The dictionary with the path items.
-    *
-    */
-    
-    func setPathItems(items: Dictionary<String, String>) {
-        self.setPathItems(items, forServer: kDefaultServerName)
-    }
-    
-    /**
-    * The function set the path items for the given server name
-    *
-    * @param items The dictionary with the path items.
-    * @param server The name for the server to store the configuration.
-    *
-    */
-    
-    func setPathItems(items: Dictionary<String, String>, forServer server: String) {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        configuration.pathItems += items
-        self.setConfiguration(configuration, forKey: server)
-    }
-    
-    /**
-    * The function set a query item for the default server configuration
-    *
-    * @param header The value for the header.
-    * @param key The name for the query field.
-    *
-    */
-    
-    func setQueryItem(item: String, forKey key: String) {
-        self.setQueryItem(item, forKey: key, serverName: kDefaultServerName)
-    }
-    
-    /**
-    * The function set a query item for the given server name
-    *
-    * @param item The value for the path.
-    * @param key The value for the query field.
-    * @param name The name for the server to store the configuration.
-    *
-    */
-    
-    func setQueryItem(item: String, forKey key: String, serverName name: String) {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(name) as ApiStoreConfiguration
-        configuration.queryItems[key] = item
-        self.setConfiguration(configuration, forKey: name)
-    }
-    
-    /**
-    * The function set the query items for the default server configuration
-    *
-    * @param items The dictionary with the query items.
-    *
-    */
-    
-    func setQueryItems(items: Dictionary<String, String>) {
-        self.setQueryItems(items, forServer: kDefaultServerName)
-    }
-    
-    /**
-    * The function set a query item for the given server name
-    *
-    * @param items The dictionary with the query items.
-    * @param server The name for the server to store the configuration.
-    *
-    */
-    
-    func setQueryItems(items: Dictionary<String, String>, forServer server: String) {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        configuration.queryItems += items
-        self.setConfiguration(configuration, forKey: server)
-    }
-    
-    /**
     * The function set the response type for the server configuration
     *
     * @param type The type of the response.
@@ -791,32 +580,6 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
         let configuration: ApiStoreConfiguration = self.configurationForKey(name) as ApiStoreConfiguration
         configuration.responseType = type
         self.setConfiguration(configuration, forKey: name)
-    }
-    
-    /**
-    * The function set the data for a given file
-    *
-    * @param data The data with the contents of the file.
-    *
-    */
-    
-    func setTextData(data: String) {
-        self.setTextData(data, forServerName: kDefaultServerName)
-    }
-    
-    /**
-    * The function set the data for a given file
-    *
-    * @param data The data with the contents of the file.
-    * @param server The name of the server to store the configuration.
-    *
-    */
-    
-    func setTextData(data: String, forServerName server: String) {
-        assert(server != nil, "You should provide a server type for the file", file: __FILE__, line: __LINE__)
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        configuration.bodyItems[kDefaultFileKeyData] =  data
-        self.setConfiguration(configuration, forKey: server)
     }
     
 //MARK: Singleton method

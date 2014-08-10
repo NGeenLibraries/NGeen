@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window!.backgroundColor = UIColor.whiteColor()
         self.window!.makeKeyAndVisible()
         let headers: Dictionary<String, String> = ["X-Parse-Application-Id": "BgJnryEVJitvxnMKKMjJyMm6vrBwIgDFAARtVqXn", "X-Parse-REST-API-Key": "euJT7bCipxE82sx5j6L8sHTFXm0HxNUiiBvR03ug"]
-        let apiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "api.parse.com", httpProtocol: "https")
+        let apiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "api.parse.com", scheme: "https")
         let taskEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Task")
         let exampleEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Example")
         ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
@@ -30,10 +30,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ApiStore.defaultStore().setModelsPath("results")
         ApiStore.defaultStore().setResponseType(ResponseType.models)
         let parameters = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]
-        ApiStore.defaultStore().setPathItems(parameters)
         //ApiStore.defaultStore().setBodyItem("jorge", forKey: "name")
         //ApiStore.defaultStore().setBodyItem("jorge", forKey: "type")
-        let apiQuery = ApiStore.defaultStore().createQuery()
+        let apiQuery = ApiStore.defaultStore().createQueryForPath("/1/classes/Task", httpMethod: HttpMethod.get)
+        ApiStore.defaultStore().setAuthenticationCredentials("foo", password: "bar")
         apiQuery.read(completionHandler: {(object, error) in
         })
         

@@ -15,6 +15,15 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 - If you **have a feature request**, open an issue.
 - If you **want to contribute**, submit a pull request.
 
+## Features
+
+- Capacity to use the same code to read api and database
+- Configure only one time your app 
+- Caching regardless if the server return the cache content
+- Capacity to define multiples servers
+- URL / JSON Parameter Encoding
+- Authentication with NSURLCredential
+
 ## Architecture
 
 #### Base
@@ -55,6 +64,7 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 	- ApiStore
 - DataBase	
 	- DataBaseStore
+	
 
 ## Usage
 
@@ -62,126 +72,24 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 
 Configure only one time your app and thats it :) .
 
+#### Basic configuration
+
 ```swift 
 let apiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "example.com", httpProtocol: "https")
-let taskEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Task")
-let exampleEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Example")
 ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
-ApiStore.defaultStore().setEndpoints([exampleEndpoint, taskEndpoint])
 ```
 
-### HTTP Request Operation 
-
-#### `GET` Request
-
-```swift 
-var apiQuery = ApiStore.defaultStore().createQuery()
-apiQuery.read(completionHandler: {(object, error) in
-	println("RESPONSE: ", object)
-})
-```
-
-#### `POST` URL-Form-Encoded Request
+#### Setting basic authentication
 
 ```swift
-ApiStore.defaultStore().setBodyItem("foo", forKey: "bar")
-var apiQuery = ApiStore.defaultStore().createQuery()
-apiQuery.create(completionHandler: {(object, error) in
-	println("RESPONSE: ", object)
-})
+ ApiStore.defaultStore().setAuthenticationCredentials("foo", password: "bar")
 ```
 
-#### `POST` Multi-Part Request
+Supported Authentication Schemes
 
-```swift
-ApiStore.defaultStore().setFileData(data, forName: "image", fileName: "image.jpg", mimeType: "image/jpg")
-var apiQuery: ApiQuery = ApiStore.defaultStore().createQuery()
-apiQuery.create(completionHandler: {(object, error) in
-	println("RESPONSE: ", object)
-})
-```
+- HTTP Basic
 
----
-
-### Request Serialization
-
-```swift
-var apiStoreConfiguration: ApiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "example.com", httpProtocol: "http")
-var parameters: Dictionary<String, String> = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]
-```
-
-#### Query String Parameter Encoding
-
-###### Using the Api Store adding a dictionary of items
-
-```swift
-ApiStore.defaultStore().setPathItems(parameters)
-```
-###### Using the Api Store adding item by item
-
-```swift
-ApiStore.defaultStore().setQueryItem("foo", forKey: "bar")
-ApiStore.defaultStore().setQueryItem("1", forKey: "baz1")
-ApiStore.defaultStore().setQueryItem("2", forKey: "baz2")
-ApiStore.defaultStore().setQueryItem("3", forKey: "baz3") 
-```
-###### Using the Api Query adding a dictionary of items
-
-```swift
-apiQuery.setQueryItems(parameters)
-```
-
-###### Using the Api Query adding item by item
-
-```swift
-apiQuery.setQueryItem("foo", forKey: "bar")
-apiQuery.setQueryItem("1", forKey: "baz1")
-apiQuery.setQueryItem("2", forKey: "baz2")
-apiQuery.setQueryItem("3", forKey: "baz3")
-```
-```swift
-GET http://example.com?foo=bar&baz1=1&baz2=2&baz3=3
-```
-
-#### URL Form Parameter Encoding
-
-```swift
-ApiStore.defaultStore().setBodyItems(parameters)
-apiQuery.create(completionHandler: {(object, error) in
-	println("RESPONSE: ", object)
-})
-```
-
-    POST http://example.com/
-    Content-Type: application/x-www-form-urlencoded
-
-    foo=bar&baz1=1&baz2=2&baz3=3
-
-#### JSON Parameter Encoding
-
-```swift 
-ApiStore.defaultStore().setBodyItems(parameters)
-apiQuery.create(completionHandler: {(object, error) in
-	println("RESPONSE: ", object)
-})
-```
-
-    POST http://example.com/
-    Content-Type: application/json
-
-    {"foo": "bar", "baz": [1,2,3]}
-
----
-
-#### Models Serialization
-
-To serialize the models from the json response, just add the following parameters to the configuration.
-
-```swift 
-ApiStore.defaultStore().setModelsPath("results")
-ApiStore.defaultStore().setResponseType(ResponseType.models)
-```
-#### Caching
+#### Setting cache policy
 
 The library provides cache for requests based on sqlite and files, regardless if the server returns the cache content in the headers, to allow this capacity you have to implement the ApiQueryDelegate and add the following code to the configuration.
 
@@ -190,6 +98,85 @@ ApiStore.defaultStore().setCacheStoragePolicy(NSURLCacheStoragePolicy.Allowed)
 ApiStore.defaultStore().setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataElseLoad)
 ```
 
+#### Setting the endpoints
+
+```swift 
+let taskEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Task")
+let exampleEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Example")
+```
+
+#### Setting models serialization from server response
+
+```swift 
+ApiStore.defaultStore().setModelsPath("results")
+ApiStore.defaultStore().setResponseType(ResponseType.models)
+```
+
+#### Setting response type
+
+```swift 
+ApiStore.defaultStore().setResponseType(ResponseType.dictionary)
+```
+
+Supported responses:
+
+```swift
+enum ResponseType: Int {
+    case data
+    case dictionary
+    case models
+    case string
+}
+```
+
+### GET Request
+
+```swift 
+let apiQuery = ApiStore.defaultStore().createQueryForPath("/1/classes/Task", httpMethod: HttpMethod.get)
+apiQuery.read(completionHandler: {(object, error) in
+ })
+```
+#### With Parameters
+
+```swift 
+apiQuery.read(["foo": "bar"], completionHandler: {(object, error) in
+})
+```
+
+### HTTP Methods
+
+```swift
+enum HttpMethod: String {
+    case delete = "DELETE"
+    case get = "GET"
+    case post = "POST"
+    case put = "PUT"
+}
+```
+
+### POST Request
+
+```swift
+let parameters = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]
+apiQuery.create(parameters, completionHandler: {(object, error) in
+ })
+```
+Depends of the configuration setted in the api store config the body should be enconding in the supported formats:
+
+- JSON
+- URI form encoded
+- MultiPart form
+
+
+### Parameter Encoding
+
+```swift
+enum ContentType: String {
+    case json = "application/json"
+    case multiPartForm = "multipart/form-data"
+    case urlEnconded = "application/x-www-form-urlencoded"
+}
+```
 
 ## License
 
