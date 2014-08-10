@@ -15,6 +15,15 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 - If you **have a feature request**, open an issue.
 - If you **want to contribute**, submit a pull request.
 
+## Features
+
+- Capacity to use the same code to read api and database
+- Configure only one time your app 
+- Caching regardless if the server return the cache content
+- Capacity to define multiples servers
+- URL / JSON Parameter Encoding
+- Authentication with NSURLCredential
+
 ## Architecture
 
 #### Base
@@ -55,118 +64,119 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 	- ApiStore
 - DataBase	
 	- DataBaseStore
+	
 
 ## Usage
 
-### HTTP Request Operation 
+### Configuration
 
-#### `GET` Request
+Configure only one time your app and thats it :) .
+
+#### Basic configuration
 
 ```swift 
-var endPoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, path: "resources.json")
-ApiStore.defaultStore().setEndpoint(endPoint)
-var apiQuery: ApiQuery = ApiStore.defaultStore().createQuery()
+let apiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "example.com", httpProtocol: "https")
+ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
+```
+
+#### Setting basic authentication
+
+```swift
+ ApiStore.defaultStore().setAuthenticationCredentials("foo", password: "bar")
+```
+
+Supported Authentication Schemes
+
+- HTTP Basic
+
+#### Setting cache policy
+
+The library provides cache for requests based on sqlite and files, regardless if the server returns the cache content in the headers, to allow this capacity you have to implement the ApiQueryDelegate and add the following code to the configuration.
+
+```swift 
+ApiStore.defaultStore().setCacheStoragePolicy(NSURLCacheStoragePolicy.Allowed)
+ApiStore.defaultStore().setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataElseLoad)
+```
+
+#### Setting the endpoints
+
+```swift 
+let taskEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Task")
+let exampleEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Example")
+```
+
+#### Setting models serialization from server response
+
+```swift 
+ApiStore.defaultStore().setModelsPath("results")
+ApiStore.defaultStore().setResponseType(ResponseType.models)
+```
+
+#### Setting response type
+
+```swift 
+ApiStore.defaultStore().setResponseType(ResponseType.dictionary)
+```
+
+Supported responses:
+
+```swift
+enum ResponseType: Int {
+    case data
+    case dictionary
+    case models
+    case string
+}
+```
+
+### GET Request
+
+```swift 
+let apiQuery = ApiStore.defaultStore().createQueryForPath("/1/classes/Task", httpMethod: HttpMethod.get)
 apiQuery.read(completionHandler: {(object, error) in
-	println("RESPONSE: ", object)
+ })
+```
+#### With Parameters
+
+```swift 
+apiQuery.read(["foo": "bar"], completionHandler: {(object, error) in
 })
 ```
 
-#### `POST` URL-Form-Encoded Request
+### HTTP Methods
 
 ```swift
-var endPoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "resources.json")
-ApiStore.defaultStore().setBodyItem("foo", forKey: "bar")
-ApiStore.defaultStore().setEndpoint(endPoint)
-var apiQuery: ApiQuery = ApiStore.defaultStore().createQuery()
-apiQuery.create(completionHandler: {(object, error) in
-	println("RESPONSE: ", object)
-})
+enum HttpMethod: String {
+    case delete = "DELETE"
+    case get = "GET"
+    case post = "POST"
+    case put = "PUT"
+}
 ```
 
-#### `POST` Multi-Part Request
+### POST Request
 
 ```swift
-ApiStore.defaultStore().setBodyItem("foo", forKey: "bar")
-ApiStore.defaultStore().setFileData(data, forName: "image", fileName: "image.jpg", mimeType: "image/jpg")
-var apiQuery: ApiQuery = ApiStore.defaultStore().createQuery()
-apiQuery.create(completionHandler: {(object, error) in
-	println("RESPONSE: ", object)
-})
+let parameters = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]
+apiQuery.create(parameters, completionHandler: {(object, error) in
+ })
 ```
+Depends of the configuration setted in the api store config the body should be enconding in the supported formats:
 
----
+- JSON
+- URI form encoded
+- MultiPart form
 
-### Request Serialization
+
+### Parameter Encoding
 
 ```swift
-var apiStoreConfiguration: ApiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "example.com", httpProtocol: "http")
-var parameters: Dictionary<String, String> = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]
+enum ContentType: String {
+    case json = "application/json"
+    case multiPartForm = "multipart/form-data"
+    case urlEnconded = "application/x-www-form-urlencoded"
+}
 ```
-
-#### Query String Parameter Encoding
-
-###### Using the Api Store adding a dictionary of items
-
-```swift
-ApiStore.defaultStore().setPathItems(parameters)
-```
-###### Using the Api Store adding item by item
-
-```swift
-ApiStore.defaultStore().setQueryItem("foo", forKey: "bar")
-ApiStore.defaultStore().setQueryItem("1", forKey: "baz1")
-ApiStore.defaultStore().setQueryItem("2", forKey: "baz2")
-ApiStore.defaultStore().setQueryItem("3", forKey: "baz3") 
-```
-###### Using the Api Query adding a dictionary of items
-
-```swift
-apiQuery.setQueryItems(parameters)
-```
-
-###### Using the Api Query adding item by item
-
-```swift
-apiQuery.setQueryItem("foo", forKey: "bar")
-apiQuery.setQueryItem("1", forKey: "baz1")
-apiQuery.setQueryItem("2", forKey: "baz2")
-apiQuery.setQueryItem("3", forKey: "baz3")
-```
-```swift
-GET http://example.com?foo=bar&baz1=1&baz2=2&baz3=3
-```
-
-#### URL Form Parameter Encoding
-
-```swift
-ApiStore.defaultStore().setBodyItems(parameters)
-apiQuery.create(completionHandler: {(object, error) in
-	println("RESPONSE: ", object)
-})
-```
-
-    POST http://example.com/
-    Content-Type: application/x-www-form-urlencoded
-
-    foo=bar&baz1=1&baz2=2&baz3=3
-
-#### JSON Parameter Encoding
-
-```swift
-var endPoint: ApiEndpoint =  ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.post, path: "resources.json")
-ApiStore.defaultStore().setEndpoint(endPoint)
-ApiStore.defaultStore().setBodyItems(parameters)
-apiQuery.create(completionHandler: {(object, error) in
-	println("RESPONSE: ", object)
-})
-```
-
-    POST http://example.com/
-    Content-Type: application/json
-
-    {"foo": "bar", "baz": [1,2,3]}
-
----
 
 ## License
 

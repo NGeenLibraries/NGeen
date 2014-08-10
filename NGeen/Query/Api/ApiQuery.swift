@@ -60,7 +60,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
         self.urlComponents.path = (self.endPoint.path != nil ? self.endPoint.path : "")
         super.init()
         self.config = configuration
-        self.urlComponents.scheme = self.__config!.httpProtocol
+        self.urlComponents.scheme = self.__config!.scheme
         self.urlComponents.host = self.__config!.host
     }
     
@@ -142,6 +142,20 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
+    * The function set the http method and call the startRequest function
+    *
+    * @params parameters The parameters for the body.
+    * @param completionHandler The closure to be called when the function end.
+    *
+    */
+    
+    func create(parameters: Dictionary<String, AnyObject>, completionHandler closure: NGeenClosure) {
+        self.__config!.bodyItems.addEntriesFromDictionary(parameters)
+        self.endPoint.httpMethod = HttpMethod.post
+        self.startRequest(closure)
+    }
+    
+    /**
     * The function return the http headers
     *
     * @param no need params.
@@ -200,6 +214,28 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     func query() -> String {
         return self.urlComponents.query
     }
+    
+    /**
+    * The function set the http method and call the startRequest function
+    *
+    * @params parameters The parameters for the body.
+    * @param completionHandler The closure to be called when the function end.
+    *
+    */
+    
+    func read(parameters: Dictionary<String, String>, completionHandler closure: NGeenClosure) {
+        self.setQueryItems(parameters)
+        self.endPoint.httpMethod = HttpMethod.get
+        self.startRequest(closure)
+    }
+    
+    /**
+    * The function return the response type for the request
+    *
+    * @param no need params.
+    *
+    * @return ResponseType
+    */
     
     func response() -> ResponseType {
         return self.__config!.responseType
@@ -322,9 +358,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     */
     
     func setPathItems(items: Dictionary<String, String>) {
-        println(self.__config!.pathItems)
         self.__config!.pathItems += items
-        println(self.__config!.pathItems)
         for (key, value) in items {
             self.urlComponents.path = "\(self.urlComponents.path)/\(value)"
         }
@@ -338,9 +372,19 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     *
     */
     
-    func setQueryItem(item: String, forKey key: String) {
+    func setQueryItem(item: AnyObject, forKey key: String) {
         self.__config!.queryItems[key] = item
-        self.urlComponents.query = (!self.urlComponents.query ? "": "\(self.urlComponents.query)&")+"\(key)=\(item)"
+        if item is Array<AnyObject> {
+            for (index, value) in enumerate(item as Array<AnyObject>) {
+                self.urlComponents.query = (!self.urlComponents.query ? "": "\(self.urlComponents.query)&")+"\(key)[\(index)]=\(value)"
+            }
+        } else if item is Dictionary<String, AnyObject> {
+            for (nestedKey, value) in item as Dictionary<String, AnyObject> {
+                self.urlComponents.query = (!self.urlComponents.query ? "": "\(self.urlComponents.query)&")+"\(key)[\(nestedKey)]=\(value)"
+            }
+        } else {
+            self.urlComponents.query = (!self.urlComponents.query ? "": "\(self.urlComponents.query)&")+"\(key)=\(item)"
+        }
     }
     
     /**
@@ -350,10 +394,9 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     *
     */
     
-    func setQueryItems(items: Dictionary<String, String>) {
-        self.__config!.queryItems += items
+    func setQueryItems(items: Dictionary<String, AnyObject>) {
         for (key, value) in items {
-            self.urlComponents.query = (!self.urlComponents.query ? "": "\(self.urlComponents.query)&")+"\(key)=\(value)"
+            self.setQueryItem(value, forKey: key)
         }
     }
     
@@ -368,10 +411,24 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
         self.__config!.responseType = type
     }
     
+    /**
+    * The function set the http method and call the startRequest function
+    *
+    * @params parameters The parameters for the body.
+    * @param completionHandler The closure to be called when the function end.
+    *
+    */
+    
+    func update(parameters: Dictionary<String, AnyObject>, completionHandler closure: NGeenClosure) {
+        self.__config!.bodyItems.addEntriesFromDictionary(parameters)
+        self.endPoint.httpMethod = HttpMethod.post
+        self.startRequest(closure)
+    }
+    
 // MARK: Persistence Protocol
     
     /**
-    * The function call set the http method and call the startRequest function
+    * The function set the http method and call the startRequest function
     *
     * @param completionHandler The closure to be called when the function end.
     *
@@ -383,7 +440,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
-    * The function call set the http method and call the startRequest function
+    * The function set the http method and call the startRequest function
     *
     * @param completionHandler The closure to be called when the function end.
     *
@@ -395,7 +452,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
-    * The function call set the http method and call the startRequest function
+    * The function set the http method and call the startRequest function
     *
     * @param completionHandler The closure to be called when the function end.
     *
@@ -407,7 +464,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
-    * The function call set the http method and call the startRequest function
+    * The function set the http method and call the startRequest function
     *
     * @param completionHandler The closure to be called when the function end.
     *
@@ -468,6 +525,9 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     private func configureRequest(inout request: Request) {
         request.cachePolicy = self.__config!.cachePolicy
         request.cacheStoragePolicy = self.__config!.cacheStoragePolicy
+        if let credential: NSURLCredential = self.__config!.credential {
+            request.setAuthenticationCredential(credential, forProtectionSpace: self.__config!.protectionSpace!)
+        }
         request.delegate = self
         request.setValue(self.endPoint.contentType!.toRaw(), forHTTPHeaderField: "Content-Type")
         for (key, value) in self.__config!.headers {

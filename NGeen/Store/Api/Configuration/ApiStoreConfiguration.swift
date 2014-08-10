@@ -24,20 +24,20 @@ import UIKit
 
 class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
 
-    var basicAuthPassword: String?
-    var basicAuthUsername: String?
     var bodyItems: NSMutableDictionary
     var cachePolicy: NSURLRequestCachePolicy
     var cacheStoragePolicy: NSURLCacheStoragePolicy
     var configurations: Dictionary<String, ConfigurationStoreProtocol>
     var contentType: ContentType?
+    var credential: NSURLCredential?
     var headers: Dictionary<String, String>
     var host: String
-    var httpProtocol: String
     var modelsPath: String
     var pathItems: Dictionary<String, String>
-    var queryItems: Dictionary<String, String>
+    var protectionSpace: NSURLProtectionSpace?
+    var queryItems: Dictionary<String, AnyObject>
     var responseType: ResponseType
+    var scheme: String
     var timeout: Int
     
 //MARK: Constructor
@@ -49,7 +49,7 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
         self.configurations = Dictionary<String, ConfigurationStoreProtocol>()
         self.headers = Dictionary<String, String>()
         self.host = ""
-        self.httpProtocol = "http"
+        self.scheme = "http"
         self.modelsPath = ""
         self.pathItems = Dictionary<String, String>()
         self.queryItems = Dictionary<String, String>()
@@ -57,11 +57,11 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
         self.timeout = 30
     }
     
-    convenience init(headers: Dictionary<String, String>, host: String, httpProtocol: String) {
+    convenience init(headers: Dictionary<String, String>, host: String, scheme: String) {
         self.init()
         self.headers = headers
         self.host = host
-        self.httpProtocol = httpProtocol
+        self.scheme = scheme
     }
 
     
@@ -78,8 +78,8 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
     *  @return ApiStoreConfiguration
     */
     
-    class func configWithContentType(headers: Dictionary<String, String>, host: String, httpProtocol: String) -> ApiStoreConfiguration {
-        return ApiStoreConfiguration(headers: headers, host: host, httpProtocol: httpProtocol)
+    class func configWithContentType(headers: Dictionary<String, String>, host: String, scheme: String) -> ApiStoreConfiguration {
+        return ApiStoreConfiguration(headers: headers, host: host, scheme: scheme)
     }
     
 }

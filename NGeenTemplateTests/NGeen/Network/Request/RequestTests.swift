@@ -54,21 +54,18 @@ class RequestTests: XCTestCase {
     }
     
     func testThatSendAsynchronousWithBasicAuthentication() {
-        let basicAuthenticationString: String = "user:passwd"
-        if let authData: NSData = basicAuthenticationString.dataUsingEncoding(NSASCIIStringEncoding, allowLossyConversion: true) {
-            let expectation: XCTestExpectation = self.expectationWithDescription("request end")
-            let request: Request = Request(httpMethod: HttpMethod.get.toRaw(), url: NSURL(string: "get", relativeToURL: kTestUrl))
-            request.setValue("Basic "+authData.base64EncodedStringWithOptions(NSDataBase64EncodingOptions.fromRaw(0)!), forHTTPHeaderField: "Authorization")
-            request.setValue(ContentType.json.toRaw(), forHTTPHeaderField: "Content-Type")
-            request.sendAsynchronous({(data, urlResponse, error) in
-                let httpUrlResponse: NSHTTPURLResponse = urlResponse as NSHTTPURLResponse
-                XCTAssertEqual(httpUrlResponse.statusCode, 200, "Expected a status completed", file: __FUNCTION__, line: __LINE__)
-                expectation.fulfill()
-            })
-            self.waitForExpectationsWithTimeout(30, handler: nil)
-        } else {
-            XCTFail("Unable to encode the authentication data")
-        }
+        let credential: NSURLCredential = NSURLCredential(user: "user", password: "passwd", persistence: NSURLCredentialPersistence.ForSession)
+        let protectionSpace: NSURLProtectionSpace = NSURLProtectionSpace(host: "httpbin.org", port: 0, `protocol`: "https", realm: nil, authenticationMethod: NSURLAuthenticationMethodHTTPBasic)
+        let expectation: XCTestExpectation = self.expectationWithDescription("request end")
+        let request: Request = Request(httpMethod: HttpMethod.get.toRaw(), url: NSURL(string: "get", relativeToURL: kTestUrl))
+        request.setAuthenticationCredential(credential, forProtectionSpace: protectionSpace)
+        request.setValue(ContentType.json.toRaw(), forHTTPHeaderField: "Content-Type")
+        request.sendAsynchronous({(data, urlResponse, error) in
+            let httpUrlResponse: NSHTTPURLResponse = urlResponse as NSHTTPURLResponse
+            XCTAssertEqual(httpUrlResponse.statusCode, 200, "Expected a status completed", file: __FUNCTION__, line: __LINE__)
+            expectation.fulfill()
+        })
+        self.waitForExpectationsWithTimeout(30, handler: nil)
     }
     
     func testThatSendAsynchronousWithInvalidBasicAuthentication() {

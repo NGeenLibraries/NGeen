@@ -128,6 +128,13 @@ class ApiQueryTests: XCTestCase {
         apiQuery.setQueryItems(["key3": "value3"])
         XCTAssertEqual(apiQuery.query(), "key1=value1&key2=value2&key3=value3", "The query should be value=key", file: __FUNCTION__, line: __LINE__)
     }
+    
+    func testThatSetQueryItemsWithAnyObjects() {
+        let parameters: Dictionary<String, AnyObject> = ["foo": "bar", "baz": ["a", 1], "qux": ["x": 1, "y": 2, "z": 3]]
+        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint())
+        apiQuery.setQueryItems(parameters)
+        XCTAssertEqual(apiQuery.query(), "qux[z]=3&qux[x]=1&qux[y]=2&baz[0]=a&baz[1]=1&foo=bar", "The query should be qux[z]=3&qux[x]=1&qux[y]=2&baz[0]=a&baz[1]=1&foo=bar", file: __FUNCTION__, line: __LINE__)
+    }
 
     func testThatSetResponseType() {
         let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint())

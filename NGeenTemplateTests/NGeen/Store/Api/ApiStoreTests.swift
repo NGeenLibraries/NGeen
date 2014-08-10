@@ -1,10 +1,24 @@
 //
 //  StoreApiTests.swift
-//  NGeenTemplate
+// Copyright (c) 2014 NGeen
 //
-//  Created by NGeen on 7/7/14.
-//  Copyright (c) 2014 NGeen. All rights reserved.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 import XCTest
 
@@ -20,7 +34,7 @@ class ApiStoreTests: XCTestCase {
         self.apiConfiguration = ApiStoreConfiguration()
         self.store = ApiStore(config: self.apiConfiguration!)
         self.store?.setConfiguration(self.apiConfiguration!, forKey: kConfigKey)
-        self.store?.setEndpoint(ApiEndpoint())
+        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, path: "example"))
     }
     
     override func tearDown() {
@@ -39,6 +53,20 @@ class ApiStoreTests: XCTestCase {
         XCTAssert(self.store!.createQuery().isKindOfClass(ApiQuery.self), "Invalid api query class", file: __FILE__, line: __LINE__)
     }
     
+    func testThatCreateQueryForPath() {
+        let endpoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "example")
+        let fooEndpoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "foo")
+        self.store?.setEndpoints([endpoint, fooEndpoint])
+        XCTAssertTrue(self.store!.createQueryForPath(endpoint.path!, httpMethod: HttpMethod.get).isKindOfClass(ApiQuery.self), "Invalid api query class", file: __FILE__, line: __LINE__)
+    }
+    
+    func testThatCreateQueryForPathAndServer() {
+        let endpoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "example")
+        let fooEndpoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "foo")
+        self.store?.setEndpoints([endpoint, fooEndpoint], forServer: kConfigKey)
+        XCTAssertTrue(self.store!.createQueryForPath(endpoint.path!, httpMethod: HttpMethod.get, server: kConfigKey).isKindOfClass(ApiQuery.self), "Invalid api query class", file: __FILE__, line: __LINE__)
+    }
+    
     func testThatConfiguration() {
         XCTAssert(self.store!.configuration().conformsToProtocol(ConfigurationStoreProtocol) , "Invalid configuration type", file: __FILE__, line: __LINE__)
     }
@@ -47,32 +75,30 @@ class ApiStoreTests: XCTestCase {
         XCTAssert(self.store!.configuration().conformsToProtocol(ConfigurationStoreProtocol), "Invalid configuration type", file: __FILE__, line: __LINE__)
     }
     
-    func testThatEndpointForModelClass() {
-        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: ""), forServer: kDefaultServerName)
-        if let endPoint = self.store?.endpointForModelClass(AnyClass.self, httpMethod: HttpMethod.get) {
+    func testThatEndpointForPath() {
+        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "example"), forServer: kDefaultServerName)
+        if let endPoint = self.store?.endpointForPath("example", httpMethod: HttpMethod.get) {
         } else {
             XCTFail("The Endpoint can't be null")
         }
     }
     
-    func testThatEndpointForModelClassAndServer() {
-        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: ""), forServer: kDefaultServerName)
-        if let endPoint = self.store?.endpointForModelClass(AnyClass.self, httpMethod: HttpMethod.get, serverName: kDefaultServerName) {
+    func testThatEndpointForModelPathAndServer() {
+        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "example"), forServer: kDefaultServerName)
+        if let endPoint = self.store?.endpointForPath("example", httpMethod: HttpMethod.get, serverName: kDefaultServerName) {
         } else {
             XCTFail("The Endpoint can't be null")
         }
     }
 
-    func testThatSetBodyItems() {
-        var bodies: Dictionary<String, String> = ["Application-Id": "m6vrBwIgDFAARtVqXn", "API-Key": "L8sHTFXm0HxNUiiBvR03ug"]
-        self.store?.setBodyItems(bodies)
-        XCTAssertGreaterThan(self.store!.getBodyItems().count, 0, "The body items should be greater than 0", file: __FILE__, line: __LINE__)
+    func testThatSetAuthenticationCredentials() {
+        self.store!.setAuthenticationCredentials("test", password: "test")
+        XCTAssertEqual(self.store!.getAuthenticationCredentials(), "test:test", "The authentication string should be equal to test:test", file: __FUNCTION__, line: __LINE__)
     }
     
-    func testThatSetBodyItemsForServer() {
-        var bodies: Dictionary<String, String> = ["Application-Id": "m6vrBwIgDFAARtVqXn", "API-Key": "L8sHTFXm0HxNUiiBvR03ug"]
-        self.store?.setBodyItems(bodies, forServer: kConfigKey)
-        XCTAssertGreaterThan(self.store!.getBodyItemsForServer(kConfigKey).count, 0, "The body items should be greater than 0", file: __FILE__, line: __LINE__)
+    func testThatSetAuthenticationCredentialsForServer() {
+        self.store!.setAuthenticationCredentials("test", password: "test", forServer: kConfigKey)
+        XCTAssertEqual(self.store!.getAuthenticationCredentialsForServer(kConfigKey), "test:test", "The authentication string should be equal to test:test", file: __FUNCTION__, line: __LINE__)
     }
     
     func testTharSetCachePolicy() {
@@ -114,8 +140,20 @@ class ApiStoreTests: XCTestCase {
         XCTAssertGreaterThan(self.store!.endPoints.count, 0, "The endpoints should have 1 item", file: __FILE__, line: __LINE__)
     }
     
-    func testThatSetEndpointForServerName() {
+    func testThatSetEndpointForServer() {
         self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: ""), forServer: kDefaultServerName)
+        XCTAssertGreaterThan(self.store!.endPoints.count, 0, "The endpoints should have 1 item", file: __FILE__, line: __LINE__)
+    }
+    
+    func testThatSetEndpoints() {
+        let endpoints: Array<ApiEndpoint> = [ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: ""), ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "")]
+        self.store?.setEndpoints(endpoints)
+        XCTAssertGreaterThan(self.store!.endPoints.count, 0, "The endpoints should have 1 item", file: __FILE__, line: __LINE__)
+    }
+    
+    func testThatSetEndpointsForServer() {
+        let endpoints: Array<ApiEndpoint> = [ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: ""), ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "")]
+        self.store?.setEndpoints(endpoints, forServer: kDefaultServerName)
         XCTAssertGreaterThan(self.store!.endPoints.count, 0, "The endpoints should have 1 item", file: __FILE__, line: __LINE__)
     }
     
@@ -149,46 +187,6 @@ class ApiStoreTests: XCTestCase {
         XCTAssertEqual(self.store!.getModelsPathForServer(kConfigKey), "test.path", "The model path should be equal to test.path", file: __FILE__, line: __LINE__)
     }
     
-    func testThatSetPathItem() {
-        self.store?.setPathItem("test", forKey: "test")
-        XCTAssertGreaterThan(self.store!.getPathItems().count, 0, "The path items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetPathItemForServer() {
-        self.store?.setPathItem("test", forKey: "test", serverName: kConfigKey)
-        XCTAssertGreaterThan(self.store!.getPathItemsForServer(kConfigKey).count, 0, "The path items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetPathItems() {
-        self.store?.setPathItems(["test": "test"])
-        XCTAssertGreaterThan(self.store!.getPathItems().count, 0, "The path items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetPathItemsForServer() {
-        self.store?.setPathItems(["test": "test"], forServer: kConfigKey)
-        XCTAssertGreaterThan(self.store!.getPathItemsForServer(kConfigKey).count, 0, "The path items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetQueryItem() {
-        self.store?.setQueryItem("test", forKey: "test")
-        XCTAssertGreaterThan(self.store!.getQueryItems().count, 0, "The query items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetQueryItemForServer() {
-        self.store?.setQueryItem("test", forKey: "test", serverName: kConfigKey)
-        XCTAssertGreaterThan(self.store!.getQueryItemsForServer(kConfigKey).count, 0, "The query items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-
-    func testThatSetQueryItems() {
-        self.store?.setQueryItems(["test": "test"])
-        XCTAssertGreaterThan(self.store!.getQueryItems().count, 0, "The query items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetQueryItemsForServer() {
-        self.store?.setQueryItems(["test": "test"], forServer: kConfigKey)
-        XCTAssertGreaterThan(self.store!.getQueryItemsForServer(kConfigKey).count, 0, "The query items should be greater than 0", file: __FILE__, line: __LINE__)
-    }
-    
     func testThatSetResponseType() {
         self.store?.setResponseType(ResponseType.dictionary)
         XCTAssert(self.store!.getResponseType() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
@@ -197,16 +195,6 @@ class ApiStoreTests: XCTestCase {
     func testThatSetResponseTypeForServer() {
         self.store?.setResponseType(ResponseType.dictionary, forServer: kConfigKey)
         XCTAssert(self.store!.getResponseType() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetTextFileData() {
-        self.store?.setTextData("")
-        XCTAssertGreaterThan(self.store!.getBodyItems().count, 0, "The file data should have 1 item", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetTextFileDataForServerName() {
-        self.store?.setTextData("", forServerName: kConfigKey)
-        XCTAssertGreaterThan(self.store!.getBodyItems().count, 0, "The file data should have 1 item", file: __FILE__, line: __LINE__)
     }
 
 }
