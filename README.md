@@ -63,9 +63,9 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 Configure only one time your app and thats it :) .
 
 ```swift 
-let apiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "api.parse.com", httpProtocol: "https")
-        let taskEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Task")
-        let exampleEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Example")
+let apiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "example.com", httpProtocol: "https")
+let taskEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Task")
+let exampleEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Example")
 ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
 ApiStore.defaultStore().setEndpoint(taskEndpoint)
 ApiStore.defaultStore().setEndpoint(exampleEndpoint)
