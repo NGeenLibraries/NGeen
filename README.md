@@ -58,14 +58,27 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 
 ## Usage
 
+### Configuration
+
+Configure only one time your app and thats it :) .
+
+```swift 
+let apiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "api.parse.com", httpProtocol: "https")
+        let taskEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Task")
+        let exampleEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Example")
+ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
+ApiStore.defaultStore().setEndpoint(taskEndpoint)
+ApiStore.defaultStore().setEndpoint(exampleEndpoint)
+ApiStore.defaultStore().setModelsPath("results")
+ApiStore.defaultStore().setResponseType(ResponseType.dictionary)
+```
+
 ### HTTP Request Operation 
 
 #### `GET` Request
 
 ```swift 
-var endPoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, path: "resources.json")
-ApiStore.defaultStore().setEndpoint(endPoint)
-var apiQuery: ApiQuery = ApiStore.defaultStore().createQuery()
+var apiQuery = ApiStore.defaultStore().createQuery()
 apiQuery.read(completionHandler: {(object, error) in
 	println("RESPONSE: ", object)
 })
@@ -74,10 +87,8 @@ apiQuery.read(completionHandler: {(object, error) in
 #### `POST` URL-Form-Encoded Request
 
 ```swift
-var endPoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "resources.json")
 ApiStore.defaultStore().setBodyItem("foo", forKey: "bar")
-ApiStore.defaultStore().setEndpoint(endPoint)
-var apiQuery: ApiQuery = ApiStore.defaultStore().createQuery()
+var apiQuery = ApiStore.defaultStore().createQuery()
 apiQuery.create(completionHandler: {(object, error) in
 	println("RESPONSE: ", object)
 })
@@ -86,7 +97,6 @@ apiQuery.create(completionHandler: {(object, error) in
 #### `POST` Multi-Part Request
 
 ```swift
-ApiStore.defaultStore().setBodyItem("foo", forKey: "bar")
 ApiStore.defaultStore().setFileData(data, forName: "image", fileName: "image.jpg", mimeType: "image/jpg")
 var apiQuery: ApiQuery = ApiStore.defaultStore().createQuery()
 apiQuery.create(completionHandler: {(object, error) in
@@ -152,9 +162,7 @@ apiQuery.create(completionHandler: {(object, error) in
 
 #### JSON Parameter Encoding
 
-```swift
-var endPoint: ApiEndpoint =  ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.post, path: "resources.json")
-ApiStore.defaultStore().setEndpoint(endPoint)
+```swift 
 ApiStore.defaultStore().setBodyItems(parameters)
 apiQuery.create(completionHandler: {(object, error) in
 	println("RESPONSE: ", object)
