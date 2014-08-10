@@ -181,6 +181,15 @@ To serialize the models from the json response, just add the follow parameters t
 ApiStore.defaultStore().setModelsPath("results")
 ApiStore.defaultStore().setResponseType(ResponseType.models)
 ```
+#### Caching
+
+The library provides cache for requests based on sqlite and files regardless if the server returns the cache content in the headers, to allow this capacity just add the following code to the configuration.
+
+```swift 
+ApiStore.defaultStore().setCacheStoragePolicy(NSURLCacheStoragePolicy.Allowed)
+ApiStore.defaultStore().setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataElseLoad)
+```
+
 
 ## License
 
