@@ -175,7 +175,7 @@ apiQuery.create(completionHandler: {(object, error) in
 
 #### Models Serialization
 
-To serialize the models from the json response, just add the follow parameters to the configuration.
+To serialize the models from the json response, just add the following parameters to the configuration.
 
 ```swift 
 ApiStore.defaultStore().setModelsPath("results")
