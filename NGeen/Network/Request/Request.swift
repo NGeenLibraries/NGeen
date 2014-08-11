@@ -29,8 +29,7 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate,
     private var closure: ((NSError!) -> Void)?
     private var destination: NSURL?
     private var headers: Dictionary<String, AnyObject>
-    private var progress: NSProgress
-    private var progressClosure: ((Int64!, Int64!, Int64!) -> Void)?
+    private var progress: ((Int64!, Int64!, Int64!) -> Void)?
     private var queue: dispatch_queue_t?
     private var request: NSMutableURLRequest?
     private var session: NSURLSession?
@@ -67,7 +66,6 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate,
         self.headers = Dictionary()
         self.queue = dispatch_queue_create("com.ngeen.requestqueue", DISPATCH_QUEUE_CONCURRENT)
         dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
-        self.progress = NSProgress()
         self.sessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
         self.sessionConfiguration.requestCachePolicy = NSURLRequestCachePolicy.ReturnCacheDataElseLoad
         self.sessionConfiguration.timeoutIntervalForRequest = 30
@@ -100,7 +98,7 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate,
         assert(destination != nil, "The destination should have a value", file: __FUNCTION__, line: __LINE__)
         self.closure = closure
         self.destination = destination
-        self.progressClosure = progress
+        self.progress = handler
         let downloadTask: NSURLSessionDownloadTask = self.session!.downloadTaskWithURL(self.url)
         downloadTask.resume()
     }
@@ -187,7 +185,7 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate,
     
     func upload(data: AnyObject, uploadType type: UploadType, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
         self.closure = closure
-        self.progressClosure = progress
+        self.progress = handler
         self.request!.HTTPMethod = self.httpMethod!
         var uploadTask: NSURLSessionUploadTask!
         switch type {
@@ -214,9 +212,7 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate,
     }
 
     func URLSession(session: NSURLSession!, downloadTask: NSURLSessionDownloadTask!, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        self.progressClosure?(bytesWritten, totalBytesWritten, totalBytesExpectedToWrite)
-        self.progress.totalUnitCount = totalBytesExpectedToWrite
-        self.progress.completedUnitCount = totalBytesWritten
+        self.progress?(bytesWritten, totalBytesWritten, totalBytesExpectedToWrite)
     }
    
 //MARK: NSURLSession delegate
@@ -232,9 +228,7 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate,
     }
     
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
-        self.progressClosure?(bytesSent, totalBytesSent, totalBytesExpectedToSend)
-        self.progress.totalUnitCount = totalBytesExpectedToSend
-        self.progress.completedUnitCount = totalBytesSent
+        self.progress?(bytesSent, totalBytesSent, totalBytesExpectedToSend)
     }
     
 }

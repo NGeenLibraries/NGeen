@@ -36,7 +36,10 @@ enum ContentType: String {
 
 enum HttpMethod: String {
     case delete = "DELETE"
+    case head = "HEAD"
     case get = "GET"
+    case options = "OPTIONS"
+    case patch = "PATCH"
     case post = "POST"
     case put = "PUT"
 }
