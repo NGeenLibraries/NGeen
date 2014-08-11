@@ -24,7 +24,7 @@
 import UIKit
 
 class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
-
+    
     internal var config: ConfigurationStoreProtocol? {
         get {
             return __config
@@ -87,13 +87,13 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     */
     
     func body() -> String {
-        if self.endPoint.contentType == ContentType.json {
+        if self.endPoint.contentType! == ContentType.json {
             let data: NSData = NSJSONSerialization.dataWithJSONObject(self.__config!.bodyItems, options: NSJSONWritingOptions.PrettyPrinted, error: nil)
-            return  NSString(data: data, encoding: NSUTF8StringEncoding)
+            return NSString(data: data, encoding: NSUTF8StringEncoding)
         } else if self.endPoint.contentType == ContentType.multiPartForm {
-            return self.serializeMultipartDictionary(self.__config!.bodyItems)
+            return self.encodeMultipart(self.__config!.bodyItems)
         }
-        return self.serializeDictionary(self.__config!.bodyItems)
+        return self.encode(self.__config!.bodyItems)
     }
     
     /**
@@ -150,7 +150,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     */
     
     func create(parameters: Dictionary<String, AnyObject>, completionHandler closure: NGeenClosure) {
-        self.__config!.bodyItems.addEntriesFromDictionary(parameters)
+        self.__config!.bodyItems += parameters
         self.endPoint.httpMethod = HttpMethod.post
         self.startRequest(closure)
     }
@@ -211,7 +211,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     * @return String
     */
     
-    func query() -> String {
+    func query() -> String? {
         return self.urlComponents.query
     }
     
@@ -260,8 +260,8 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     *
     */
     
-    func setBodyItems(items: NSDictionary) {
-        self.__config!.bodyItems.addEntriesFromDictionary(items)
+    func setBodyItems(items: [String: AnyObject]) {
+        self.__config!.bodyItems += items
     }
     
     /**
@@ -300,7 +300,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
         assert(file != nil, "You should provide the file name for the file", file: __FILE__, line: __LINE__)
         assert(name != nil, "You should provide a name for the file", file: __FILE__, line: __LINE__)
         assert(mime != nil, "You should provide a mime type for the file", file: __FILE__, line: __LINE__)
-        self.__config!.bodyItems.setObject(["data": data, "fileName": file, "name": name, "mimeType": mime], forKey: kDefaultImageKeyData)
+        self.__config!.bodyItems[kDefaultImageKeyData] = ["data": data, "fileName": file, "name": name, "mimeType": mime]
     }
     
     /**
@@ -374,17 +374,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     
     func setQueryItem(item: AnyObject, forKey key: String) {
         self.__config!.queryItems[key] = item
-        if item is Array<AnyObject> {
-            for (index, value) in enumerate(item as Array<AnyObject>) {
-                self.urlComponents.query = (!self.urlComponents.query ? "": "\(self.urlComponents.query)&")+"\(key)[\(index)]=\(value)"
-            }
-        } else if item is Dictionary<String, AnyObject> {
-            for (nestedKey, value) in item as Dictionary<String, AnyObject> {
-                self.urlComponents.query = (!self.urlComponents.query ? "": "\(self.urlComponents.query)&")+"\(key)[\(nestedKey)]=\(value)"
-            }
-        } else {
-            self.urlComponents.query = (!self.urlComponents.query ? "": "\(self.urlComponents.query)&")+"\(key)=\(item)"
-        }
+        self.urlComponents.query = (!self.urlComponents.query ? "" : self.urlComponents.query + "&") + "\(self.encode([key: item]))"
     }
     
     /**
@@ -395,9 +385,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     */
     
     func setQueryItems(items: Dictionary<String, AnyObject>) {
-        for (key, value) in items {
-            self.setQueryItem(value, forKey: key)
-        }
+        self.urlComponents.query = (!self.urlComponents.query ? "" : self.urlComponents.query + "&") + "\(self.encode(items))"
     }
     
     /**
@@ -420,7 +408,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     */
     
     func update(parameters: Dictionary<String, AnyObject>, completionHandler closure: NGeenClosure) {
-        self.__config!.bodyItems.addEntriesFromDictionary(parameters)
+        self.__config!.bodyItems += parameters
         self.endPoint.httpMethod = HttpMethod.post
         self.startRequest(closure)
     }
@@ -488,28 +476,12 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
         if (self.__config!.bodyItems.count > 0) {
             assert(self.endPoint.httpMethod != HttpMethod.delete, "You can`t set a body for http delete method", file: __FILE__, line: __LINE__)
             assert(self.endPoint.httpMethod != HttpMethod.get, "You can`t set a body for http get method", file: __FILE__, line: __LINE__)
-            if self.endPoint.contentType == ContentType.image {
-                assert(self.__config!.bodyItems[kDefaultImageKeyData] != nil, "The image data should not be null", file: __FILE__, line: __LINE__ )
-                let imageBodyPart: NGImageBodyPart = NGImageBodyPart(bodies: self.__config!.bodyItems[kDefaultImageKeyData] as NSDictionary)
-                request.body = imageBodyPart.data
-                self.setHeader(imageBodyPart.mimeType, forKey: "Content-Type")
-            } else if self.endPoint.contentType == ContentType.json {
+            if self.endPoint.contentType! == ContentType.json {
                 request.body = NSJSONSerialization.dataWithJSONObject(self.__config!.bodyItems, options: NSJSONWritingOptions.PrettyPrinted, error: nil)
-            } else if self.endPoint.contentType == ContentType.multiPartForm {
-                if let body = self.serializeMultipartDictionary(self.__config!.bodyItems).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true) {
-                    request.body = body
-                } else {
-                    assert(false, "Unable to serialize the multipart body", file: __FILE__, line: __LINE__)
-                }
-            } else if self.endPoint.contentType == ContentType.textPlain {
-                assert(self.__config!.bodyItems[kDefaultFileKeyData] != nil, "The file data should not be null", file: __FILE__, line: __LINE__ )
-                request.body = self.__config!.bodyItems[kDefaultFileKeyData].dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)!
+            } else if self.endPoint.contentType! == ContentType.multiPartForm {
+                request.body = self.encodeMultipart(self.__config!.bodyItems).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
             } else {
-                if let body = self.serializeDictionary(self.__config!.bodyItems).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true) {
-                    request.body = body
-                } else {
-                    assert(false, "Unable to serialize the form body", file: __FILE__, line: __LINE__)
-                }
+                request.body = self.encode(self.__config!.bodyItems).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
             }
             request.setValue(request.body.length.description, forHTTPHeaderField: "Content-Length")
         }
@@ -537,51 +509,82 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
-    * The function serialize a dictionary into a string params for url encode form
+    * The function encode the params for the given content type
     *
-    * @param dictionary The dictionary with the params to serialize.
+    * @param parameters The dictionary with the params to encode.
     *
     * @return String
     */
     
-    private func serializeDictionary(dictionary: NSDictionary) -> String {
-        var params: String = ""
-        var format: String = ""
-        dictionary.enumerateKeysAndObjectsUsingBlock({(key, value, stop) in
-            if value is String {
-                params = "\(params)\(format)\(key)=\((value as String).stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding))"
+    private func encode(parameters: [String: AnyObject]) -> String {
+        
+        func query() -> String! {
+            
+            func queryComponents(key: String, value: AnyObject) -> [(String, String)] {
+               
+                func arrayQueryComponents(key: String, array: [AnyObject]) -> [(String, String)] {
+                    var components: [(String, String)] = []
+                    for (index, value) in enumerate(array) {
+                        components += queryComponents("\(key)[\(index)]", value)
+                    }
+                    return components
+                }
+                
+                func dictionaryQueryComponents(key: String, dictionary: [String: AnyObject]) -> [(String, String)] {
+                    var components: [(String, String)] = []
+                    for (nestedKey, value) in dictionary {
+                        components += queryComponents("\(key)[\(nestedKey)]", value)
+                    }
+                    return components
+                }
+                
+                var components: [(String, String)] = []
+                if let dictionary = value as? [String: AnyObject] {
+                    components += dictionaryQueryComponents(key, dictionary)
+                } else if let array = value as? [AnyObject] {
+                    components += arrayQueryComponents(key, array)
+                } else {
+                    components.append(key, "\(value)")
+                }
+                return components
             }
-            format = "&"
-        })
-        return params
+            var components: [(String, String)] = []
+            for key in sorted(Array(parameters.keys), <) {
+                let value: AnyObject! = parameters[key]
+                components += queryComponents(key, value)
+            }
+            return join("&", components.map({"\($0)=\($1)"}) as [String])
+        }
+    
+        return query()
     }
     
     /**
-    * The function serialize the dictionary in multipart form
+    * The function encode the params in mutlipart form for the given content type
     *
-    * @param dictionary The dictionary with the params to serialize.
+    * @param parameters The dictionary with the params to encode.
     *
     * @return String
     */
     
-    private func serializeMultipartDictionary(dictionary: NSDictionary) -> String {
-        assert(self.__config!.bodyItems[kDefaultImageKeyData], "The multipart form should have at least a image in the body", file: __FUNCTION__, line: __LINE__)
+    private func encodeMultipart(parameters: [String: AnyObject]) -> String {
+        assert(parameters[kDefaultImageKeyData] != nil, "The multipart form should have at least a image in the body", file: __FUNCTION__, line: __LINE__)
         let boundary: String = "--Boundary+\(CFAbsoluteTimeGetCurrent())\r\n"
         var params: String = ""
-        dictionary.enumerateKeysAndObjectsUsingBlock({(key, value, stop) in
+        for (key, value) in parameters {
             if (key as String) == kDefaultImageKeyData {
-                let imageBodyPart: NGImageBodyPart = NGImageBodyPart(bodies: dictionary[kDefaultImageKeyData] as NSDictionary)
+                let imageBodyPart: NGImageBodyPart = NGImageBodyPart(bodies: parameters[kDefaultImageKeyData] as NSDictionary)
                 params = "\(params)\(boundary) Content-Disposition: form-data; name=\"\(imageBodyPart.name)\"; filename=\"\(imageBodyPart.fileName)\"\r\n Content-Type: \(imageBodyPart.mimeType)\r\n\r\n \(imageBodyPart.data)\r\n"
             } else {
                 params = "\(params)\(boundary) Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n \(value)\r\n"
             }
-        })
+        }
         params = "\(params)\(boundary)--\r\n"
         return params
     }
     
     /**
-    * The function make the configuration and start the request
+    * The function set the configuration and start the request
     *
     * @param completionHandler The closure to be called when the request end.
     *

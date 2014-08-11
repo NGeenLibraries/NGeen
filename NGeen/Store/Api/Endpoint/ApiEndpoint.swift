@@ -29,10 +29,7 @@ class ApiEndpoint: NSObject {
     var modelClass: NSObject.Type? = nil
     var path: String? = nil
     
-    override init () {}
-    
-    convenience init(contentType: ContentType, httpMethod: HttpMethod, path: String) {
-        self.init()
+     init(contentType: ContentType, httpMethod: HttpMethod, path: String) {
         self.contentType = contentType
         self.httpMethod = httpMethod
         self.path = path
@@ -54,13 +51,13 @@ class ApiEndpoint: NSObject {
     }
     
     class func keyForPath(path: String, httpMethod method: HttpMethod?) -> String {
-        return "\(path)_\(method?.toRaw())"
+        return "\(path)_\(method!.toRaw())"
     }
     
 //MARK: Instance methods
     
     func key() -> String {
-        return ApiEndpoint.keyForPath(self.path!, httpMethod: self.httpMethod)
+        return ApiEndpoint.keyForPath(self.path!, httpMethod: self.httpMethod!)
     }
     
 }

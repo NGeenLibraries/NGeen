@@ -10,14 +10,19 @@ import XCTest
 
 class ApiQueryTests: XCTestCase {
 
+    var apiQuery: ApiQuery?
+    
     override func setUp() {
         super.setUp()
+        let endPoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, path: "example")
+        self.apiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: endPoint)
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
+        self.apiQuery = nil
     }
 
     func testPerformanceExample() {
@@ -44,7 +49,8 @@ class ApiQueryTests: XCTestCase {
     }*/
     
     func testThatBodyInUrlFormFormat() {
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: ""))
+        let endPoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.get, path: "example")
+        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: endPoint)
         apiQuery.setBodyItem("foo1", forKey: "key1")
         XCTAssertEqual(apiQuery.body(), "key1=foo1", "The body should be key1=foo1", file: __FUNCTION__, line: __LINE__)
     }
@@ -58,88 +64,89 @@ class ApiQueryTests: XCTestCase {
     }
     
     func testThatPathWithEmptyEndPointPath() {
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint())
+        let endPoint: ApiEndpoint =  ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.post, path: "")
+        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: endPoint)
         apiQuery.setPathItem("1", forKey: "key1")
         apiQuery.setPathItem("2", forKey: "key2")
         XCTAssertEqual(apiQuery.path(), "/1/2", "The path should be 1/2", file: __FUNCTION__, line: __LINE__)
     }
     
     func testThatQuery() {
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint())
-        apiQuery.setQueryItem("value1", forKey: "key1")
-        apiQuery.setQueryItem("value2", forKey: "key2")
-        XCTAssertEqual(apiQuery.query(), "key1=value1&key2=value2", "The query should be value=key", file: __FUNCTION__, line: __LINE__)
+        self.apiQuery!.setQueryItem("value1", forKey: "key1")
+        self.apiQuery!.setQueryItem("value2", forKey: "key2")
+        if let query: String = self.apiQuery!.query() {
+            XCTAssertEqual(query, "key1=value1&key2=value2", "The query should be key1=value1&key2=value2", file: __FUNCTION__, line: __LINE__)
+        } else {
+            XCTFail("The query should not be nil", file: __FUNCTION__, line: __LINE__)
+        }
     }
     
     func testThatSetCachePolicy() {
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint())
-        apiQuery.setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataElseLoad)
-        XCTAssertEqual(apiQuery.cachePolicy(), NSURLRequestCachePolicy.ReturnCacheDataElseLoad, "The cache policy should be equal to ReturnCacheDataElseLoad", file: __FUNCTION__, line: __LINE__)
+        self.apiQuery!.setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataElseLoad)
+        XCTAssertEqual(self.apiQuery!.cachePolicy(), NSURLRequestCachePolicy.ReturnCacheDataElseLoad, "The cache policy should be equal to ReturnCacheDataElseLoad", file: __FUNCTION__, line: __LINE__)
     }
     
     func testThatSetCacheStoragePolicy() {
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint())
-        apiQuery.setCacheStoragePolicy(NSURLCacheStoragePolicy.Allowed)
-        XCTAssertEqual(apiQuery.cacheStoragePolicy(), NSURLCacheStoragePolicy.Allowed, "The cache storage policy should be equal to Allowed", file: __FUNCTION__, line: __LINE__)
+        self.apiQuery!.setCacheStoragePolicy(NSURLCacheStoragePolicy.Allowed)
+        XCTAssertEqual(self.apiQuery!.cacheStoragePolicy(), NSURLCacheStoragePolicy.Allowed, "The cache storage policy should be equal to Allowed", file: __FUNCTION__, line: __LINE__)
     }
     
     func testThatSetBodyItem() {
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint())
-        apiQuery.setBodyItem("", forKey: "")
-        XCTAssert(apiQuery.bodyItems().count > 0, "The body items should have 1 more item", file: __FUNCTION__, line: __LINE__)
+        self.apiQuery!.setBodyItem("", forKey: "")
+        XCTAssert(self.apiQuery!.bodyItems().count > 0, "The body items should have 1 more item", file: __FUNCTION__, line: __LINE__)
     }
     
     func testThatSetHeader() {
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint())
-        apiQuery.setHeader("", forKey: "")
-        XCTAssert(apiQuery.httpHeaders().count > 0, "The headers should have 1 more item", file: __FUNCTION__, line: __LINE__)
+        self.apiQuery!.setHeader("", forKey: "")
+        XCTAssert(self.apiQuery!.httpHeaders().count > 0, "The headers should have 1 more item", file: __FUNCTION__, line: __LINE__)
     }
     
     func testThatSetHeaders() {
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint())
-        apiQuery.setHeaders(["": ""])
-        XCTAssert(apiQuery.httpHeaders().count > 0, "The headers should have 1 more item", file: __FUNCTION__, line: __LINE__)
+        self.apiQuery!.setHeaders(["": ""])
+        XCTAssert(self.apiQuery!.httpHeaders().count > 0, "The headers should have 1 more item", file: __FUNCTION__, line: __LINE__)
     }
     
     func testThatSetModelsPath() {
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint())
-        apiQuery.setModelsPath("model.test")
-        XCTAssertEqual(apiQuery.modelsPath(), "model.test", "The models path should be equal to model.test", file: __FUNCTION__, line: __LINE__)
+        self.apiQuery!.setModelsPath("model.test")
+        XCTAssertEqual(self.apiQuery!.modelsPath(), "model.test", "The models path should be equal to model.test", file: __FUNCTION__, line: __LINE__)
     }
     
     func testThatSetPathItem() {
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint())
-        apiQuery.setPathItem("", forKey: "")
-        XCTAssert(apiQuery.pathItems().count > 0, "The path items should have 1 more item", file: __FUNCTION__, line: __LINE__)
+        self.apiQuery!.setPathItem("", forKey: "")
+        XCTAssert(self.apiQuery!.pathItems().count > 0, "The path items should have 1 more item", file: __FUNCTION__, line: __LINE__)
     }
     
     func testThatSetPathItems() {
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint())
-        apiQuery.setPathItem("1", forKey: "key1")
-        apiQuery.setPathItem("2", forKey: "key2")
-        apiQuery.setPathItems(["key3": "3"])
-        XCTAssertEqual(apiQuery.path(), "/1/2/3", "The path should be /1/2/3", file: __FUNCTION__, line: __LINE__)
+        self.apiQuery!.setPathItem("1", forKey: "key1")
+        self.apiQuery!.setPathItem("2", forKey: "key2")
+        self.apiQuery!.setPathItems(["key3": "3"])
+        XCTAssertEqual(self.apiQuery!.path(), "example/1/2/3", "The path should be example/1/2/3", file: __FUNCTION__, line: __LINE__)
     }
     
     func testThatSetQueryItems() {
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint())
-        apiQuery.setQueryItem("value1", forKey: "key1")
-        apiQuery.setQueryItem("value2", forKey: "key2")
-        apiQuery.setQueryItems(["key3": "value3"])
-        XCTAssertEqual(apiQuery.query(), "key1=value1&key2=value2&key3=value3", "The query should be value=key", file: __FUNCTION__, line: __LINE__)
+        self.apiQuery!.setQueryItem("value1", forKey: "key1")
+        self.apiQuery!.setQueryItem("value2", forKey: "key2")
+        self.apiQuery!.setQueryItems(["key3": "value3"])
+        if let query: String = self.apiQuery!.query() {
+            XCTAssertEqual(query, "key1=value1&key2=value2&key3=value3", "The query should be key1=value1&key2=value2&key3=value3", file: __FUNCTION__, line: __LINE__)
+        } else {
+            XCTFail("The query should not be nil", file: __FUNCTION__, line: __LINE__)
+        }
     }
     
     func testThatSetQueryItemsWithAnyObjects() {
         let parameters: Dictionary<String, AnyObject> = ["foo": "bar", "baz": ["a", 1], "qux": ["x": 1, "y": 2, "z": 3]]
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint())
-        apiQuery.setQueryItems(parameters)
-        XCTAssertEqual(apiQuery.query(), "qux[z]=3&qux[x]=1&qux[y]=2&baz[0]=a&baz[1]=1&foo=bar", "The query should be qux[z]=3&qux[x]=1&qux[y]=2&baz[0]=a&baz[1]=1&foo=bar", file: __FUNCTION__, line: __LINE__)
+        self.apiQuery!.setQueryItems(parameters)
+        if let query: String = self.apiQuery!.query() {
+            XCTAssertEqual(query, "baz[0]=a&baz[1]=1&foo=bar&qux[z]=3&qux[x]=1&qux[y]=2", "The query should be baz[0]=a&baz[1]=1&foo=bar&qux[z]=3&qux[x]=1&qux[y]=2", file: __FUNCTION__, line: __LINE__)
+        } else {
+            XCTFail("The query should not be nil", file: __FUNCTION__, line: __LINE__)
+        }
     }
 
     func testThatSetResponseType() {
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint())
-        apiQuery.setResponseType(ResponseType.dictionary)
-        XCTAssert(apiQuery.response() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
+        self.apiQuery!.setResponseType(ResponseType.dictionary)
+        XCTAssert(self.apiQuery!.response() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
     }
     
 }

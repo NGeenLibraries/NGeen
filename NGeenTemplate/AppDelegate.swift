@@ -20,13 +20,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window!.makeKeyAndVisible()
         let headers: Dictionary<String, String> = ["X-Parse-Application-Id": "BgJnryEVJitvxnMKKMjJyMm6vrBwIgDFAARtVqXn", "X-Parse-REST-API-Key": "euJT7bCipxE82sx5j6L8sHTFXm0HxNUiiBvR03ug"]
         let apiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "api.parse.com", scheme: "https")
-        let taskEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Task")
-        let exampleEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Example")
+        let taskEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.get, path: "/1/classes/Task")
         ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
         ApiStore.defaultStore().setCacheStoragePolicy(NSURLCacheStoragePolicy.Allowed)
         ApiStore.defaultStore().setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataElseLoad)
         ApiStore.defaultStore().setEndpoint(taskEndpoint)
-        ApiStore.defaultStore().setEndpoint(exampleEndpoint)
         ApiStore.defaultStore().setModelsPath("results")
         ApiStore.defaultStore().setResponseType(ResponseType.models)
         let parameters = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]

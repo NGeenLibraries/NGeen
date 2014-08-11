@@ -157,6 +157,13 @@ enum HttpMethod: String {
 ### POST Request
 
 ```swift
+let parameters = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]       apiQuery.setBodyItems(parameters)
+apiQuery.create(completionHandler: {(object, error) in
+ })
+```
+#### With Parameters
+
+```swift
 let parameters = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]
 apiQuery.create(parameters, completionHandler: {(object, error) in
  })
