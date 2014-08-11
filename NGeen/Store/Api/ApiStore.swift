@@ -128,9 +128,12 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func createQueryForPath(path: String, httpMethod method: HttpMethod, server name: String) -> ApiQuery {
-        println(self.endPoints)
         if let endPoints: NSDictionary = self.endPoints[name] as? NSDictionary {
-            return ApiQuery(configuration: self.configurationForKey(name), endPoint: endPoints[ApiEndpoint.keyForPath(path, httpMethod: method)] as ApiEndpoint)
+            if let endPoint: ApiEndpoint = endPoints[ApiEndpoint.keyForPath(path, httpMethod: method)] as? ApiEndpoint {
+                return ApiQuery(configuration: self.configurationForKey(name), endPoint: endPoint)
+            } else {
+                assert(false, "The endpoint can't be null", file: __FILE__, line: __LINE__)
+            }
         } else {
             assert(false, "The endpoint can't be null", file: __FILE__, line: __LINE__)
         }

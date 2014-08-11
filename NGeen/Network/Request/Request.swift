@@ -76,6 +76,10 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionTaskDelegate {
         self.url = url
     }
 
+    deinit {
+        self.session.invalidateAndCancel()
+    }
+    
 // MARK: Intance methods
     
     /**

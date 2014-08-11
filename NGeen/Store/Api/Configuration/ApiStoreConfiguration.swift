@@ -24,11 +24,10 @@ import UIKit
 
 class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
 
-    var bodyItems: NSMutableDictionary
+    var bodyItems: [String: AnyObject]
     var cachePolicy: NSURLRequestCachePolicy
     var cacheStoragePolicy: NSURLCacheStoragePolicy
     var configurations: Dictionary<String, ConfigurationStoreProtocol>
-    var contentType: ContentType?
     var credential: NSURLCredential?
     var headers: Dictionary<String, String>
     var host: String
@@ -43,7 +42,7 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
 //MARK: Constructor
     
     override init() {
-        self.bodyItems = NSMutableDictionary.dictionary()
+        self.bodyItems = Dictionary()
         self.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData
         self.cacheStoragePolicy = NSURLCacheStoragePolicy.NotAllowed
         self.configurations = Dictionary<String, ConfigurationStoreProtocol>()
