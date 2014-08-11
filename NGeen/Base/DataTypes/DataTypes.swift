@@ -50,7 +50,7 @@ enum HttpScheme: String {
 
 //MARK: Closure response
 
-typealias NGeenClosure = (object: AnyObject?, error : NSError?) -> (Void)
+typealias NGeenClosure = ((object: AnyObject?, error : NSError?) -> Void)?
 
 //MARK: Database types
 
