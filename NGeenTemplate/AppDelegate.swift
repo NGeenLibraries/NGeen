@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //ApiStore.defaultStore().setBodyItem("jorge", forKey: "type")
         let apiQuery = ApiStore.defaultStore().createQueryForPath("/post", httpMethod: HttpMethod.post)
         ApiStore.defaultStore().setAuthenticationCredentials("foo", password: "bar")
-        apiQuery.upload("Lorem ipsum dolor sit amet".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false), uploadProgress: nil, completionHandler: {(error) in
+        apiQuery.upload("Lorem ipsum dolor sit amet".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false), progress: nil, completionHandler: {(error) in
             println("DONE")
         })
         
