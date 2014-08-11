@@ -34,6 +34,21 @@ class RequestTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
+    
+    func testThatDownload() {
+        let docsDir: String = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
+        let destination: NSURL = NSURL(fileURLWithPath: "\(docsDir)/download.txt")
+        let URL: NSURL = NSURL(string: "http://httpbin.org/stream/\(100)")
+        let expectation: XCTestExpectation = expectationWithDescription(URL.description)
+        let request: Request = Request(httpMethod: HttpMethod.get.toRaw(), url: URL)
+        request.download(destination, progress: nil, completionHandler: {(error) in
+            expectation.fulfill()
+            var isDirectory: UnsafeMutablePointer<ObjCBool> = nil
+            NSFileManager.defaultManager().fileExistsAtPath(destination.description, isDirectory: isDirectory)
+            XCTAssert(isDirectory == nil, "The file should exists", file: __FUNCTION__, line: __LINE__)
+        })
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
 
     func testThatHttpHeaders() {
         let request: Request = Request(httpMethod: HttpMethod.get.toRaw(), url: kTestUrl)

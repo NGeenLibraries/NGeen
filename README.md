@@ -175,6 +175,15 @@ Depends of the configuration setted in the api store config the body should be e
 - MultiPart form
 
 
+### Downloading a File
+
+```swift
+apiQuery.download(destination, progress: {(bytesRead, totalBytesRead, totalBytesExpectedToRead) in
+    println(bytesRead)
+ }, completionHandler: {(error) in
+    println("DONE!!")
+})
+```
 ### Parameter Encoding
 
 ```swift

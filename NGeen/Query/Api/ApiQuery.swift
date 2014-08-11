@@ -121,6 +121,19 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
+    * The function download a file from url
+    *
+    * @param destination The destination to store the file.
+    * @params progress The closure to track the download progress.
+    * @param completionHandler The closure to be called when the function end.
+    */
+    
+    func download(destination: NSURL, progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+        let request: Request = Request(httpMethod: self.endPoint.httpMethod!.toRaw(), url: self.urlComponents.URL)
+        request.download(destination, progress: progress, completionHandler: closure)
+    }
+    
+    /**
     * The function set the cache storage policy for a server configuration
     *
     * @param policy The cache policy.
@@ -596,7 +609,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
         self.configureRequest(&request)
         request.sendAsynchronous(completionHandler: {(data, urlResponse, error) in
             if closure != nil {
-                closure(object: self.response(data), error: error)
+                closure?(object: self.response(data), error: error)
             }
         })
     }

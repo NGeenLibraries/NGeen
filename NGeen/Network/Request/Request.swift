@@ -23,12 +23,16 @@
 import Foundation
 import UIKit
 
-class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionTaskDelegate {
+class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate {
     
+    private var closure: ((NSError!) -> Void)?
+    private var destination: NSURL?
     private var headers: Dictionary<String, AnyObject>
+    private var progress: NSProgress?
+    private var progressClosure: ((Int64!, Int64!, Int64!) -> Void)?
     private var queue: dispatch_queue_t?
     private var request: NSMutableURLRequest?
-    private var session: NSURLSession
+    private var session: NSURLSession?
     private var sessionConfiguration: NSURLSessionConfiguration
     
     var body: NSData = NSData()
@@ -66,8 +70,8 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionTaskDelegate {
         self.sessionConfiguration.requestCachePolicy = NSURLRequestCachePolicy.ReturnCacheDataElseLoad
         self.sessionConfiguration.timeoutIntervalForRequest = 30
         self.sessionConfiguration.timeoutIntervalForResource = 30
-        self.session = NSURLSession(configuration: self.sessionConfiguration)
         super.init()
+        self.session = NSURLSession(configuration: self.sessionConfiguration, delegate: self, delegateQueue: NSOperationQueue.mainQueue())
     }
     
     convenience init(httpMethod: String, url: NSURL)  {
@@ -77,10 +81,27 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionTaskDelegate {
     }
 
     deinit {
-        self.session.invalidateAndCancel()
+        self.session!.invalidateAndCancel()
     }
     
 // MARK: Intance methods
+    
+    /**
+    * The function download a file from url
+    *
+    * @param destination The destination to store the file.
+    * @params progress The closure to track the download progress.
+    * @param completionHandler The closure to be called when the function end.
+    */
+    
+    func download(destination: NSURL, progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+        assert(destination != nil, "The destination should have a value", file: __FUNCTION__, line: __LINE__)
+        self.closure = closure
+        self.destination = destination
+        self.progressClosure = progress
+        let downloadTask: NSURLSessionDownloadTask = self.session!.downloadTaskWithURL(self.url)
+        downloadTask.resume()
+    }
     
     /**
     * The function return the http headers setted to the request
@@ -116,7 +137,7 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionTaskDelegate {
             }
             self.request!.HTTPBody = self.body
             self.request!.HTTPMethod = self.httpMethod
-            let sessionDataTask: NSURLSessionDataTask = self.session.dataTaskWithRequest(self.request, completionHandler: {(data, urlResponse, error) in
+            let sessionDataTask: NSURLSessionDataTask = self.session!.dataTaskWithRequest(self.request, completionHandler: {(data, urlResponse, error) in
                 if !error && self.cacheStoragePolicy != NSURLCacheStoragePolicy.NotAllowed {
                     DiskCache.defaultCache().storeData(NSPurgeableData(data: data), forUrl: self.url, completionHandler: nil)
                 }
@@ -137,7 +158,7 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionTaskDelegate {
     */
     
     func setAuthenticationCredential(credential: NSURLCredential, forProtectionSpace protectionSpace: NSURLProtectionSpace) {
-        self.session.configuration.URLCredentialStorage.setCredential(credential, forProtectionSpace: protectionSpace)
+        self.session!.configuration.URLCredentialStorage.setCredential(credential, forProtectionSpace: protectionSpace)
     }
     
     /**
@@ -152,6 +173,20 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionTaskDelegate {
     func setValue(value: String, forHTTPHeaderField field: String) {
         self.request!.setValue(value, forHTTPHeaderField: field)
         self.headers[field] = value
+    }
+    
+//MARK: NSURLSessionDownloadTask delegate
+    
+    func URLSession(session: NSURLSession!, downloadTask: NSURLSessionDownloadTask!, didFinishDownloadingToURL location: NSURL!) {
+        var error: NSError?
+        NSFileManager.defaultManager().moveItemAtURL(location, toURL: self.destination, error: &error)
+        self.closure?(error)
+    }
+
+    func URLSession(session: NSURLSession!, downloadTask: NSURLSessionDownloadTask!, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        self.progressClosure?(bytesWritten, totalBytesWritten, totalBytesExpectedToWrite)
+        self.progress?.totalUnitCount = totalBytesExpectedToWrite
+        self.progress?.completedUnitCount = totalBytesWritten
     }
     
 }
