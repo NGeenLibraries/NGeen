@@ -176,7 +176,13 @@ Depends of the configuration setted in the api store config the body should be e
 - MultiPart form
 
 
-### Downloading a File
+### Downloading 
+
+Supported Upload Types
+
+- Resume Data
+
+#### Downloading a File
 
 ```swift
 apiQuery.download(destination, uploadProgres: {(bytesRead, totalBytesRead, totalBytesExpectedToRead) in
@@ -186,7 +192,16 @@ apiQuery.download(destination, uploadProgres: {(bytesRead, totalBytesRead, total
 })
 ```
 
-### Uploading a File 
+### Uploading 
+
+Supported Upload Types
+
+- File
+- Data
+- Stream
+
+#### Uploading a File 
+
 
 ```swift
 let data = "Lorem ipsum dolor sit amet".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
