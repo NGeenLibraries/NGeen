@@ -92,11 +92,11 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate,
     * The function download a file from url
     *
     * @param destination The destination to store the file.
-    * @params progress The closure to track the download progress.
+    * @params handler The closure to track the download progress.
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func download(destination: NSURL, downloadProgress progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+    func download(destination: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
         assert(destination != nil, "The destination should have a value", file: __FUNCTION__, line: __LINE__)
         self.closure = closure
         self.destination = destination
@@ -181,11 +181,11 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate,
     * The function upload a file to url
     *
     * @param data The data to upload.
-    * @params progress The closure to track the upload progress.
+    * @params handler The closure to track the upload progress.
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(data: AnyObject, uploadType type: UploadType, uploadProgress progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+    func upload(data: AnyObject, uploadType type: UploadType, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
         self.closure = closure
         self.progressClosure = progress
         self.request!.HTTPMethod = self.httpMethod!

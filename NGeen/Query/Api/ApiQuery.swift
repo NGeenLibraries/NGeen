@@ -148,13 +148,13 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     * The function set to the request the parameters to download a object
     *
     * @param destination The destination to store the file.
-    * @params progress The closure to track the download progress.
+    * @params handler The closure to track the download progress.
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func download(destination: NSURL, progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+    func download(destination: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
         let request: Request = Request(httpMethod: self.endPoint.httpMethod!.toRaw(), url: self.urlComponents.URL)
-        request.download(destination, downloadProgress: progress, completionHandler: closure)
+        request.download(destination, progress: handler, completionHandler: closure)
     }
     
     /**
@@ -419,36 +419,36 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     * The function set to the request the parameters to upload a file
     *
     * @param data The data to upload.
-    * @params progress The closure to track the upload progress.
+    * @params handler The closure to track the upload progress.
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(data: NSData, uploadProgress progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
-        self.upload(data, uploadType: UploadType.data, uploadProgress: progress, completionHandler: closure)
+    func upload(data: NSData, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+        self.upload(data, uploadType: UploadType.data, progress: handler, completionHandler: closure)
     }
     
     /**
     * The function set to the request the parameters to upload a file
     *
     * @param file The url of the file to upload.
-    * @params progress The closure to track the upload progress.
+    * @params handler The handler to track the upload progress.
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(file: NSURL, uploadProgress progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
-        self.upload(file, uploadType: UploadType.file, uploadProgress: progress, completionHandler: closure)
+    func upload(file: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+        self.upload(file, uploadType: UploadType.file, progress: handler, completionHandler: closure)
     }
     
     /**
     * The function set to the request the parameters to upload a stream
     *
     * @param stream The stream to upload.
-    * @params progress The closure to track the upload progress.
+    * @params handler The handler to track the upload progress.
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(stream: NSInputStream, uploadProgress progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
-        self.upload(stream, uploadType: UploadType.stream, uploadProgress: progress, completionHandler: closure)
+    func upload(stream: NSInputStream, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+        self.upload(stream, uploadType: UploadType.stream, progress: handler, completionHandler: closure)
     }
     
 // MARK: Persistence Protocol
@@ -675,14 +675,14 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     *
     * @param data The data to upload.
     * @params type The type of the upload.
-    * @params progress The closure to track the upload progress.
+    * @params handler The closure to track the upload progress.
     * @param completionHandler The closure to be called when the function end.
     */
     
-    private func upload(data: AnyObject, uploadType type: UploadType ,uploadProgress progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+    private func upload(data: AnyObject, uploadType type: UploadType , progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
         assert(data != nil, "The file can't be nil", file: __FUNCTION__, line: __LINE__)
         let request: Request = Request(httpMethod: self.endPoint.httpMethod!.toRaw(), url: self.urlComponents.URL)
-        request.upload(data, uploadType: type, uploadProgress: progress, completionHandler: closure)
+        request.upload(data, uploadType: type, progress: handler, completionHandler: closure)
     }
     
 //MARK: Request delegate
