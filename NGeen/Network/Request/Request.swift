@@ -25,10 +25,11 @@ import UIKit
 
 class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate {
     
+    private var bodyStream: NSInputStream?
     private var closure: ((NSError!) -> Void)?
     private var destination: NSURL?
     private var headers: Dictionary<String, AnyObject>
-    private var progress: NSProgress?
+    private var progress: NSProgress
     private var progressClosure: ((Int64!, Int64!, Int64!) -> Void)?
     private var queue: dispatch_queue_t?
     private var request: NSMutableURLRequest?
@@ -66,6 +67,7 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate,
         self.headers = Dictionary()
         self.queue = dispatch_queue_create("com.ngeen.requestqueue", DISPATCH_QUEUE_CONCURRENT)
         dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
+        self.progress = NSProgress()
         self.sessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
         self.sessionConfiguration.requestCachePolicy = NSURLRequestCachePolicy.ReturnCacheDataElseLoad
         self.sessionConfiguration.timeoutIntervalForRequest = 30
@@ -94,7 +96,7 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate,
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func download(destination: NSURL, progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+    func download(destination: NSURL, downloadProgress progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
         assert(destination != nil, "The destination should have a value", file: __FUNCTION__, line: __LINE__)
         self.closure = closure
         self.destination = destination
@@ -175,6 +177,34 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate,
         self.headers[field] = value
     }
     
+    /**
+    * The function upload a file to url
+    *
+    * @param data The data to upload.
+    * @params progress The closure to track the upload progress.
+    * @param completionHandler The closure to be called when the function end.
+    */
+    
+    func upload(data: AnyObject, uploadType type: UploadType, uploadProgress progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+        self.closure = closure
+        self.progressClosure = progress
+        self.request!.HTTPMethod = self.httpMethod!
+        var uploadTask: NSURLSessionUploadTask!
+        switch type {
+            case .data:
+                uploadTask = self.session!.uploadTaskWithRequest(self.request, fromData: data as NSData)
+            case .file:
+                uploadTask = self.session!.uploadTaskWithRequest(self.request, fromFile: data as NSURL)
+            case .stream:
+                self.bodyStream = data as? NSInputStream
+                uploadTask = self.session!.uploadTaskWithStreamedRequest(NSURLRequest())
+            default:
+                return 
+        }
+        uploadTask.resume()
+    }
+
+    
 //MARK: NSURLSessionDownloadTask delegate
     
     func URLSession(session: NSURLSession!, downloadTask: NSURLSessionDownloadTask!, didFinishDownloadingToURL location: NSURL!) {
@@ -185,8 +215,26 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate,
 
     func URLSession(session: NSURLSession!, downloadTask: NSURLSessionDownloadTask!, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         self.progressClosure?(bytesWritten, totalBytesWritten, totalBytesExpectedToWrite)
-        self.progress?.totalUnitCount = totalBytesExpectedToWrite
-        self.progress?.completedUnitCount = totalBytesWritten
+        self.progress.totalUnitCount = totalBytesExpectedToWrite
+        self.progress.completedUnitCount = totalBytesWritten
+    }
+   
+//MARK: NSURLSession delegate
+   
+    func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didCompleteWithError error: NSError!) {
+        if self.request?.HTTPMethod == HttpMethod.post.toRaw() {
+            self.closure?(error)
+        }
+    }
+    
+    func URLSession(session: NSURLSession!, task: NSURLSessionTask!, needNewBodyStream completionHandler: ((NSInputStream!) -> Void)!) {
+        completionHandler(self.bodyStream)
+    }
+    
+    func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+        self.progressClosure?(bytesSent, totalBytesSent, totalBytesExpectedToSend)
+        self.progress.totalUnitCount = totalBytesExpectedToSend
+        self.progress.completedUnitCount = totalBytesSent
     }
     
 }

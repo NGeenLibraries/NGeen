@@ -41,7 +41,7 @@ class RequestTests: XCTestCase {
         let URL: NSURL = NSURL(string: "http://httpbin.org/stream/\(100)")
         let expectation: XCTestExpectation = expectationWithDescription(URL.description)
         let request: Request = Request(httpMethod: HttpMethod.get.toRaw(), url: URL)
-        request.download(destination, progress: nil, completionHandler: {(error) in
+        request.download(destination, downloadProgress: nil, completionHandler: {(error) in
             expectation.fulfill()
             var isDirectory: UnsafeMutablePointer<ObjCBool> = nil
             NSFileManager.defaultManager().fileExistsAtPath(destination.description, isDirectory: isDirectory)
@@ -101,4 +101,15 @@ class RequestTests: XCTestCase {
         XCTAssert(request.httpHeaders().count > 0, "The headers should have 1 more item", file: __FUNCTION__, line: __LINE__)
     }
 
+    func testThatUpload() {
+        let URL: NSURL = NSURL(string: "http://httpbin.org/post")
+        let data: NSData = "Lorem ipsum dolor sit amet".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+        let expectation: XCTestExpectation = expectationWithDescription(URL.description)
+        let request: Request = Request(httpMethod: HttpMethod.post.toRaw(), url: URL)
+        request.upload(data, uploadType: UploadType.data, uploadProgress: nil, completionHandler: {(error) in
+            XCTAssertNil(error, "error should be nil", file: __FUNCTION__, line: __LINE__)
+            expectation.fulfill()
+        })
+        waitForExpectationsWithTimeout(10, handler: nil)
+    }
 }

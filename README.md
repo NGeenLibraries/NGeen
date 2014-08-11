@@ -157,7 +157,8 @@ enum HttpMethod: String {
 ### POST Request
 
 ```swift
-let parameters = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]       apiQuery.setBodyItems(parameters)
+let parameters = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]  
+apiQuery.setBodyItems(parameters)
 apiQuery.create(completionHandler: {(object, error) in
  })
 ```
@@ -178,10 +179,21 @@ Depends of the configuration setted in the api store config the body should be e
 ### Downloading a File
 
 ```swift
-apiQuery.download(destination, progress: {(bytesRead, totalBytesRead, totalBytesExpectedToRead) in
+apiQuery.download(destination, uploadProgres: {(bytesRead, totalBytesRead, totalBytesExpectedToRead) in
     println(bytesRead)
  }, completionHandler: {(error) in
     println("DONE!!")
+})
+```
+
+### Uploading a File 
+
+```swift
+let data = "Lorem ipsum dolor sit amet".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+apiQuery.upload(data, uploadProgress: {(bytesWriten, totalBytesWriten, totalBytesExpectedToWrite) in
+    println(bytesRead)
+ }, completionHandler: {(error) in
+	println("DONE")
 })
 ```
 ### Parameter Encoding
