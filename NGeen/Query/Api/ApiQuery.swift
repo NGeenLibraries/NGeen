@@ -145,6 +145,20 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
+    * The function set the http method and call the startRequest function
+    *
+    * @params parameters The parameters for the query.
+    * @param completionHandler The closure to be called when the function end.
+    *
+    */
+    
+    func delete(parameters: Dictionary<String, String>, completionHandler closure: NGeenClosure) {
+        self.setQueryItems(parameters)
+        self.endPoint.httpMethod = HttpMethod.delete
+        self.startRequest(closure)
+    }
+    
+    /**
     * The function set to the request the parameters to download a object
     *
     * @param destination The destination to store the file.
@@ -155,6 +169,31 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     func download(destination: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
         let request: Request = Request(httpMethod: self.endPoint.httpMethod!.toRaw(), url: self.urlComponents.URL)
         request.download(destination, progress: handler, completionHandler: closure)
+    }
+    
+    /**
+    * The function set the http method and call the startRequest function
+    *
+    * @param completionHandler The closure to be called when the function end.
+    *
+    */
+    
+    func head(completionHandler closure: NGeenClosure) {
+        self.endPoint.httpMethod = HttpMethod.head
+        self.startRequest(closure)
+    }
+    
+    /**
+    * The function set the http method and call the startRequest function
+    *
+    * @param completionHandler The closure to be called when the function end.
+    *
+    */
+    
+    func head(parameters: [String: AnyObject], completionHandler closure: NGeenClosure) {
+        self.endPoint.httpMethod = HttpMethod.head
+        self.setQueryItems(parameters)
+        self.startRequest(closure)
     }
     
     /**
@@ -194,6 +233,31 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
+    * The function set the http method and call the startRequest function
+    *
+    * @param completionHandler The closure to be called when the function end.
+    *
+    */
+    
+    func patch(completionHandler closure: NGeenClosure) {
+        self.endPoint.httpMethod = HttpMethod.patch
+        self.startRequest(closure)
+    }
+    
+    /**
+    * The function set the http method and call the startRequest function
+    *
+    * @param completionHandler The closure to be called when the function end.
+    *
+    */
+    
+    func patch(parameters: [String: AnyObject], completionHandler closure: NGeenClosure) {
+        self.__config!.bodyItems += parameters
+        self.endPoint.httpMethod = HttpMethod.patch
+        self.startRequest(closure)
+    }
+    
+    /**
     * The function return the full path for the components
     *
     * @param no need params.
@@ -220,14 +284,14 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     /**
     * The function set the http method and call the startRequest function
     *
-    * @params parameters The parameters for the body.
+    * @params parameters The parameters for the query.
     * @param completionHandler The closure to be called when the function end.
     *
     */
     
     func read(parameters: Dictionary<String, String>, completionHandler closure: NGeenClosure) {
-        self.setQueryItems(parameters)
         self.endPoint.httpMethod = HttpMethod.get
+        self.setQueryItems(parameters)
         self.startRequest(closure)
     }
     
@@ -411,7 +475,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     
     func update(parameters: Dictionary<String, AnyObject>, completionHandler closure: NGeenClosure) {
         self.__config!.bodyItems += parameters
-        self.endPoint.httpMethod = HttpMethod.post
+        self.endPoint.httpMethod = HttpMethod.put
         self.startRequest(closure)
     }
     
