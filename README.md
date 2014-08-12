@@ -103,6 +103,7 @@ ApiStore.defaultStore().setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataEl
 ```swift 
 let taskEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Task")
 let exampleEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Example")
+ApiStore.defaultStore().setEndpoints([taskEndpoint, exampleEndpoint])
 ```
 
 #### Setting models serialization from server response
