@@ -205,6 +205,18 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate,
     
 //MARK: NSURLSessionDownloadTask delegate
     
+    func URLSession(session: NSURLSession!, didReceiveChallenge challenge: NSURLAuthenticationChallenge!, completionHandler: ((NSURLSessionAuthChallengeDisposition, NSURLCredential!) -> Void)!) {
+        var disposition: NSURLSessionAuthChallengeDisposition = .PerformDefaultHandling
+        var credential: NSURLCredential?
+        if false {
+            
+        } else {
+            credential = NSURLCredential(forTrust: challenge.protectionSpace.serverTrust)
+            disposition = .UseCredential
+        }
+        completionHandler(disposition, credential)
+    }
+    
     func URLSession(session: NSURLSession!, downloadTask: NSURLSessionDownloadTask!, didFinishDownloadingToURL location: NSURL!) {
         var error: NSError?
         NSFileManager.defaultManager().moveItemAtURL(location, toURL: self.destination, error: &error)
@@ -216,7 +228,7 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate,
     }
    
 //MARK: NSURLSession delegate
-   
+    
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didCompleteWithError error: NSError!) {
         if self.request?.HTTPMethod == HttpMethod.post.toRaw() {
             self.closure?(error)

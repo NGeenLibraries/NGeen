@@ -25,24 +25,18 @@ import UIKit
 class ApiStore: NSObject, ConfigurableStoreProtocol {
     
     internal var configurations: Dictionary<String, ConfigurationStoreProtocol>
-    private var __endPoints: NSMutableDictionary
     private struct Static {
         static var instace: ApiStore? = nil
         static var token: dispatch_once_t = 0
     }
-    
-    var endPoints: NSMutableDictionary {
-        get {
-            return __endPoints
-        }
-    }
+    private(set) var endPoints: NSMutableDictionary
     
 //MARK: Constructor
     
     init(config: ConfigurationStoreProtocol) {
         self.configurations = Dictionary<String, ConfigurationStoreProtocol>()
         self.configurations[kDefaultServerName] = config
-        self.__endPoints = NSMutableDictionary.dictionary()
+        self.endPoints = NSMutableDictionary.dictionary()
     }
     
 // MARK: Configurable store protocol
@@ -364,6 +358,19 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     }
     
     /**
+    * The function set the authentication credentials for the default server configuration
+    *
+    * @param user The user to the credential.
+    * @param password The password to the credential.
+    * @param method The authentication method for the session.
+    *
+    */
+    
+    func setAuthenticationCredentials(user: String, password: String, authenticationMethod method: String) {
+        self.setAuthenticationCredentials(user, password: password, authenticationMethod: method, forServer: kDefaultServerName)
+    }
+    
+    /**
     * The function set the authentication credentials for a given server configuration
     *
     * @param user The user to the credential.
@@ -378,6 +385,24 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
         configuration.protectionSpace = NSURLProtectionSpace(host: configuration.host, port: 0, `protocol`: configuration.scheme, realm: nil, authenticationMethod: NSURLAuthenticationMethodHTTPBasic)
         self.setConfiguration(configuration, forKey: server)
     }
+    
+    /**
+    * The function set the authentication credentials for a given server configuration
+    *
+    * @param user The user to the credential.
+    * @param password The password to the credential.
+    * @param method The authentication method for the session.
+    * @param server The name of the server to store the configuration.
+    *
+    */
+    
+    func setAuthenticationCredentials(user: String, password: String, authenticationMethod method: String, forServer server: String) {
+        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
+        configuration.credential = NSURLCredential(user: user, password: password, persistence: NSURLCredentialPersistence.ForSession)
+        configuration.protectionSpace = NSURLProtectionSpace(host: configuration.host, port: 0, `protocol`: configuration.scheme, realm: nil, authenticationMethod: method)
+        self.setConfiguration(configuration, forKey: server)
+    }
+
     
     /**
     * The function set the cache request policy for the default server configuration
@@ -454,7 +479,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
         } else {
             var serverEndpoints: NSMutableDictionary = NSMutableDictionary.dictionary()
             serverEndpoints.setObject(endpoint, forKey: endpoint.key())
-            self.__endPoints[server] = serverEndpoints
+            self.endPoints[server] = serverEndpoints
         }
     }
     
