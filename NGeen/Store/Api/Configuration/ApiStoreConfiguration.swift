@@ -63,6 +63,11 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
         self.scheme = scheme
     }
 
+    convenience init(host: String, scheme: String) {
+        self.init()
+        self.host = host
+        self.scheme = scheme
+    }
     
 // MARK: Class methods
     
