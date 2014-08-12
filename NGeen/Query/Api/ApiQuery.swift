@@ -131,34 +131,6 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
-    * The function set the http method and call the startRequest function
-    *
-    * @params parameters The parameters for the body.
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func create(parameters: Dictionary<String, AnyObject>, completionHandler closure: NGeenClosure) {
-        self.__config!.bodyItems += parameters
-        self.endPoint.httpMethod = HttpMethod.post
-        self.startRequest(closure)
-    }
-    
-    /**
-    * The function set the http method and call the startRequest function
-    *
-    * @params parameters The parameters for the query.
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func delete(parameters: Dictionary<String, String>, completionHandler closure: NGeenClosure) {
-        self.setQueryItems(parameters)
-        self.endPoint.httpMethod = HttpMethod.delete
-        self.startRequest(closure)
-    }
-    
-    /**
     * The function set to the request the parameters to download a object
     *
     * @param destination The destination to store the file.
@@ -172,28 +144,41 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
-    * The function set the http method and call the startRequest function
+    * The function execute the request
     *
     * @param completionHandler The closure to be called when the function end.
     *
     */
     
-    func head(completionHandler closure: NGeenClosure) {
-        self.endPoint.httpMethod = HttpMethod.head
-        self.startRequest(closure)
+    func execute(completionHandler closure: NGeenClosure) {
+        assert(self.urlComponents.URL != nil, "The url cant be null", file: __FUNCTION__, line: __LINE__)
+        var request: Request = Request(httpMethod: self.endPoint.httpMethod!.toRaw(), url: self.urlComponents.URL)
+        self.configureRequest(&request)
+        request.sendAsynchronous(completionHandler: {(data, urlResponse, error) in
+            if closure != nil {
+                closure?(object: self.response(data), error: error)
+            }
+        })
     }
     
     /**
-    * The function set the http method and call the startRequest function
+    * The function execute the request
     *
+    * @params parameters The parameters for the request.
     * @param completionHandler The closure to be called when the function end.
     *
     */
     
-    func head(parameters: [String: AnyObject], completionHandler closure: NGeenClosure) {
-        self.endPoint.httpMethod = HttpMethod.head
-        self.setQueryItems(parameters)
-        self.startRequest(closure)
+    func execute(parameters: Dictionary<String, String>, completionHandler closure: NGeenClosure) {
+        switch self.endPoint.httpMethod! {
+            case .delete, .get, .head:
+                self.setQueryItems(parameters)
+            case .patch, .post, .put:
+                self.__config!.bodyItems += parameters
+            default:
+                assert(false, "Invalid http method", file: __FILE__, line: __LINE__)
+        }
+        self.execute(completionHandler: closure)
     }
     
     /**
@@ -233,31 +218,6 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
-    * The function set the http method and call the startRequest function
-    *
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func patch(completionHandler closure: NGeenClosure) {
-        self.endPoint.httpMethod = HttpMethod.patch
-        self.startRequest(closure)
-    }
-    
-    /**
-    * The function set the http method and call the startRequest function
-    *
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func patch(parameters: [String: AnyObject], completionHandler closure: NGeenClosure) {
-        self.__config!.bodyItems += parameters
-        self.endPoint.httpMethod = HttpMethod.patch
-        self.startRequest(closure)
-    }
-    
-    /**
     * The function return the full path for the components
     *
     * @param no need params.
@@ -279,20 +239,6 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     
     func query() -> String? {
         return self.urlComponents.query
-    }
-    
-    /**
-    * The function set the http method and call the startRequest function
-    *
-    * @params parameters The parameters for the query.
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func read(parameters: Dictionary<String, String>, completionHandler closure: NGeenClosure) {
-        self.endPoint.httpMethod = HttpMethod.get
-        self.setQueryItems(parameters)
-        self.startRequest(closure)
     }
     
     /**
@@ -466,20 +412,6 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
-    * The function set the http method and call the startRequest function
-    *
-    * @params parameters The parameters for the body.
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func update(parameters: Dictionary<String, AnyObject>, completionHandler closure: NGeenClosure) {
-        self.__config!.bodyItems += parameters
-        self.endPoint.httpMethod = HttpMethod.put
-        self.startRequest(closure)
-    }
-    
-    /**
     * The function set to the request the parameters to upload a file
     *
     * @param data The data to upload.
@@ -513,56 +445,6 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     
     func upload(stream: NSInputStream, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
         self.upload(stream, uploadType: UploadType.stream, progress: handler, completionHandler: closure)
-    }
-    
-// MARK: Persistence Protocol
-    
-    /**
-    * The function set the http method and call the startRequest function
-    *
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func create(completionHandler closure: NGeenClosure) {
-        self.endPoint.httpMethod = HttpMethod.post
-        self.startRequest(closure)
-    }
-    
-    /**
-    * The function set the http method and call the startRequest function
-    *
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func delete(completionHandler closure: NGeenClosure) {
-        self.endPoint.httpMethod = HttpMethod.delete
-        self.startRequest(closure)
-    }
-    
-    /**
-    * The function set the http method and call the startRequest function
-    *
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func read(completionHandler closure: NGeenClosure) {
-        self.endPoint.httpMethod = HttpMethod.get
-        self.startRequest(closure)
-    }
-    
-    /**
-    * The function set to the request the parameters to upload a object
-    *
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func update(completionHandler closure: NGeenClosure) {
-        self.endPoint.httpMethod = HttpMethod.put
-        self.startRequest(closure)
     }
     
 // MARK: Private methods       
@@ -683,24 +565,6 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
         }
         params = "\(params)\(boundary)--\r\n"
         return params
-    }
-    
-    /**
-    * The function set the configuration and start the request
-    *
-    * @param completionHandler The closure to be called when the request end.
-    *
-    */
-    
-    private func startRequest(completionHandler closure: NGeenClosure) {
-        assert(self.urlComponents.URL != nil, "The url cant be null", file: __FUNCTION__, line: __LINE__)
-        var request: Request = Request(httpMethod: self.endPoint.httpMethod!.toRaw(), url: self.urlComponents.URL)
-        self.configureRequest(&request)
-        request.sendAsynchronous(completionHandler: {(data, urlResponse, error) in
-            if closure != nil {
-                closure?(object: self.response(data), error: error)
-            }
-        })
     }
     
     /**

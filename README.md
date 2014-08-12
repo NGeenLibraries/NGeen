@@ -133,13 +133,13 @@ enum ResponseType: Int {
 
 ```swift 
 let apiQuery = ApiStore.defaultStore().createQueryForPath("/1/classes/Task", httpMethod: HttpMethod.get)
-apiQuery.read(completionHandler: {(object, error) in
+apiQuery.execute(completionHandler: {(object, error) in
  })
 ```
 #### With Parameters
 
 ```swift 
-apiQuery.read(["foo": "bar"], completionHandler: {(object, error) in
+apiQuery.execute(["foo": "bar"], completionHandler: {(object, error) in
 })
 ```
 
@@ -162,14 +162,14 @@ enum HttpMethod: String {
 ```swift
 let parameters = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]  
 apiQuery.setBodyItems(parameters)
-apiQuery.create(completionHandler: {(object, error) in
+apiQuery.execute(completionHandler: {(object, error) in
  })
 ```
 #### With Parameters
 
 ```swift
 let parameters = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]
-apiQuery.create(parameters, completionHandler: {(object, error) in
+apiQuery.execute(parameters, completionHandler: {(object, error) in
  })
 ```
 Depends of the configuration setted in the api store config the body should be enconding in the supported formats:

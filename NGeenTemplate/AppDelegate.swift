@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //ApiStore.defaultStore().setBodyItem("jorge", forKey: "type")
         let apiQuery = ApiStore.defaultStore().createQueryForPath("/patch", httpMethod: HttpMethod.patch)
         ApiStore.defaultStore().setAuthenticationCredentials("foo", password: "bar")
-        apiQuery.patch(parameters, completionHandler: {(object, error) in
+        apiQuery.execute(parameters, completionHandler: {(object, error) in
             println(object)
         })
         

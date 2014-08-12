@@ -79,7 +79,7 @@ protocol ConfigurableStoreProtocol: NSObjectProtocol {
 
 //MARK: Query protocol
 
-@objc protocol QueryProtocol: NSObjectProtocol, PersistenceProtocol {
+@objc protocol QueryProtocol: NSObjectProtocol {
     
     var config: ConfigurationStoreProtocol? { get set }
     //var data: Dictionary<String, AnyObject> { get set }
