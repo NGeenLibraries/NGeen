@@ -144,9 +144,14 @@ class ApiQueryTests: XCTestCase {
         }
     }
 
+    func testThatSetResponseDisposition() {
+        self.apiQuery!.setResponseDisposition(NSURLSessionResponseDisposition.Cancel)
+        XCTAssertEqual(self.apiQuery!.responseDisposition(), NSURLSessionResponseDisposition.Cancel, "The response disposition should be cancel", file: __FILE__, line: __LINE__)
+    }
+    
     func testThatSetResponseType() {
         self.apiQuery!.setResponseType(ResponseType.dictionary)
-        XCTAssert(self.apiQuery!.response() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
+        XCTAssert(self.apiQuery!.responseType() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
     }
     
 }

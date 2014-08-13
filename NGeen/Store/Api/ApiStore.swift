@@ -25,24 +25,18 @@ import UIKit
 class ApiStore: NSObject, ConfigurableStoreProtocol {
     
     internal var configurations: Dictionary<String, ConfigurationStoreProtocol>
-    private var __endPoints: NSMutableDictionary
     private struct Static {
         static var instace: ApiStore? = nil
         static var token: dispatch_once_t = 0
     }
-    
-    var endPoints: NSMutableDictionary {
-        get {
-            return __endPoints
-        }
-    }
+    private(set) var endPoints: NSMutableDictionary
     
 //MARK: Constructor
     
     init(config: ConfigurationStoreProtocol) {
         self.configurations = Dictionary<String, ConfigurationStoreProtocol>()
         self.configurations[kDefaultServerName] = config
-        self.__endPoints = NSMutableDictionary.dictionary()
+        self.endPoints = NSMutableDictionary.dictionary()
     }
     
 // MARK: Configurable store protocol
@@ -216,9 +210,10 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func getAuthenticationCredentialsForServer(server: String) -> String {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        if let credential: NSURLCredential = configuration.credential {
-            return "\(credential.user):\(credential.password)"
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            if let credential: NSURLCredential = configuration.credential {
+                return "\(credential.user):\(credential.password)"
+            }
         }
         return ""
     }
@@ -231,7 +226,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * @return NSURLRequestCachePolicy
     */
     
-    func getCachePolicy() -> NSURLRequestCachePolicy {
+    func getCachePolicy() -> NSURLRequestCachePolicy? {
         return self.getCachePolicyForServer(kDefaultServerName)
     }
     
@@ -244,9 +239,11 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * @return NSURLRequestCachePolicy
     */
     
-    func getCachePolicyForServer(server: String) -> NSURLRequestCachePolicy {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        return configuration.cachePolicy
+    func getCachePolicyForServer(server: String) -> NSURLRequestCachePolicy? {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            return configuration.cachePolicy
+        }
+        return nil
     }
     
     /**
@@ -257,7 +254,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * @return NSURLCacheStoragePolicy
     */
     
-    func getCacheStoragePolicy() -> NSURLCacheStoragePolicy {
+    func getCacheStoragePolicy() -> NSURLCacheStoragePolicy? {
         return self.getCacheStoragePolicyForServer(kDefaultServerName)
     }
     
@@ -270,9 +267,11 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * @return NSURLCacheStoragePolicy
     */
     
-    func getCacheStoragePolicyForServer(server: String) -> NSURLCacheStoragePolicy {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        return configuration.cacheStoragePolicy
+    func getCacheStoragePolicyForServer(server: String) -> NSURLCacheStoragePolicy? {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            return configuration.cacheStoragePolicy
+        }
+        return nil
     }
     
     /**
@@ -296,8 +295,10 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func getHeadersForServer(server: String) -> Dictionary<String, String> {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        return configuration.headers
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            return configuration.headers
+        }
+        return Dictionary()
     }
     
     /**
@@ -322,8 +323,37 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func getModelsPathForServer(server: String) -> String {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        return configuration.modelsPath
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            return configuration.modelsPath
+        }
+        return ""
+    }
+    
+    /**
+    * The function get the response disposition to the default configuration
+    *
+    * no need params.
+    *
+    * @return NSURLSessionResponseDisposition
+    */
+    
+    func getResponseDisposition() -> NSURLSessionResponseDisposition? {
+        return self.getResponseDispositionForServer(kDefaultServerName)
+    }
+    
+    /**
+    * The function get the response disposition to the default configuration
+    *
+    * @param server The Identifier of the configuration.
+    *
+    * @return NSURLSessionResponseDisposition
+    */
+    
+    func getResponseDispositionForServer(server: String) -> NSURLSessionResponseDisposition? {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            return configuration.responseDisposition
+        }
+        return nil
     }
     
     /**
@@ -334,7 +364,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * @return ResponseType
     */
     
-    func getResponseType() -> ResponseType {
+    func getResponseType() -> ResponseType? {
         return self.getResponseTypeForServer(kDefaultServerName)
     }
     
@@ -346,9 +376,11 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * @return ResponseType
     */
     
-    func getResponseTypeForServer(server: String) -> ResponseType {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        return configuration.responseType
+    func getResponseTypeForServer(server: String) -> ResponseType? {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            return configuration.responseType
+        }
+        return nil
     }
     
     /**
@@ -364,6 +396,19 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     }
     
     /**
+    * The function set the authentication credentials for the default server configuration
+    *
+    * @param user The user to the credential.
+    * @param password The password to the credential.
+    * @param method The authentication method for the session.
+    *
+    */
+    
+    func setAuthenticationCredentials(user: String, password: String, authenticationMethod method: String) {
+        self.setAuthenticationCredentials(user, password: password, authenticationMethod: method, forServer: kDefaultServerName)
+    }
+    
+    /**
     * The function set the authentication credentials for a given server configuration
     *
     * @param user The user to the credential.
@@ -373,10 +418,29 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setAuthenticationCredentials(user: String, password: String, forServer server: String) {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        configuration.credential = NSURLCredential(user: user, password: password, persistence: NSURLCredentialPersistence.ForSession)
-        configuration.protectionSpace = NSURLProtectionSpace(host: configuration.host, port: 0, `protocol`: configuration.scheme, realm: nil, authenticationMethod: NSURLAuthenticationMethodHTTPBasic)
-        self.setConfiguration(configuration, forKey: server)
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            configuration.credential = NSURLCredential(user: user, password: password, persistence: NSURLCredentialPersistence.ForSession)
+            configuration.protectionSpace = NSURLProtectionSpace(host: configuration.host, port: 0, `protocol`: configuration.scheme, realm: nil, authenticationMethod: NSURLAuthenticationMethodHTTPBasic)
+            self.setConfiguration(configuration, forKey: server)
+        }
+    }
+    
+    /**
+    * The function set the authentication credentials for a given server configuration
+    *
+    * @param user The user to the credential.
+    * @param password The password to the credential.
+    * @param method The authentication method for the session.
+    * @param server The name of the server to store the configuration.
+    *
+    */
+    
+    func setAuthenticationCredentials(user: String, password: String, authenticationMethod method: String, forServer server: String) {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            configuration.credential = NSURLCredential(user: user, password: password, persistence: NSURLCredentialPersistence.ForSession)
+            configuration.protectionSpace = NSURLProtectionSpace(host: configuration.host, port: 0, `protocol`: configuration.scheme, realm: nil, authenticationMethod: method)
+            self.setConfiguration(configuration, forKey: server)
+        }
     }
     
     /**
@@ -399,9 +463,10 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setCachePolicy(policy: NSURLRequestCachePolicy, forServer server: String) {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        configuration.cachePolicy = policy
-        self.setConfiguration(configuration, forKey: server)
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            configuration.cachePolicy = policy
+            self.setConfiguration(configuration, forKey: server)
+        }
     }
     
     /**
@@ -424,9 +489,10 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setCacheStoragePolicy(policy: NSURLCacheStoragePolicy, forServer server: String) {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        configuration.cacheStoragePolicy = policy
-        self.setConfiguration(configuration, forKey: server)
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            configuration.cacheStoragePolicy = policy
+            self.setConfiguration(configuration, forKey: server)
+        }
     }
     
     /**
@@ -454,7 +520,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
         } else {
             var serverEndpoints: NSMutableDictionary = NSMutableDictionary.dictionary()
             serverEndpoints.setObject(endpoint, forKey: endpoint.key())
-            self.__endPoints[server] = serverEndpoints
+            self.endPoints[server] = serverEndpoints
         }
     }
     
@@ -505,9 +571,10 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setHeader(header: String, forKey key: String, serverName name: String) {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(name) as ApiStoreConfiguration
-        configuration.headers[key] = header
-        self.setConfiguration(configuration, forKey: name)
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(name) as? ApiStoreConfiguration {
+            configuration.headers[key] = header
+            self.setConfiguration(configuration, forKey: name)
+        }
     }
     
     /**
@@ -530,9 +597,10 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setHeaders(headers: Dictionary<String, String>, forServer server: String) {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(server) as ApiStoreConfiguration
-        configuration.headers += headers
-        self.setConfiguration(configuration, forKey: server)
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            configuration.headers += headers
+            self.setConfiguration(configuration, forKey: server)
+        }
     }
     
     /**
@@ -550,14 +618,67 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * The function set the model path for the given server name
     *
     * @param path The path of the models in the api response.
-    * @param name The name of the server to store the configuration.
+    * @param server The name of the server to store the configuration.
     *
     */
     
-    func setModelsPath(path: String, forServer name: String) {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(name) as ApiStoreConfiguration
-        configuration.modelsPath = path
-        self.setConfiguration(configuration, forKey: name)
+    func setModelsPath(path: String, forServer server: String) {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            configuration.modelsPath = path
+            self.setConfiguration(configuration, forKey: server)
+        }
+    }
+    
+    /**
+    * The function set the request to redirect the http request
+    *
+    * @param redirection The request to redirect.
+    *
+    */
+    
+    func setRequestRedirection(redirection: NSURLRequest) {
+        self.setRequestRedirection(redirection, forServer: kDefaultServerName)
+    }
+    
+    /**
+    * The function set the request to redirect the http request
+    *
+    * @param redirection The request to redirect.
+    * @param server The Identifier of the configuration.
+    *
+    */
+    
+    func setRequestRedirection(redirection: NSURLRequest, forServer server: String) {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            configuration.redirection = redirection
+            self.setConfiguration(configuration, forKey: server)
+        }
+    }
+    
+    /**
+    * The function set the response disposition to the API Store
+    *
+    * @param disposition The disposition for the request.
+    *
+    */
+    
+    func setResponseDisposition(disposition: NSURLSessionResponseDisposition) {
+        self.setResponseDisposition(disposition, forServer: kDefaultServerName)
+    }
+    
+    /**
+    * The function set the response disposition to the API Store
+    *
+    * @param disposition The disposition for the request.
+    * @param server The Identifier of the configuration.
+    *
+    */
+    
+    func setResponseDisposition(disposition: NSURLSessionResponseDisposition, forServer server: String) {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            configuration.responseDisposition = disposition
+            self.setConfiguration(configuration, forKey: server)
+        }
     }
     
     /**
@@ -575,14 +696,15 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * The function set the response type for the server configuration
     *
     * @param type The type of the response.
-    * @param name The name for the server to store the configuration.
+    * @param server The name for the server to store the configuration.
     *
     */
     
-    func setResponseType(type: ResponseType, forServer name: String) {
-        let configuration: ApiStoreConfiguration = self.configurationForKey(name) as ApiStoreConfiguration
-        configuration.responseType = type
-        self.setConfiguration(configuration, forKey: name)
+    func setResponseType(type: ResponseType, forServer server: String) {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            configuration.responseType = type
+            self.setConfiguration(configuration, forKey: server)
+        }
     }
     
 //MARK: Singleton method

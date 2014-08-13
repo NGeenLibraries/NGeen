@@ -18,23 +18,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         self.window!.backgroundColor = UIColor.whiteColor()
         self.window!.makeKeyAndVisible()
-        let headers: Dictionary<String, String> = ["X-Parse-Application-Id": "BgJnryEVJitvxnMKKMjJyMm6vrBwIgDFAARtVqXn", "X-Parse-REST-API-Key": "euJT7bCipxE82sx5j6L8sHTFXm0HxNUiiBvR03ug"]
-        let apiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "httpbin.org", scheme: "http")
-        //let taskEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.get, path: "/1/classes/Task")
-        let downloadEnpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/post")
+        let apiStoreConfiguration = ApiStoreConfiguration(host: "httpbin.org", scheme: "http")
+        let endpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.patch, path: "/patch")
         ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
-        ApiStore.defaultStore().setCacheStoragePolicy(NSURLCacheStoragePolicy.Allowed)
-        ApiStore.defaultStore().setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataElseLoad)
-        ApiStore.defaultStore().setEndpoint(downloadEnpoint)
-        ApiStore.defaultStore().setModelsPath("results")
-        ApiStore.defaultStore().setResponseType(ResponseType.models)
+        ApiStore.defaultStore().setEndpoint(endpoint)
+        ApiStore.defaultStore().setResponseType(ResponseType.dictionary)
         let parameters = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]
-        //ApiStore.defaultStore().setBodyItem("jorge", forKey: "name")
-        //ApiStore.defaultStore().setBodyItem("jorge", forKey: "type")
-        let apiQuery = ApiStore.defaultStore().createQueryForPath("/post", httpMethod: HttpMethod.post)
-        ApiStore.defaultStore().setAuthenticationCredentials("foo", password: "bar")
-        apiQuery.upload("Lorem ipsum dolor sit amet".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false), uploadProgress: nil, completionHandler: {(error) in
-            println("DONE")
+        let apiQuery = ApiStore.defaultStore().createQueryForPath("/patch", httpMethod: HttpMethod.patch)
+        apiQuery.execute(parameters, completionHandler: {(object, error) in
+            println(object)
         })
         
         return true

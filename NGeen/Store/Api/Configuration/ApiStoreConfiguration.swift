@@ -35,6 +35,8 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
     var pathItems: Dictionary<String, String>
     var protectionSpace: NSURLProtectionSpace?
     var queryItems: Dictionary<String, AnyObject>
+    var redirection: NSURLRequest?
+    var responseDisposition: NSURLSessionResponseDisposition
     var responseType: ResponseType
     var scheme: String
     var timeout: Int
@@ -52,6 +54,7 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
         self.modelsPath = ""
         self.pathItems = Dictionary<String, String>()
         self.queryItems = Dictionary<String, String>()
+        self.responseDisposition = NSURLSessionResponseDisposition.Allow
         self.responseType = ResponseType.data
         self.timeout = 30
     }
@@ -63,6 +66,11 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
         self.scheme = scheme
     }
 
+    convenience init(host: String, scheme: String) {
+        self.init()
+        self.host = host
+        self.scheme = scheme
+    }
     
 // MARK: Class methods
     

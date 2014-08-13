@@ -131,30 +131,54 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
-    * The function set the http method and call the startRequest function
-    *
-    * @params parameters The parameters for the body.
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func create(parameters: Dictionary<String, AnyObject>, completionHandler closure: NGeenClosure) {
-        self.__config!.bodyItems += parameters
-        self.endPoint.httpMethod = HttpMethod.post
-        self.startRequest(closure)
-    }
-    
-    /**
     * The function set to the request the parameters to download a object
     *
     * @param destination The destination to store the file.
-    * @params progress The closure to track the download progress.
+    * @params handler The closure to track the download progress.
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func download(destination: NSURL, progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+    func download(destination: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
         let request: Request = Request(httpMethod: self.endPoint.httpMethod!.toRaw(), url: self.urlComponents.URL)
-        request.download(destination, downloadProgress: progress, completionHandler: closure)
+        request.download(destination, progress: handler, completionHandler: closure)
+    }
+    
+    /**
+    * The function execute the request
+    *
+    * @param completionHandler The closure to be called when the function end.
+    *
+    */
+    
+    func execute(completionHandler closure: NGeenClosure) {
+        assert(self.urlComponents.URL != nil, "The url cant be null", file: __FUNCTION__, line: __LINE__)
+        var request: Request = Request(httpMethod: self.endPoint.httpMethod!.toRaw(), url: self.urlComponents.URL)
+        self.request(&request)
+        request.sendAsynchronous(completionHandler: {(data, urlResponse, error) in
+            if closure != nil {
+                closure?(object: self.response(data), error: error)
+            }
+        })
+    }
+    
+    /**
+    * The function execute the request
+    *
+    * @params parameters The parameters for the request.
+    * @param completionHandler The closure to be called when the function end.
+    *
+    */
+    
+    func execute(parameters: Dictionary<String, String>, completionHandler closure: NGeenClosure) {
+        switch self.endPoint.httpMethod! {
+            case .delete, .get, .head:
+                self.setQueryItems(parameters)
+            case .patch, .post, .put:
+                self.__config!.bodyItems += parameters
+            default:
+                assert(false, "Invalid http method", file: __FILE__, line: __LINE__)
+        }
+        self.execute(completionHandler: closure)
     }
     
     /**
@@ -218,17 +242,15 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
-    * The function set the http method and call the startRequest function
+    * The function return the response disposition for the request
     *
-    * @params parameters The parameters for the body.
-    * @param completionHandler The closure to be called when the function end.
+    * @param no need params.
     *
+    * @return NSURLSessionResponseDisposition
     */
     
-    func read(parameters: Dictionary<String, String>, completionHandler closure: NGeenClosure) {
-        self.setQueryItems(parameters)
-        self.endPoint.httpMethod = HttpMethod.get
-        self.startRequest(closure)
+    func responseDisposition() -> NSURLSessionResponseDisposition {
+        return self.__config!.responseDisposition
     }
     
     /**
@@ -239,7 +261,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     * @return ResponseType
     */
     
-    func response() -> ResponseType {
+    func responseType() -> ResponseType {
         return self.__config!.responseType
     }
     
@@ -391,6 +413,17 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
+    * The function set the response disposition to the API Store
+    *
+    * @param disposition The disposition for the request.
+    *
+    */
+    
+    func setResponseDisposition(disposition: NSURLSessionResponseDisposition) {
+        self.__config!.responseDisposition = disposition
+    }
+    
+    /**
     * The function set the response type for the query
     *
     * @param type The response type.
@@ -402,115 +435,62 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
-    * The function set the http method and call the startRequest function
-    *
-    * @params parameters The parameters for the body.
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func update(parameters: Dictionary<String, AnyObject>, completionHandler closure: NGeenClosure) {
-        self.__config!.bodyItems += parameters
-        self.endPoint.httpMethod = HttpMethod.post
-        self.startRequest(closure)
-    }
-    
-    /**
     * The function set to the request the parameters to upload a file
     *
     * @param data The data to upload.
-    * @params progress The closure to track the upload progress.
+    * @params handler The closure to track the upload progress.
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(data: NSData, uploadProgress progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
-        self.upload(data, uploadType: UploadType.data, uploadProgress: progress, completionHandler: closure)
+    func upload(data: NSData, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+        self.upload(data, uploadType: UploadType.data, progress: handler, completionHandler: closure)
     }
     
     /**
     * The function set to the request the parameters to upload a file
     *
     * @param file The url of the file to upload.
-    * @params progress The closure to track the upload progress.
+    * @params handler The handler to track the upload progress.
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(file: NSURL, uploadProgress progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
-        self.upload(file, uploadType: UploadType.file, uploadProgress: progress, completionHandler: closure)
+    func upload(file: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+        self.upload(file, uploadType: UploadType.file, progress: handler, completionHandler: closure)
     }
     
     /**
     * The function set to the request the parameters to upload a stream
     *
     * @param stream The stream to upload.
-    * @params progress The closure to track the upload progress.
+    * @params handler The handler to track the upload progress.
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(stream: NSInputStream, uploadProgress progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
-        self.upload(stream, uploadType: UploadType.stream, uploadProgress: progress, completionHandler: closure)
+    func upload(stream: NSInputStream, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+        self.upload(stream, uploadType: UploadType.stream, progress: handler, completionHandler: closure)
     }
     
-// MARK: Persistence Protocol
+// MARK: Private methods
     
     /**
-    * The function set the http method and call the startRequest function
+    * The function configure the request
     *
-    * @param completionHandler The closure to be called when the function end.
+    * @param request The instance of the request to configure.
     *
     */
     
-    func create(completionHandler closure: NGeenClosure) {
-        self.endPoint.httpMethod = HttpMethod.post
-        self.startRequest(closure)
-    }
-    
-    /**
-    * The function set the http method and call the startRequest function
-    *
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func delete(completionHandler closure: NGeenClosure) {
-        self.endPoint.httpMethod = HttpMethod.delete
-        self.startRequest(closure)
-    }
-    
-    /**
-    * The function set the http method and call the startRequest function
-    *
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func read(completionHandler closure: NGeenClosure) {
-        self.endPoint.httpMethod = HttpMethod.get
-        self.startRequest(closure)
-    }
-    
-    /**
-    * The function set to the request the parameters to upload a object
-    *
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func update(completionHandler closure: NGeenClosure) {
-        self.endPoint.httpMethod = HttpMethod.put
-        self.startRequest(closure)
-    }
-    
-// MARK: Private methods       
-    
-    /**
-    * The function configure the body for the request
-    *
-    * @param request The instance of the request to set the body.
-    *
-    */
-    
-    private func bodyForRequest(inout request: Request) {
+    private func request(inout request: Request) {
+        request.cachePolicy = self.__config!.cachePolicy
+        request.cacheStoragePolicy = self.__config!.cacheStoragePolicy
+        if let credential: NSURLCredential = self.__config!.credential {
+            request.setAuthenticationCredential(credential, forProtectionSpace: self.__config!.protectionSpace!)
+        }
+        request.delegate = self
+        request.responseDisposition = self.__config!.responseDisposition
+        request.setValue(self.endPoint.contentType!.toRaw(), forHTTPHeaderField: "Content-Type")
+        for (key, value) in self.__config!.headers {
+            request.setValue(value, forHTTPHeaderField: key)
+        }
         if (self.__config!.bodyItems.count > 0) {
             assert(self.endPoint.httpMethod != HttpMethod.delete, "You can`t set a body for http delete method", file: __FILE__, line: __LINE__)
             assert(self.endPoint.httpMethod != HttpMethod.get, "You can`t set a body for http get method", file: __FILE__, line: __LINE__)
@@ -523,27 +503,6 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
             }
             request.setValue(request.body.length.description, forHTTPHeaderField: "Content-Length")
         }
-    }
-    
-    /**
-    * The function configure the request
-    *
-    * @param request The instance of the request to configure.
-    *
-    */
-    
-    private func configureRequest(inout request: Request) {
-        request.cachePolicy = self.__config!.cachePolicy
-        request.cacheStoragePolicy = self.__config!.cacheStoragePolicy
-        if let credential: NSURLCredential = self.__config!.credential {
-            request.setAuthenticationCredential(credential, forProtectionSpace: self.__config!.protectionSpace!)
-        }
-        request.delegate = self
-        request.setValue(self.endPoint.contentType!.toRaw(), forHTTPHeaderField: "Content-Type")
-        for (key, value) in self.__config!.headers {
-            request.setValue(value, forHTTPHeaderField: key)
-        }
-        self.bodyForRequest(&request)
     }
     
     /**
@@ -622,24 +581,6 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
-    * The function set the configuration and start the request
-    *
-    * @param completionHandler The closure to be called when the request end.
-    *
-    */
-    
-    private func startRequest(completionHandler closure: NGeenClosure) {
-        assert(self.urlComponents.URL != nil, "The url cant be null", file: __FUNCTION__, line: __LINE__)
-        var request: Request = Request(httpMethod: self.endPoint.httpMethod!.toRaw(), url: self.urlComponents.URL)
-        self.configureRequest(&request)
-        request.sendAsynchronous(completionHandler: {(data, urlResponse, error) in
-            if closure != nil {
-                closure?(object: self.response(data), error: error)
-            }
-        })
-    }
-    
-    /**
     * The function configure the response for the current request
     *
     * @param data The data from the response.
@@ -675,14 +616,13 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     *
     * @param data The data to upload.
     * @params type The type of the upload.
-    * @params progress The closure to track the upload progress.
+    * @params handler The closure to track the upload progress.
     * @param completionHandler The closure to be called when the function end.
     */
     
-    private func upload(data: AnyObject, uploadType type: UploadType ,uploadProgress progress: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
+    private func upload(data: AnyObject, uploadType type: UploadType , progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
         assert(data != nil, "The file can't be nil", file: __FUNCTION__, line: __LINE__)
         let request: Request = Request(httpMethod: self.endPoint.httpMethod!.toRaw(), url: self.urlComponents.URL)
-        request.upload(data, uploadType: type, uploadProgress: progress, completionHandler: closure)
     }
     
 //MARK: Request delegate

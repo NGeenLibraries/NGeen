@@ -103,6 +103,7 @@ ApiStore.defaultStore().setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataEl
 ```swift 
 let taskEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Task")
 let exampleEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "/1/classes/Example")
+ApiStore.defaultStore().setEndpoints([taskEndpoint, exampleEndpoint])
 ```
 
 #### Setting models serialization from server response
@@ -133,13 +134,13 @@ enum ResponseType: Int {
 
 ```swift 
 let apiQuery = ApiStore.defaultStore().createQueryForPath("/1/classes/Task", httpMethod: HttpMethod.get)
-apiQuery.read(completionHandler: {(object, error) in
+apiQuery.execute(completionHandler: {(object, error) in
  })
 ```
 #### With Parameters
 
 ```swift 
-apiQuery.read(["foo": "bar"], completionHandler: {(object, error) in
+apiQuery.execute(["foo": "bar"], completionHandler: {(object, error) in
 })
 ```
 
@@ -148,7 +149,10 @@ apiQuery.read(["foo": "bar"], completionHandler: {(object, error) in
 ```swift
 enum HttpMethod: String {
     case delete = "DELETE"
+    case head = "HEAD"
     case get = "GET"
+    case options = "OPTIONS"
+    case patch = "PATCH"
     case post = "POST"
     case put = "PUT"
 }
@@ -159,14 +163,14 @@ enum HttpMethod: String {
 ```swift
 let parameters = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]  
 apiQuery.setBodyItems(parameters)
-apiQuery.create(completionHandler: {(object, error) in
+apiQuery.execute(completionHandler: {(object, error) in
  })
 ```
 #### With Parameters
 
 ```swift
 let parameters = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]
-apiQuery.create(parameters, completionHandler: {(object, error) in
+apiQuery.execute(parameters, completionHandler: {(object, error) in
  })
 ```
 Depends of the configuration setted in the api store config the body should be enconding in the supported formats:
@@ -185,7 +189,7 @@ Supported Upload Types
 #### Downloading a File
 
 ```swift
-apiQuery.download(destination, uploadProgres: {(bytesRead, totalBytesRead, totalBytesExpectedToRead) in
+apiQuery.download(destination, progress: {(bytesRead, totalBytesRead, totalBytesExpectedToRead) in
     println(bytesRead)
  }, completionHandler: {(error) in
     println("DONE!!")
@@ -205,7 +209,7 @@ Supported Upload Types
 
 ```swift
 let data = "Lorem ipsum dolor sit amet".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
-apiQuery.upload(data, uploadProgress: {(bytesWriten, totalBytesWriten, totalBytesExpectedToWrite) in
+apiQuery.upload(data, progress: {(bytesWriten, totalBytesWriten, totalBytesExpectedToWrite) in
     println(bytesRead)
  }, completionHandler: {(error) in
 	println("DONE")

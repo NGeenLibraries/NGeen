@@ -103,22 +103,22 @@ class ApiStoreTests: XCTestCase {
     
     func testTharSetCachePolicy() {
         self.store!.setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataElseLoad)
-        XCTAssertEqual(self.store!.getCachePolicy(), NSURLRequestCachePolicy.ReturnCacheDataElseLoad, "The cache policy should be equal to ReturnCacheDataElseLoad", file: __FUNCTION__, line: __LINE__)
+        XCTAssertEqual(self.store!.getCachePolicy()!, NSURLRequestCachePolicy.ReturnCacheDataElseLoad, "The cache policy should be equal to ReturnCacheDataElseLoad", file: __FUNCTION__, line: __LINE__)
     }
     
     func testTharSetCachePolicyForServer() {
         self.store!.setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataElseLoad, forServer: kConfigKey)
-        XCTAssertEqual(self.store!.getCachePolicyForServer(kConfigKey), NSURLRequestCachePolicy.ReturnCacheDataElseLoad, "The cache policy should be equal to ReturnCacheDataElseLoad", file: __FUNCTION__, line: __LINE__)
+        XCTAssertEqual(self.store!.getCachePolicyForServer(kConfigKey)!, NSURLRequestCachePolicy.ReturnCacheDataElseLoad, "The cache policy should be equal to ReturnCacheDataElseLoad", file: __FUNCTION__, line: __LINE__)
     }
     
     func testThatSetCacheStoragePolicy() {
         self.store!.setCacheStoragePolicy(NSURLCacheStoragePolicy.Allowed)
-        XCTAssertEqual(self.store!.getCacheStoragePolicy(), NSURLCacheStoragePolicy.Allowed, "The cache storage policy should be equal to allowed", file: __FUNCTION__, line: __LINE__)
+        XCTAssertEqual(self.store!.getCacheStoragePolicy()!, NSURLCacheStoragePolicy.Allowed, "The cache storage policy should be equal to allowed", file: __FUNCTION__, line: __LINE__)
     }
     
     func testThatSetCacheStoragePolicyForServer() {
         self.store!.setCacheStoragePolicy(NSURLCacheStoragePolicy.Allowed, forServer: kConfigKey)
-        XCTAssertEqual(self.store!.getCacheStoragePolicyForServer(kConfigKey), NSURLCacheStoragePolicy.Allowed, "The cache storage policy should be equal to allowed", file: __FUNCTION__, line: __LINE__)
+        XCTAssertEqual(self.store!.getCacheStoragePolicyForServer(kConfigKey)!, NSURLCacheStoragePolicy.Allowed, "The cache storage policy should be equal to allowed", file: __FUNCTION__, line: __LINE__)
     }
     
     func testThatSetConfiguration() {
@@ -185,6 +185,16 @@ class ApiStoreTests: XCTestCase {
     func testThatSetModelsPathForServer() {
         self.store?.setModelsPath("test.path", forServer: kConfigKey)
         XCTAssertEqual(self.store!.getModelsPathForServer(kConfigKey), "test.path", "The model path should be equal to test.path", file: __FILE__, line: __LINE__)
+    }
+    
+    func testThatSetResponseDisposition() {
+        self.store?.setResponseDisposition(NSURLSessionResponseDisposition.Cancel)
+        XCTAssertEqual(self.store!.getResponseDisposition()!, NSURLSessionResponseDisposition.Cancel, "The response disposition should be cancel", file: __FILE__, line: __LINE__)
+    }
+    
+    func testThatSetResponseDispositionForServer() {
+        self.store?.setResponseDisposition(NSURLSessionResponseDisposition.Cancel, forServer: kConfigKey)
+        XCTAssertEqual(self.store!.getResponseDispositionForServer(kConfigKey)!, NSURLSessionResponseDisposition.Cancel, "The response disposition should be cancel", file: __FILE__, line: __LINE__)
     }
     
     func testThatSetResponseType() {
