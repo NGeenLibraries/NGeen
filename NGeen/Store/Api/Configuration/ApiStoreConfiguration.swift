@@ -25,7 +25,6 @@ import UIKit
 class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
 
     var bodyItems: [String: AnyObject]
-    var cachePolicy: NSURLRequestCachePolicy
     var cacheStoragePolicy: NSURLCacheStoragePolicy
     var configurations: Dictionary<String, ConfigurationStoreProtocol>
     var credential: NSURLCredential?
@@ -38,14 +37,13 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
     var redirection: NSURLRequest?
     var responseDisposition: NSURLSessionResponseDisposition
     var responseType: ResponseType
+    var sessionConfiguration: NSURLSessionConfiguration
     var scheme: String
-    var timeout: Int
     
 //MARK: Constructor
     
     override init() {
         self.bodyItems = Dictionary()
-        self.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData
         self.cacheStoragePolicy = NSURLCacheStoragePolicy.NotAllowed
         self.configurations = Dictionary<String, ConfigurationStoreProtocol>()
         self.headers = Dictionary<String, String>()
@@ -56,7 +54,10 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
         self.queryItems = Dictionary<String, String>()
         self.responseDisposition = NSURLSessionResponseDisposition.Allow
         self.responseType = ResponseType.data
-        self.timeout = 30
+        self.sessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
+        self.sessionConfiguration.requestCachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData
+        self.sessionConfiguration.timeoutIntervalForRequest = 30
+        self.sessionConfiguration.timeoutIntervalForResource = 30
     }
     
     convenience init(headers: Dictionary<String, String>, host: String, scheme: String) {

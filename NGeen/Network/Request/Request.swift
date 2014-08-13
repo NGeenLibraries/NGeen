@@ -60,7 +60,7 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionTaskDelegate {
             self.sessionConfiguration.timeoutIntervalForRequest = timeout
         }
     }
-    weak var delegate: RequestDelegate?
+    weak var delegate: SessionTaskDelegate?
     
 // MARK: Constructor
     
@@ -68,7 +68,7 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionTaskDelegate {
         self.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData
         self.cacheStoragePolicy = NSURLCacheStoragePolicy.NotAllowed
         self.headers = Dictionary()
-        self.queue = dispatch_queue_create("com.ngeen.requestqueue", DISPATCH_QUEUE_CONCURRENT)
+        self.queue = dispatch_queue_create("com.ngeen.sessionqueue", DISPATCH_QUEUE_CONCURRENT)
         dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
         self.sessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
         self.sessionConfiguration.requestCachePolicy = NSURLRequestCachePolicy.ReturnCacheDataElseLoad
@@ -116,7 +116,7 @@ class Request: NSObject, NSURLSessionDataDelegate, NSURLSessionTaskDelegate {
             if self.cachePolicy != NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData {
                 data = DiskCache.defaultCache().dataForUrl(self.url)
                 if self.delegate != nil && self.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") {
-                    self.delegate!.cachedResponseForUrl!(self.url, cachedData: data)
+                    //self.delegate!.cachedResponseForUrl!(self.url, cachedData: data)
                 }
                 if data.length > 0 && (self.cachePolicy == NSURLRequestCachePolicy.ReturnCacheDataDontLoad || self.cachePolicy == NSURLRequestCachePolicy.ReturnCacheDataElseLoad) {
                     return

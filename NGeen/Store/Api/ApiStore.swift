@@ -131,7 +131,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
         } else {
             assert(false, "The endpoint can't be null", file: __FILE__, line: __LINE__)
         }
-        return  ApiQuery(configuration: self.configurationForKey(kDefaultServerName), endPoint: ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, path: ""))
+        return  ApiQuery(configuration: self.configurationForKey(name), endPoint: ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, path: ""))
     }
     
     /**
@@ -241,7 +241,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     
     func getCachePolicyForServer(server: String) -> NSURLRequestCachePolicy? {
         if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
-            return configuration.cachePolicy
+            return configuration.sessionConfiguration.requestCachePolicy
         }
         return nil
     }
@@ -384,6 +384,33 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     }
     
     /**
+    * The function get the session configuration for the default server config
+    *
+    * @param sessionConfiguration The session Configuration.
+    *
+    * return NSURLSessionConfiguration
+    */
+    
+    func getSessionConfiguration() -> NSURLSessionConfiguration? {
+        return self.getSessionConfigurationForServer(kDefaultServerName)
+    }
+    
+    /**
+    * The function get the session configuration for the given server
+    *
+    * @param server The name for the server to get the configuration.
+    *
+    * return NSURLSessionConfiguration
+    */
+    
+    func getSessionConfigurationForServer(server: String) -> NSURLSessionConfiguration? {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            return configuration.sessionConfiguration
+        }
+        return nil
+    }
+    
+    /**
     * The function set the authentication credentials for the default server configuration
     *
     * @param user The user to the credential.
@@ -464,7 +491,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     
     func setCachePolicy(policy: NSURLRequestCachePolicy, forServer server: String) {
         if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
-            configuration.cachePolicy = policy
+            configuration.sessionConfiguration.requestCachePolicy = policy
             self.setConfiguration(configuration, forKey: server)
         }
     }
@@ -703,6 +730,32 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     func setResponseType(type: ResponseType, forServer server: String) {
         if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
             configuration.responseType = type
+            self.setConfiguration(configuration, forKey: server)
+        }
+    }
+    
+    /**
+    * The function set the session configuration for the default server config
+    *
+    * @param sessionConfiguration The session Configuration.
+    *
+    */
+    
+    func setSessionConfiguration(sessionConfiguration: NSURLSessionConfiguration) {
+        self.setSessionConfiguration(sessionConfiguration, forServer: kDefaultServerName)
+    }
+    
+    /**
+    * The function set the session configuration for the given server
+    *
+    * @param sessionConfiguration The session Configuration.
+    * @param server The name for the server to store the configuration.
+    *
+    */
+    
+    func setSessionConfiguration(sessionConfiguration: NSURLSessionConfiguration, forServer server: String) {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            configuration.sessionConfiguration = sessionConfiguration
             self.setConfiguration(configuration, forKey: server)
         }
     }
