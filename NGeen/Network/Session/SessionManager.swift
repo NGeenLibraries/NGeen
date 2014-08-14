@@ -255,6 +255,12 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     
 //MARK: NSURLSessiontask delegate
     
+    func URLSession(session: NSURLSession!, didBecomeInvalidWithError error: NSError!) {
+        dispatch_barrier_async(self.queue, {
+            self.dataTasksDelegates.removeAll(keepCapacity: false)
+        })
+    }
+
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didCompleteWithError error: NSError!) {
         if self.cacheStoragePolicy != NSURLCacheStoragePolicy.NotAllowed && !error {
             DiskCache.defaultCache().storeData(NSPurgeableData(data: self.data), forUrl: task.currentRequest.URL, completionHandler: nil)

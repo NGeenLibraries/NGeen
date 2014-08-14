@@ -76,7 +76,7 @@ class ApiStoreTests: XCTestCase {
     }
     
     func testThatEndpointForPath() {
-        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "example"), forServer: kDefaultServerName)
+        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "example"), forServer: kConfigKey)
         if let endPoint = self.store?.endpointForPath("example", httpMethod: HttpMethod.get) {
         } else {
             XCTFail("The Endpoint can't be null")
@@ -84,8 +84,8 @@ class ApiStoreTests: XCTestCase {
     }
     
     func testThatEndpointForModelPathAndServer() {
-        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "example"), forServer: kDefaultServerName)
-        if let endPoint = self.store?.endpointForPath("example", httpMethod: HttpMethod.get, serverName: kDefaultServerName) {
+        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "example"), forServer: kConfigKey)
+        if let endPoint = self.store?.endpointForPath("example", httpMethod: HttpMethod.get, serverName: kConfigKey) {
         } else {
             XCTFail("The Endpoint can't be null")
         }
@@ -141,7 +141,7 @@ class ApiStoreTests: XCTestCase {
     }
     
     func testThatSetEndpointForServer() {
-        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: ""), forServer: kDefaultServerName)
+        self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: ""), forServer: kConfigKey)
         XCTAssertGreaterThan(self.store!.endPoints.count, 0, "The endpoints should have 1 item", file: __FILE__, line: __LINE__)
     }
     
@@ -153,7 +153,7 @@ class ApiStoreTests: XCTestCase {
     
     func testThatSetEndpointsForServer() {
         let endpoints: Array<ApiEndpoint> = [ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: ""), ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "")]
-        self.store?.setEndpoints(endpoints, forServer: kDefaultServerName)
+        self.store?.setEndpoints(endpoints, forServer: kConfigKey)
         XCTAssertGreaterThan(self.store!.endPoints.count, 0, "The endpoints should have 1 item", file: __FILE__, line: __LINE__)
     }
     
@@ -206,5 +206,5 @@ class ApiStoreTests: XCTestCase {
         self.store?.setResponseType(ResponseType.dictionary, forServer: kConfigKey)
         XCTAssert(self.store!.getResponseType() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
     }
-
+    
 }
