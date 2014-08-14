@@ -1,5 +1,5 @@
 //
-// ApiQuery.swift
+// ApiQueryTests.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -46,55 +46,6 @@ class ApiQueryTests: XCTestCase {
         }
     }
     
-    func testThatBodyInJsonFormat() {
-        let validJson: String = NSString(data: NSJSONSerialization.dataWithJSONObject(["key1": "foo1"], options: NSJSONWritingOptions.PrettyPrinted, error: nil), encoding: NSUTF8StringEncoding)
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.post, path: ""))
-        apiQuery.setBodyItem("foo1", forKey: "key1")
-        XCTAssertEqual(apiQuery.getBody(), validJson, "The body should be {\"key\" : \"value\"}", file: __FUNCTION__, line: __LINE__)
-    }
-    
-    /*func testThatBodyInMultipartFormat() {
-        let data: NSData = "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: ApiEndpoint(contentType: ContentType.multiPartForm, httpMethod: HttpMethod.post, path: ""))
-        apiQuery.setBodyItem("test", forKey: "name")
-        apiQuery.setFileData(data, forName: "icon", fileName: "icon.png", mimeType: "image/png")
-        let validMultipartForm: String = "--Boundary+\(apiQuery.currentTime)\r\nContent-Disposition: form-data; name=\"icon\"; filename=\"icon.png\"\r\n Content-Type: image/png\r\n\r\n <6c6f7265 6d206970 73756d20 6c6f7265 6d206970 73756d20 6c6f7265 6d206970 73756d20 6c6f7265 6d206970 73756d20 6c6f7265 6d206970 73756d20 6c6f7265 6d206970 73756d20 6c6f7265 6d206970 73756d20 6c6f7265 6d206970 73756d20 6c6f7265 6d206970 73756d>\r\n--Boundary+\(apiQuery.currentTime)\r\n Content-Disposition: form-data; name=\"name\"\r\n\r\n test\r\n--Boundary+\(apiQuery.currentTime)\r\n--"
-        XCTAssertEqual(apiQuery.body().stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()), validMultipartForm.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()), "The body should be \(validMultipartForm)", file: __FUNCTION__, line: __LINE__)
-    }*/
-    
-    func testThatBodyInUrlFormFormat() {
-        let endPoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.get, path: "example")
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: endPoint)
-        apiQuery.setBodyItem("foo1", forKey: "key1")
-        XCTAssertEqual(apiQuery.getBody(), "key1=foo1", "The body should be key1=foo1", file: __FUNCTION__, line: __LINE__)
-    }
-    
-    func testThatPathWithEndPoint() {
-        let endPoint: ApiEndpoint =  ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.post, path: "/get")
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: endPoint)
-        apiQuery.setPathItem("1", forKey: "key1")
-        apiQuery.setPathItem("2", forKey: "key2")
-        XCTAssertEqual(apiQuery.getPath(), "/get/1/2", "The path should be /get/1/2", file: __FUNCTION__, line: __LINE__)
-    }
-    
-    func testThatPathWithEmptyEndPointPath() {
-        let endPoint: ApiEndpoint =  ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.post, path: "")
-        let apiQuery: ApiQuery = ApiQuery(configuration: ApiStoreConfiguration(), endPoint: endPoint)
-        apiQuery.setPathItem("1", forKey: "key1")
-        apiQuery.setPathItem("2", forKey: "key2")
-        XCTAssertEqual(apiQuery.getPath(), "/1/2", "The path should be 1/2", file: __FUNCTION__, line: __LINE__)
-    }
-    
-    func testThatQuery() {
-        self.apiQuery!.setQueryItem("value1", forKey: "key1")
-        self.apiQuery!.setQueryItem("value2", forKey: "key2")
-        if let query: String = self.apiQuery!.getQuery() {
-            XCTAssertEqual(query, "key1=value1&key2=value2", "The query should be key1=value1&key2=value2", file: __FUNCTION__, line: __LINE__)
-        } else {
-            XCTFail("The query should not be nil", file: __FUNCTION__, line: __LINE__)
-        }
-    }
-    
     func testThatSetCachePolicy() {
         self.apiQuery!.setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataElseLoad)
         XCTAssertEqual(self.apiQuery!.getCachePolicy(), NSURLRequestCachePolicy.ReturnCacheDataElseLoad, "The cache policy should be equal to ReturnCacheDataElseLoad", file: __FUNCTION__, line: __LINE__)
@@ -137,27 +88,6 @@ class ApiQueryTests: XCTestCase {
         XCTAssertEqual(self.apiQuery!.getPath(), "example/1/2/3", "The path should be example/1/2/3", file: __FUNCTION__, line: __LINE__)
     }
     
-    func testThatSetQueryItems() {
-        self.apiQuery!.setQueryItem("value1", forKey: "key1")
-        self.apiQuery!.setQueryItem("value2", forKey: "key2")
-        self.apiQuery!.setQueryItems(["key3": "value3"])
-        if let query: String = self.apiQuery!.getQuery() {
-            XCTAssertEqual(query, "key1=value1&key2=value2&key3=value3", "The query should be key1=value1&key2=value2&key3=value3", file: __FUNCTION__, line: __LINE__)
-        } else {
-            XCTFail("The query should not be nil", file: __FUNCTION__, line: __LINE__)
-        }
-    }
-    
-    func testThatSetQueryItemsWithAnyObjects() {
-        let parameters: Dictionary<String, AnyObject> = ["foo": "bar", "baz": ["a", 1], "qux": ["x": 1, "y": 2, "z": 3]]
-        self.apiQuery!.setQueryItems(parameters)
-        if let query: String = self.apiQuery!.getQuery() {
-            XCTAssertEqual(query, "baz[0]=a&baz[1]=1&foo=bar&qux[z]=3&qux[x]=1&qux[y]=2", "The query should be baz[0]=a&baz[1]=1&foo=bar&qux[z]=3&qux[x]=1&qux[y]=2", file: __FUNCTION__, line: __LINE__)
-        } else {
-            XCTFail("The query should not be nil", file: __FUNCTION__, line: __LINE__)
-        }
-    }
-
     func testThatSetResponseDisposition() {
         self.apiQuery!.setResponseDisposition(NSURLSessionResponseDisposition.Cancel)
         XCTAssertEqual(self.apiQuery!.getResponseDisposition(), NSURLSessionResponseDisposition.Cancel, "The response disposition should be cancel", file: __FILE__, line: __LINE__)

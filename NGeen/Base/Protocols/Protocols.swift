@@ -73,7 +73,7 @@ protocol ConfigurableStoreProtocol: NSObjectProtocol {
 
 @objc protocol QueryProtocol: NSObjectProtocol {
     
-    var config: ConfigurationStoreProtocol? { get set }
+    var config: ConfigurationStoreProtocol { get set }
     //var data: Dictionary<String, AnyObject> { get set }
     //var fields: Array<String> { get set }
     //var limit: Int { get set }
