@@ -112,18 +112,6 @@ class ApiQuery: NSObject, QueryProtocol {
     }
     
     /**
-    * The function return the body
-    *
-    * @param no need params.
-    *
-    * @return String
-    */
-    
-    func getBody() -> String {
-        return ""// self.encode(self.configuration.bodyItems)
-    }
-    
-    /**
     * The function return the cache request policy for a server configuration
     *
     * @param policy The cache policy.
@@ -165,8 +153,8 @@ class ApiQuery: NSObject, QueryProtocol {
     * return NSProgress
     */
     
-    func getDownloadProgressForTask(task: NSURLSessionUploadTask) -> NSProgress? {
-        return self.sessionManager!.getDownloadProgressForTask(task)
+    func getDownloadProgressForTask(task: NSURLSessionUploadTask) -> NSProgress {
+        return self.sessionManager!.getDownloadProgressForTask(task)!
     }
     
     /**
@@ -178,7 +166,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func getUploadProgressForTask(task: NSURLSessionUploadTask) -> NSProgress? {
-        return self.sessionManager!.getUploadProgressForTask(task)
+        return self.sessionManager!.getUploadProgressForTask(task)!
     }
     
     /**
@@ -227,18 +215,6 @@ class ApiQuery: NSObject, QueryProtocol {
     
     func getPath() -> String {
         return self.endPoint.path
-    }
-    
-    /**
-    * The function return the query string
-    *
-    * @param no need params.
-    *
-    * @return String
-    */
-    
-    func getQuery() -> String? {
-        return "" // self.urlComponents.query
     }
     
     /**
