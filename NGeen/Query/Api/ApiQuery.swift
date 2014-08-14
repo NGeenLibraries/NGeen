@@ -49,6 +49,7 @@ class ApiQuery: NSObject, QueryProtocol {
     }
     private var __config: ApiStoreConfiguration?
     private var endPoint: ApiEndpoint
+    private var queue: dispatch_queue_t?
     private var sessionManager: SessionManager?
     private var urlComponents: NSURLComponents = NSURLComponents(string: "")
     
@@ -61,6 +62,8 @@ class ApiQuery: NSObject, QueryProtocol {
         self.urlComponents.path = (self.endPoint.path != nil ? self.endPoint.path : "")
         super.init()
         self.config = configuration
+        self.queue = dispatch_queue_create("com.ngeen.requestqueue", DISPATCH_QUEUE_CONCURRENT)
+        dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
         self.sessionManager = SessionManager(sessionConfiguration: self.__config!.sessionConfiguration)
         if let credential: NSURLCredential = self.__config!.credential {
             self.sessionManager!.setAuthenticationCredential(self.__config!.credential!, forProtectionSpace: self.__config!.protectionSpace!)
@@ -268,6 +271,7 @@ class ApiQuery: NSObject, QueryProtocol {
                 closure!(object: self.responseForData(data), error: error)
             }
         })
+        self.cachedResponseForTask(sessionDataTask)
         sessionDataTask.resume()
     }
 
@@ -479,8 +483,10 @@ class ApiQuery: NSObject, QueryProtocol {
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(data: NSData, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
-        self.upload(data, uploadType: UploadType.data, progress: handler, completionHandler: closure)
+    func upload(data: NSData, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) ->  NSURLSessionUploadTask {
+        let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithRequest(self.request(), data: data, progress: handler, completionHandler: closure)
+        uploadTask.resume()
+        return uploadTask
     }
     
     /**
@@ -491,24 +497,52 @@ class ApiQuery: NSObject, QueryProtocol {
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(file: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
-        self.upload(file, uploadType: UploadType.file, progress: handler, completionHandler: closure)
+    func upload(file: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionUploadTask {
+        let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithRequest(self.request(), file: file, progress: handler, completionHandler: closure)
+        uploadTask.resume()
+        return uploadTask
     }
     
     /**
     * The function set to the request the parameters to upload a stream
     *
-    * @param stream The stream to upload.
+    * @param stream The closure to handle the stream needed for the request.
     * @params handler The handler to track the upload progress.
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(stream: NSInputStream, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
-        self.upload(stream, uploadType: UploadType.stream, progress: handler, completionHandler: closure)
+    func upload(stream: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream), progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionUploadTask {
+        let request: NSMutableURLRequest = self.request().mutableCopy() as NSMutableURLRequest
+        request.HTTPBodyStream = NSInputStream(data: request.HTTPBody)
+        let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithStreamedRequest(request, stream: stream, progress: handler, completionHandler: closure)
+        uploadTask.resume()
+        return uploadTask
     }
     
 // MARK: Private methods
     
+    /**
+    * The function search for the cache data
+    *
+    * @param task The Task with the url key to search de cached data.
+    *
+    */
+    
+    private func cachedResponseForTask(task: NSURLSessionDataTask) {
+        dispatch_async(self.queue, {
+            var data: NSPurgeableData = NSPurgeableData()
+            if self.__config!.sessionConfiguration.requestCachePolicy != NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData {
+                data = DiskCache.defaultCache().dataForUrl(task.currentRequest.URL)
+                if self.delegate != nil && self.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") {
+                    self.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: self.responseForData(data))
+                }
+                if data.length > 0 && (self.__config!.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataDontLoad || self.__config!.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataElseLoad) {
+                    task.cancel()
+                }
+            }
+        })
+    }
+
     /**
     * The function encode the params for the given content type
     *
@@ -643,28 +677,6 @@ class ApiQuery: NSObject, QueryProtocol {
             return NSString(data: data, encoding: NSUTF8StringEncoding)
         }
         return data
-    }
-    
-    /**
-    * The function set to the request the parameters to upload a object
-    *
-    * @param data The data to upload.
-    * @params type The type of the upload.
-    * @params handler The closure to track the upload progress.
-    * @param completionHandler The closure to be called when the function end.
-    */
-    
-    private func upload(data: AnyObject, uploadType type: UploadType , progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
-        assert(data != nil, "The file can't be nil", file: __FUNCTION__, line: __LINE__)
-        let request: Request = Request(httpMethod: self.endPoint.httpMethod!.toRaw(), url: self.urlComponents.URL)
-    }
-    
-//MARK: Request delegate
-    
-    func cachedResponseForUrl(url: NSURL, cachedData data: NSData) {
-        if self.delegate != nil && self.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:")  {
-            self.delegate!.cachedResponseForUrl!(url, cachedData: self.responseForData(data))
-        }
     }
     
 }

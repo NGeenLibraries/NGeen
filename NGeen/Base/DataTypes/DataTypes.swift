@@ -51,14 +51,6 @@ enum HttpScheme: String {
     case https = "https"
 }
 
-//MARK: Api upload type
-
-enum UploadType {
-    case data
-    case file
-    case stream
-}
-
 //MARK: Closure response
 
 typealias NGeenClosure = ((object: AnyObject?, error : NSError?) -> Void)?

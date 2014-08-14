@@ -30,6 +30,7 @@ class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownl
     var closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?
     var downloadProgressHandler: ((Int64!, Int64!, Int64!) -> Void)?
     var destinationURL: NSURL?
+    var streamHandler: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream)?
     var uploadProgressHandler: ((Int64!, Int64!, Int64!) -> Void)?
     
     override init() {
@@ -81,6 +82,16 @@ class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownl
     
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didCompleteWithError error: NSError!) {
         self.closure?(self.data, task.response, error)
+    }
+    
+    func URLSession(session: NSURLSession!, task: NSURLSessionTask!, needNewBodyStream completionHandler: ((NSInputStream!) -> Void)!) {
+        var inputStream: NSInputStream? = nil
+        if let stream: NSInputStream = self.streamHandler?(session, task) {
+            inputStream = stream
+        } else {
+            inputStream = task.originalRequest.HTTPBodyStream
+        }
+        completionHandler(inputStream)
     }
     
 //MARK: NSURLSessionUploadTask delegate

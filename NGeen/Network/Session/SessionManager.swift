@@ -57,7 +57,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
                 self.setDelegateForDownloadTask(task, destination: nil, progress: nil, completionHandler: nil)
             }
             for (task: NSURLSessionUploadTask) in uploadTasks as Array {
-                self.setDelegateForUploadTask(task, progress: nil, completionHandler: nil)
+                self.setDelegateForUploadTask(task, stream: nil, progress: nil, completionHandler: nil)
             }
         })
     }
@@ -192,7 +192,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
                 dataTask = self.session!.uploadTaskWithRequest(request, fromFile: fileURL)
             }
         }
-        self.setDelegateForUploadTask(dataTask, progress: handler, completionHandler: closure)
+        self.setDelegateForUploadTask(dataTask, stream: nil, progress: handler, completionHandler: closure)
         return dataTask
     }
 
@@ -208,7 +208,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
 
     func uploadTaskWithRequest(request: NSURLRequest, data bodyData: NSData, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionUploadTask {
         var dataTask: NSURLSessionUploadTask = self.session!.uploadTaskWithRequest(request, fromData: data)
-        self.setDelegateForUploadTask(dataTask, progress: handler, completionHandler: closure)
+        self.setDelegateForUploadTask(dataTask, stream: nil, progress: handler, completionHandler: closure)
         return dataTask
     }
 
@@ -221,12 +221,11 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     * @return NSURLSessionUploadTask
     */
 
-    func uploadTaskWithStreamedRequest(request: NSURLRequest, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionUploadTask {
+    func uploadTaskWithStreamedRequest(request: NSURLRequest, stream streamHandler: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream), progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionUploadTask {
         var dataTask: NSURLSessionUploadTask = self.session!.uploadTaskWithStreamedRequest(request)
-        self.setDelegateForUploadTask(dataTask, progress: handler, completionHandler: closure)
+        self.setDelegateForUploadTask(dataTask, stream: streamHandler, progress: handler, completionHandler: closure)
         return dataTask
     }
-
 
 //MARK: NSURLSessionData delegate
     
@@ -266,6 +265,23 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         }
     }
     
+    func URLSession(session: NSURLSession!, didReceiveChallenge challenge: NSURLAuthenticationChallenge!, completionHandler: ((NSURLSessionAuthChallengeDisposition, NSURLCredential!) -> Void)!) {
+        var disposition: NSURLSessionAuthChallengeDisposition = NSURLSessionAuthChallengeDisposition.PerformDefaultHandling
+        var credential: NSURLCredential? = self.credential
+        if credential == nil {
+            if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust {
+                //TODO chain certificates
+            }
+        }
+        completionHandler(disposition, credential)
+    }
+
+    func URLSession(session: NSURLSession!, task: NSURLSessionTask!, needNewBodyStream completionHandler: ((NSInputStream!) -> Void)!) {
+        if let delegate: SessionTaskDelegate = self.delegateForTask(task) {
+            delegate.URLSession(session, task: task, needNewBodyStream: completionHandler)
+        }
+    }
+
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, willPerformHTTPRedirection response: NSHTTPURLResponse!, newRequest request: NSURLRequest!, completionHandler: ((NSURLRequest!) -> Void)!) {
         var redirection: NSURLRequest = request
         if self.redirection != nil {
@@ -351,9 +367,10 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     *
     */
 
-    private func setDelegateForUploadTask(task: NSURLSessionUploadTask, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)!) {
+    private func setDelegateForUploadTask(task: NSURLSessionUploadTask, stream streamHandler: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream)?, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)!) {
         let sessionTaskDelegate: SessionTaskDelegate = SessionTaskDelegate()
         sessionTaskDelegate.closure = closure
+        sessionTaskDelegate.streamHandler = streamHandler
         sessionTaskDelegate.uploadProgressHandler = handler
         var totalCount: Int64 = task.countOfBytesSent
         if totalCount == NSURLSessionTransferSizeUnknown {
@@ -372,18 +389,6 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         dispatch_barrier_async(self.queue, {
             self.dataTasksDelegates[task.taskIdentifier] = sessionTaskDelegate
         })
-    }
-
-    private func foo() {
-        /*if self.cachePolicy != NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData {
-                data = DiskCache.defaultCache().dataForUrl(self.currentRequest.URL)
-                if self.delegate != nil && self.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") {
-                    self.delegate!.cachedResponseForUrl!(self.currentRequest.URL, cachedData: data)
-                }
-                if data.length > 0 && (self.cachePolicy == NSURLRequestCachePolicy.ReturnCacheDataDontLoad || self.cachePolicy == NSURLRequestCachePolicy.ReturnCacheDataElseLoad) {
-                    return
-                }
-            }*/
     }
 
 }
