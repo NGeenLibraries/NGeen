@@ -179,12 +179,12 @@ Depends of the configuration setted in the api store config the body should be e
 - URI form encoded
 - MultiPart form
 
-
 ### Downloading 
 
 Supported Upload Types
 
 - Resume Data
+- Request
 
 #### Downloading a File
 
