@@ -172,6 +172,29 @@ class ApiQuery: NSObject, QueryProtocol {
         return self.__config!
     }
     
+    /**
+    * The function get the progress for the given task
+    *
+    * @param task The task to get the current progress.
+    *
+    * return NSProgress
+    */
+    
+    func getDownloadProgressForTask(task: NSURLSessionUploadTask) -> NSProgress? {
+        return self.sessionManager!.getDownloadProgressForTask(task)
+    }
+    
+    /**
+    * The function get the progress for the given task
+    *
+    * @param task The task to get the current progress.
+    *
+    * return NSProgress
+    */
+    
+    func getUploadProgressForTask(task: NSURLSessionUploadTask) -> NSProgress? {
+        return self.sessionManager!.getUploadProgressForTask(task)
+    }
     
     /**
     * The function return the http headers
