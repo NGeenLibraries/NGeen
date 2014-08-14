@@ -189,10 +189,10 @@ Supported Upload Types
 #### Downloading a File
 
 ```swift
-apiQuery.download(destination, progress: {(bytesRead, totalBytesRead, totalBytesExpectedToRead) in
-    println(bytesRead)
- }, completionHandler: {(error) in
-    println("DONE!!")
+let dataTask: NSURLSessionDownloadTask = apiQuery.download(destination, progress: {(bytesRead, totalBytesRead, totalBytesExpectedToRead) in
+    println("PROGRESS")
+ }, completionHandler: {(data, response, error) in
+   println("DONE")
 })
 ```
 
@@ -206,14 +206,12 @@ Supported Upload Types
 
 #### Uploading a File 
 
-
 ```swift
-let data = "Lorem ipsum dolor sit amet".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
-apiQuery.upload(data, progress: {(bytesWriten, totalBytesWriten, totalBytesExpectedToWrite) in
-    println(bytesRead)
- }, completionHandler: {(error) in
-	println("DONE")
-})
+let dataTask: NSURLSessionUploadTask = apiQuery.upload(data, progress: {(bytesRead, totalBytesRead, totalBytesExpectedToRead) in
+   println("PROGRESS")
+ }, completionHandler: {(data, response, error) in
+    println("DONE")
+ })
 ```
 ### Parameter Encoding
 

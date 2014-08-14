@@ -32,11 +32,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let docsDir: String = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
         let destination: NSURL = NSURL(fileURLWithPath: "\(docsDir)/download.zip")
-        let dataTask: NSURLSessionDownloadTask = apiQuery.download(destination, progress: {(bytesRead, totalBytesRead, totalBytesExpectedToRead) in
+        /*let dataTask: NSURLSessionDownloadTask = apiQuery.download(destination, progress: {(bytesRead, totalBytesRead, totalBytesExpectedToRead) in
             println("progress")
         }, completionHandler: {(data, response, error) in
             println("DONE")
-        })
+        })*/
+        
         return true
     }
 
