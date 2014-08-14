@@ -1,5 +1,5 @@
 //
-// DataTypes.swift
+// SessionTaskDelegateTests.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,63 +19,31 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+import XCTest
 
-import UIKit
+class SessionTaskDelegateTests: XCTestCase {
 
-//MARK: Api content type
-
-enum ContentType: String {
-    case image = "image/"
-    case json = "application/json"
-    case multiPartForm = "multipart/form-data"
-    case textPlain = "text/plain"
-    case urlEnconded = "application/x-www-form-urlencoded"
-}
-
-//MARK: Api http method
-
-enum HttpMethod: String {
-    case delete = "DELETE"
-    case head = "HEAD"
-    case get = "GET"
-    case options = "OPTIONS"
-    case patch = "PATCH"
-    case post = "POST"
-    case put = "PUT"
-}
-
-//MARK: Api scheme
-
-enum HttpScheme: String {
-    case http = "http"
-    case https = "https"
-}
-
-//MARK: Closure response
-
-typealias NGeenClosure = ((object: AnyObject?, error : NSError?) -> Void)?
-
-//MARK: Database types
-
-enum DatabaseType: Int {
-    case coreData
-    case sqlite
-}
-
-//MARK: Overload operators
-
- func +=<K, V> (inout left: Dictionary<K, V>, right: Dictionary<K, V>) -> Dictionary<K, V> {
-    for (k, v) in right {
-        left.updateValue(v, forKey: k)
+    override func setUp() {
+        super.setUp()
+        // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    return left
-}
+    
+    override func tearDown() {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        super.tearDown()
+    }
 
-//MARK: Response type
+    func testPerformanceExample() {
+        // This is an example of a performance test case.
+        self.measureBlock() {
+            // Put the code you want to measure the time of here.
+        }
+    }
+    
+    func testThatSetTotalUnitCount() {
+        let sessionTaskDelegate: SessionTaskDelegate = SessionTaskDelegate()
+        sessionTaskDelegate.setTotalUnitCount(1)
+        XCTAssertGreaterThan(sessionTaskDelegate.progress.totalUnitCount, 0, "The total unit count shoulbe greater than 0", file: __FUNCTION__, line: __LINE__)
+    }
 
-enum ResponseType: Int {
-    case data
-    case dictionary
-    case models
-    case string
 }

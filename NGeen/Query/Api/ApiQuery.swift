@@ -23,7 +23,7 @@
 
 import UIKit
 
-class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
+class ApiQuery: NSObject, QueryProtocol {
     
     internal var config: ConfigurationStoreProtocol? {
         get {
@@ -49,6 +49,8 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     private var __config: ApiStoreConfiguration?
     private var endPoint: ApiEndpoint
+    private var queue: dispatch_queue_t?
+    private var sessionManager: SessionManager?
     private var urlComponents: NSURLComponents = NSURLComponents(string: "")
     
     weak var delegate: ApiQueryDelegate?
@@ -60,11 +62,51 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
         self.urlComponents.path = (self.endPoint.path != nil ? self.endPoint.path : "")
         super.init()
         self.config = configuration
+        self.queue = dispatch_queue_create("com.ngeen.requestqueue", DISPATCH_QUEUE_CONCURRENT)
+        dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
+        self.sessionManager = SessionManager(sessionConfiguration: self.__config!.sessionConfiguration)
+        if let credential: NSURLCredential = self.__config!.credential {
+            self.sessionManager!.setAuthenticationCredential(self.__config!.credential!, forProtectionSpace: self.__config!.protectionSpace!)
+        }
+        self.sessionManager!.responseDisposition = self.__config!.responseDisposition
         self.urlComponents.scheme = self.__config!.scheme
         self.urlComponents.host = self.__config!.host
     }
     
 // MARK: Instance methods    
+    
+    /**
+    * The function set to the request the parameters to download a object
+    *
+    * @param destination The destination to store the file.
+    * @params handler The closure to track the download progress.
+    * @param completionHandler The closure to be called when the function end.
+    *
+    * return NSURLSessionDownloadTask
+    */
+    
+    func download(destination: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionDownloadTask {
+        let downloadTask: NSURLSessionDownloadTask = self.sessionManager!.downloadTaskWithRequest(self.request(), destination: destination, progress: handler, completionHandler: closure)
+        downloadTask.resume()
+        return downloadTask
+    }
+    
+    /**
+    * The function set to the request the parameters to download a object
+    *
+    * @param data The partial data.
+    * @param destination The destination to store the file.
+    * @params handler The closure to track the download progress.
+    * @param completionHandler The closure to be called when the function end.
+    *
+    * return NSURLSessionDownloadTask
+    */
+    
+    func downloadWithResumeData(data: NSData, destination url: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionDownloadTask {
+        let downloadTask: NSURLSessionDownloadTask = self.sessionManager!.downloadTaskWithResumeData(data, destination: url, progress: handler, completionHandler: closure)
+        downloadTask.resume()
+        return downloadTask
+    }
     
     /**
     * The function return the body items
@@ -74,7 +116,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     * @return Dictionary
     */
     
-    func bodyItems() -> NSDictionary {
+    func getBodyItems() -> NSDictionary {
         return self.__config!.bodyItems
     }
     
@@ -86,7 +128,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     * @return String
     */
     
-    func body() -> String {
+    func getBody() -> String {
         if self.endPoint.contentType! == ContentType.json {
             let data: NSData = NSJSONSerialization.dataWithJSONObject(self.__config!.bodyItems, options: NSJSONWritingOptions.PrettyPrinted, error: nil)
             return NSString(data: data, encoding: NSUTF8StringEncoding)
@@ -104,8 +146,8 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     * @return NSURLRequestCachePolicy
     */
     
-    func cachePolicy() -> NSURLRequestCachePolicy {
-        return self.__config!.cachePolicy
+    func getCachePolicy() -> NSURLRequestCachePolicy {
+        return self.__config!.sessionConfiguration.requestCachePolicy
     }
     
     /**
@@ -116,7 +158,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     * @return NSURLRequestCachePolicy
     */
     
-    func cacheStoragePolicy() -> NSURLCacheStoragePolicy {
+    func getCacheStoragePolicy() -> NSURLCacheStoragePolicy {
         return self.__config!.cacheStoragePolicy
     }
     
@@ -126,21 +168,116 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     *  @return ApiStoreConfig
     */
     
-    func configuration() -> ApiStoreConfiguration {
+    func getConfiguration() -> ApiStoreConfiguration {
         return self.__config!
     }
     
     /**
-    * The function set to the request the parameters to download a object
+    * The function get the progress for the given task
     *
-    * @param destination The destination to store the file.
-    * @params handler The closure to track the download progress.
-    * @param completionHandler The closure to be called when the function end.
+    * @param task The task to get the current progress.
+    *
+    * return NSProgress
     */
     
-    func download(destination: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
-        let request: Request = Request(httpMethod: self.endPoint.httpMethod!.toRaw(), url: self.urlComponents.URL)
-        request.download(destination, progress: handler, completionHandler: closure)
+    func getDownloadProgressForTask(task: NSURLSessionUploadTask) -> NSProgress? {
+        return self.sessionManager!.getDownloadProgressForTask(task)
+    }
+    
+    /**
+    * The function get the progress for the given task
+    *
+    * @param task The task to get the current progress.
+    *
+    * return NSProgress
+    */
+    
+    func getUploadProgressForTask(task: NSURLSessionUploadTask) -> NSProgress? {
+        return self.sessionManager!.getUploadProgressForTask(task)
+    }
+    
+    /**
+    * The function return the http headers
+    *
+    * @param no need params.
+    *
+    * @return Dictionary
+    */
+    
+    func getHttpHeaders() -> Dictionary<String, String> {
+        return self.__config!.headers
+    }
+    
+    /**
+    * The function return model path
+    *
+    * @param no need params.
+    *
+    * @return String
+    */
+    
+    func getModelsPath() -> String {
+        return self.__config!.modelsPath
+    }
+    
+    /**
+    * The function return the path items
+    *
+    * @param no need params.
+    *
+    * @return Dictionary
+    */
+    
+    func getPathItems() -> Dictionary<String, String> {
+        return self.__config!.pathItems
+    }
+    
+    /**
+    * The function return the full path for the components
+    *
+    * @param no need params.
+    *
+    * @return String
+    */
+    
+    func getPath() -> String {
+        return self.urlComponents.path
+    }
+    
+    /**
+    * The function return the query string
+    *
+    * @param no need params.
+    *
+    * @return String
+    */
+    
+    func getQuery() -> String? {
+        return self.urlComponents.query
+    }
+    
+    /**
+    * The function return the response disposition for the request
+    *
+    * @param no need params.
+    *
+    * @return NSURLSessionResponseDisposition
+    */
+    
+    func getResponseDisposition() -> NSURLSessionResponseDisposition {
+        return self.__config!.responseDisposition
+    }
+    
+    /**
+    * The function return the response type for the request
+    *
+    * @param no need params.
+    *
+    * @return ResponseType
+    */
+    
+    func getResponseType() -> ResponseType {
+        return self.__config!.responseType
     }
     
     /**
@@ -152,15 +289,15 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     
     func execute(completionHandler closure: NGeenClosure) {
         assert(self.urlComponents.URL != nil, "The url cant be null", file: __FUNCTION__, line: __LINE__)
-        var request: Request = Request(httpMethod: self.endPoint.httpMethod!.toRaw(), url: self.urlComponents.URL)
-        self.configureRequest(&request)
-        request.sendAsynchronous(completionHandler: {(data, urlResponse, error) in
+        let sessionDataTask: NSURLSessionDataTask = self.sessionManager!.dataTaskWithRequest(self.request(), completionHandler: {(data, urlResponse, error) in
             if closure != nil {
-                closure?(object: self.response(data), error: error)
+                closure!(object: self.responseForData(data), error: error)
             }
         })
+        self.cachedResponseForTask(sessionDataTask)
+        sessionDataTask.resume()
     }
-    
+
     /**
     * The function execute the request
     *
@@ -179,78 +316,6 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
                 assert(false, "Invalid http method", file: __FILE__, line: __LINE__)
         }
         self.execute(completionHandler: closure)
-    }
-    
-    /**
-    * The function return the http headers
-    *
-    * @param no need params.
-    *
-    * @return Dictionary
-    */
-    
-    func httpHeaders() -> Dictionary<String, String> {
-        return self.__config!.headers
-    }
-    
-    /**
-    * The function return model path
-    *
-    * @param no need params.
-    *
-    * @return String
-    */
-    
-    func modelsPath() -> String {
-        return self.__config!.modelsPath
-    }
-    
-    /**
-    * The function return the path items
-    *
-    * @param no need params.
-    *
-    * @return Dictionary
-    */
-    
-    func pathItems() -> Dictionary<String, String> {
-        return self.__config!.pathItems
-    }
-    
-    /**
-    * The function return the full path for the components
-    *
-    * @param no need params.
-    *
-    * @return String
-    */
-    
-    func path() -> String {
-        return self.urlComponents.path
-    }
-    
-    /**
-    * The function return the query string
-    *
-    * @param no need params.
-    *
-    * @return String
-    */
-    
-    func query() -> String? {
-        return self.urlComponents.query
-    }
-    
-    /**
-    * The function return the response type for the request
-    *
-    * @param no need params.
-    *
-    * @return ResponseType
-    */
-    
-    func response() -> ResponseType {
-        return self.__config!.responseType
     }
     
     /**
@@ -284,7 +349,7 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     */
     
     func setCachePolicy(policy: NSURLRequestCachePolicy) {
-        self.__config!.cachePolicy = policy
+        self.__config!.sessionConfiguration.requestCachePolicy = policy
     }
     
     /**
@@ -401,6 +466,17 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
+    * The function set the response disposition to the API Store
+    *
+    * @param disposition The disposition for the request.
+    *
+    */
+    
+    func setResponseDisposition(disposition: NSURLSessionResponseDisposition) {
+        self.__config!.responseDisposition = disposition
+    }
+    
+    /**
     * The function set the response type for the query
     *
     * @param type The response type.
@@ -412,6 +488,17 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
+    * The function set the session configuration
+    *
+    * @param sessionConfiguration The session Configuration.
+    *
+    */
+    
+    func setSessionConfiguration(sessionConfiguration: NSURLSessionConfiguration) {
+        self.__config!.sessionConfiguration = sessionConfiguration
+    }
+    
+    /**
     * The function set to the request the parameters to upload a file
     *
     * @param data The data to upload.
@@ -419,8 +506,10 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(data: NSData, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
-        self.upload(data, uploadType: UploadType.data, progress: handler, completionHandler: closure)
+    func upload(data: NSData, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) ->  NSURLSessionUploadTask {
+        let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithRequest(self.request(), data: data, progress: handler, completionHandler: closure)
+        uploadTask.resume()
+        return uploadTask
     }
     
     /**
@@ -431,67 +520,52 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(file: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
-        self.upload(file, uploadType: UploadType.file, progress: handler, completionHandler: closure)
+    func upload(file: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionUploadTask {
+        let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithRequest(self.request(), file: file, progress: handler, completionHandler: closure)
+        uploadTask.resume()
+        return uploadTask
     }
     
     /**
     * The function set to the request the parameters to upload a stream
     *
-    * @param stream The stream to upload.
+    * @param stream The closure to handle the stream needed for the request.
     * @params handler The handler to track the upload progress.
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(stream: NSInputStream, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
-        self.upload(stream, uploadType: UploadType.stream, progress: handler, completionHandler: closure)
+    func upload(stream: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream), progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionUploadTask {
+        let request: NSMutableURLRequest = self.request().mutableCopy() as NSMutableURLRequest
+        request.HTTPBodyStream = NSInputStream(data: request.HTTPBody)
+        let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithStreamedRequest(request, stream: stream, progress: handler, completionHandler: closure)
+        uploadTask.resume()
+        return uploadTask
     }
     
-// MARK: Private methods       
+// MARK: Private methods
     
     /**
-    * The function configure the body for the request
+    * The function search for the cache data
     *
-    * @param request The instance of the request to set the body.
+    * @param task The Task with the url key to search de cached data.
     *
     */
     
-    private func bodyForRequest(inout request: Request) {
-        if (self.__config!.bodyItems.count > 0) {
-            assert(self.endPoint.httpMethod != HttpMethod.delete, "You can`t set a body for http delete method", file: __FILE__, line: __LINE__)
-            assert(self.endPoint.httpMethod != HttpMethod.get, "You can`t set a body for http get method", file: __FILE__, line: __LINE__)
-            if self.endPoint.contentType! == ContentType.json {
-                request.body = NSJSONSerialization.dataWithJSONObject(self.__config!.bodyItems, options: NSJSONWritingOptions.PrettyPrinted, error: nil)
-            } else if self.endPoint.contentType! == ContentType.multiPartForm {
-                request.body = self.encodeMultipart(self.__config!.bodyItems).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-            } else {
-                request.body = self.encode(self.__config!.bodyItems).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+    private func cachedResponseForTask(task: NSURLSessionDataTask) {
+        dispatch_async(self.queue, {
+            var data: NSPurgeableData = NSPurgeableData()
+            if self.__config!.sessionConfiguration.requestCachePolicy != NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData {
+                data = DiskCache.defaultCache().dataForUrl(task.currentRequest.URL)
+                if self.delegate != nil && self.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") {
+                    self.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: self.responseForData(data))
+                }
+                if data.length > 0 && (self.__config!.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataDontLoad || self.__config!.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataElseLoad) {
+                    task.cancel()
+                }
             }
-            request.setValue(request.body.length.description, forHTTPHeaderField: "Content-Length")
-        }
+        })
     }
-    
-    /**
-    * The function configure the request
-    *
-    * @param request The instance of the request to configure.
-    *
-    */
-    
-    private func configureRequest(inout request: Request) {
-        request.cachePolicy = self.__config!.cachePolicy
-        request.cacheStoragePolicy = self.__config!.cacheStoragePolicy
-        if let credential: NSURLCredential = self.__config!.credential {
-            request.setAuthenticationCredential(credential, forProtectionSpace: self.__config!.protectionSpace!)
-        }
-        request.delegate = self
-        request.setValue(self.endPoint.contentType!.toRaw(), forHTTPHeaderField: "Content-Type")
-        for (key, value) in self.__config!.headers {
-            request.setValue(value, forHTTPHeaderField: key)
-        }
-        self.bodyForRequest(&request)
-    }
-    
+
     /**
     * The function encode the params for the given content type
     *
@@ -568,13 +642,43 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
     }
     
     /**
+    * The function create a new request for the session
+    *
+    * no need params.
+    *
+    * return NSURLRequest
+    */
+    
+    private func request() -> NSURLRequest {
+        let request: NSMutableURLRequest = NSMutableURLRequest(URL: self.urlComponents.URL)
+        request.HTTPMethod = self.endPoint.httpMethod!.toRaw()
+        request.setValue(self.endPoint.contentType!.toRaw(), forHTTPHeaderField: "Content-Type")
+        for (key, value) in self.__config!.headers {
+            request.setValue(value, forHTTPHeaderField: key)
+        }
+        if (self.__config!.bodyItems.count > 0) {
+            assert(self.endPoint.httpMethod != HttpMethod.delete, "You can`t set a body for http delete method", file: __FILE__, line: __LINE__)
+            assert(self.endPoint.httpMethod != HttpMethod.get, "You can`t set a body for http get method", file: __FILE__, line: __LINE__)
+            if self.endPoint.contentType! == ContentType.json {
+                request.HTTPBody = NSJSONSerialization.dataWithJSONObject(self.__config!.bodyItems, options: NSJSONWritingOptions.PrettyPrinted, error: nil)
+            } else if self.endPoint.contentType! == ContentType.multiPartForm {
+                request.HTTPBody = self.encodeMultipart(self.__config!.bodyItems).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+            } else {
+                request.HTTPBody = self.encode(self.__config!.bodyItems).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+            }
+            request.setValue(request.HTTPBody.length.description, forHTTPHeaderField: "Content-Length")
+        }
+        return request
+    }
+    
+    /**
     * The function configure the response for the current request
     *
     * @param data The data from the response.
     *
     */
     
-    private func response(data: NSData) -> AnyObject {
+    private func responseForData(data: NSData) -> AnyObject {
         if self.__config!.responseType == ResponseType.dictionary {
             if let jsonDictionary: AnyObject = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: nil) {
                 return jsonDictionary
@@ -596,29 +700,6 @@ class ApiQuery: NSObject, QueryProtocol, RequestDelegate {
             return NSString(data: data, encoding: NSUTF8StringEncoding)
         }
         return data
-    }
-    
-    /**
-    * The function set to the request the parameters to upload a object
-    *
-    * @param data The data to upload.
-    * @params type The type of the upload.
-    * @params handler The closure to track the upload progress.
-    * @param completionHandler The closure to be called when the function end.
-    */
-    
-    private func upload(data: AnyObject, uploadType type: UploadType , progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSError!) -> Void)?) {
-        assert(data != nil, "The file can't be nil", file: __FUNCTION__, line: __LINE__)
-        let request: Request = Request(httpMethod: self.endPoint.httpMethod!.toRaw(), url: self.urlComponents.URL)
-        request.upload(data, uploadType: type, progress: handler, completionHandler: closure)
-    }
-    
-//MARK: Request delegate
-    
-    func cachedResponseForUrl(url: NSURL, cachedData data: NSData) {
-        if self.delegate != nil && self.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:")  {
-            self.delegate!.cachedResponseForUrl!(url, cachedData: self.response(data))
-        }
     }
     
 }

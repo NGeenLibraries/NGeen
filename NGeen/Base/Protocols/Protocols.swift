@@ -69,14 +69,6 @@ protocol ConfigurableStoreProtocol: NSObjectProtocol {
     
 }
 
-//MARK: Request delegate
-
-@objc protocol RequestDelegate: NSObjectProtocol {
-    
-    optional func cachedResponseForUrl(url: NSURL, cachedData data: NSData)
-    
-}
-
 //MARK: Query protocol
 
 @objc protocol QueryProtocol: NSObjectProtocol {
@@ -91,6 +83,13 @@ protocol ConfigurableStoreProtocol: NSObjectProtocol {
     //func addField(field: String)
     //func dataForKey(key: String)
     //func setData(data: AnyObject, forKey key: String)
+}
+
+//MARK: SessionTask delegate
+
+@objc protocol SessionDelegate: NSObjectProtocol {
+    
+    optional func cachedResponseForUrl(url: NSURL, cachedData data: NSData)
 }
 
 //MARK: Store config
