@@ -83,12 +83,13 @@ class RequestSerializer: NSObject {
     * @return NSURLRequest
     */
     
-    func requestSerializingWithConfiguration(configuration: ApiStoreConfiguration, endPoint endpoint: ApiEndpoint, inout error: NSError?) -> NSURLRequest {
+    func requestSerializingWithConfiguration(configuration: ApiStoreConfiguration, endPoint endpoint: ApiEndpoint, error: NSErrorPointer) -> NSURLRequest {
         var request: NSURLRequest! = nil
         switch endpoint.contentType {
             case .json:
-                request = self.requestSerializingInJSONFormatWithConfiguration(configuration, endPoint: endpoint, error: &error)
+                request = self.requestSerializingInJSONFormatWithConfiguration(configuration, endPoint: endpoint, error: error)
             case .multiPartForm:
+                assert(self.constructingBodyClosure != nil, "The body closure can't be null", file: __FILE__, line: __LINE__)
                 request = self.requestSerializingInMultipartWithConfiguration(configuration, endPoint: endpoint)
             default:
                 request = self.requestSerializingInUrlencodedWithConfiguration(configuration, endPoint: endpoint)

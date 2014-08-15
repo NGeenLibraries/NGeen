@@ -187,6 +187,16 @@ class ApiStoreTests: XCTestCase {
         XCTAssertEqual(self.store!.getModelsPathForServer(kConfigKey), "test.path", "The model path should be equal to test.path", file: __FILE__, line: __LINE__)
     }
     
+    func testThatSetPinnedCertificates() {
+        self.store?.setPinnedCertificates(["test.path".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)])
+        XCTAssertGreaterThan(self.store!.getPinnedCertificates().count, 0, "The pinned certificates should be greater than 0", file: __FILE__, line: __LINE__)
+    }
+    
+    func testThatSetPinnedCertificatesForServer() {
+        self.store?.setPinnedCertificates(["test.path".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)], forServer: kConfigKey)
+        XCTAssertGreaterThan(self.store!.getPinnedCertificatesForServer(kConfigKey).count, 0, "The pinned certificates should be greater than 0", file: __FILE__, line: __LINE__)
+    }
+    
     func testThatSetResponseDisposition() {
         self.store?.setResponseDisposition(NSURLSessionResponseDisposition.Cancel)
         XCTAssertEqual(self.store!.getResponseDisposition()!, NSURLSessionResponseDisposition.Cancel, "The response disposition should be cancel", file: __FILE__, line: __LINE__)
@@ -205,6 +215,16 @@ class ApiStoreTests: XCTestCase {
     func testThatSetResponseTypeForServer() {
         self.store?.setResponseType(ResponseType.json, forServer: kConfigKey)
         XCTAssert(self.store!.getResponseType() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
+    }
+    
+    func testThatSetSecurityPolicy() {
+        self.store?.setSecurityPolicy(Policy.certificate)
+        XCTAssert(self.store!.getSecurityPolicy() != Policy.none, "The security policy should be different than security policy none", file: __FILE__, line: __LINE__)
+    }
+    
+    func testThatSetSecurityPolicyForServer() {
+        self.store?.setSecurityPolicy(Policy.certificate, forServer: kConfigKey)
+        XCTAssert(self.store!.getSecurityPolicyForServer(kConfigKey) != Policy.none, "The security policy should be different than security policy none", file: __FILE__, line: __LINE__)
     }
     
 }

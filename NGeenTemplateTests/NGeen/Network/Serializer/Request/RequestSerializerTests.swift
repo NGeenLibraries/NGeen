@@ -42,6 +42,17 @@ class RequestSerializerTests: XCTestCase {
         self.requestSerializer = nil
     }
     
+    func testThatSerializationCallConstructClosure() {
+        let expectation: XCTestExpectation = self.expectationWithDescription("construct block")
+        let endPoint = ApiEndpoint(contentType: ContentType.multiPartForm, httpMethod: HttpMethod.post, path: "example")
+        self.requestSerializer!.constructingBodyClosure = {
+            expectation.fulfill()
+            return (NSData(), "", "", "")
+        }
+        let request: NSURLRequest = self.requestSerializer!.requestSerializingInMultipartWithConfiguration(self.apiConfiguration!, endPoint: endPoint)
+        self.waitForExpectationsWithTimeout(10, handler: nil)
+    }
+    
     func testThatSerializationInUrlFormFormat() {
         let endPoint = ApiEndpoint(contentType: ContentType.urlEnconded, httpMethod: HttpMethod.post, path: "example")
         let request: NSURLRequest = self.requestSerializer!.requestSerializingInUrlencodedWithConfiguration(self.apiConfiguration!, endPoint: endPoint)

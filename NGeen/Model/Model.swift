@@ -22,10 +22,10 @@
 
 import UIKit
 
-class Model: NSObject, NSCoding {
+class Model: NSObject {
     
-    lazy private var __properties: Dictionary<String, AnyObject> = {
-        var __properties: Dictionary<String, AnyObject> = Dictionary<String, AnyObject>()
+    lazy private var __properties: [String: AnyObject] = {
+        var __properties: [String: AnyObject] = Dictionary()
         var outCount: CUnsignedInt = 0;
         var cProperties: UnsafeMutablePointer<objc_property_t> = class_copyPropertyList(self.dynamicType, &outCount)
         for counter in 0..<outCount {
@@ -38,19 +38,19 @@ class Model: NSObject, NSCoding {
     
 //MARK: Constructor
     
-    override init() {}
-    
-    convenience init(dictionary: Dictionary<String, AnyObject>) {
+    required override init() {}
+
+    convenience init(dictionary: [String: AnyObject]) {
         self.init()
         self.fill(dictionary)
     }
     
-    required init(coder decoder: NSCoder!) {
+    /*required init(coder decoder: NSCoder!) {
         super.init()
         for (key, value) in self.__properties {
             self.setValue(decoder.decodeObjectForKey(key), forKey: key)
         }
-    }
+    }*/
     
 //MARK: Instance methods
 
@@ -61,7 +61,7 @@ class Model: NSObject, NSCoding {
     *
     */
     
-    func fill(dictionary: Dictionary<String, AnyObject>) {
+    func fill(dictionary: [String: AnyObject]) {
         for (key, value) in dictionary {
             if  self.hasProperty(key) {
                 self.setValue(value, forKey: key)
@@ -92,8 +92,8 @@ class Model: NSObject, NSCoding {
     * @return Dictionary
     */
     
-    func properties() -> Dictionary<String, AnyObject> {
-        var properties: Dictionary<String, AnyObject> = Dictionary<String, AnyObject>()
+    func properties() -> [String: AnyObject] {
+        var properties: [String: AnyObject] = Dictionary()
         for (key, value) in self.__properties {
             if let value: AnyObject = self.valueForKey(key) {
                 properties[key] = value

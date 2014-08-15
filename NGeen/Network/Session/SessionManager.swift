@@ -27,7 +27,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     lazy var data: NSMutableData = NSMutableData()
     private(set) var downloadProgress: ((NSURLSession!, NSURLSessionDownloadTask!, Int64!, Int64!, Int64!) -> Void)?
     private var credential: NSURLCredential?
-    private var dataTasksDelegates: Dictionary<Int, SessionTaskDelegate>
+    private var dataTasksDelegates: [Int: SessionTaskDelegate]
     private var destination: NSURL?
     private var operationQueue: NSOperationQueue = NSOperationQueue()
     private var queue: dispatch_queue_t?
@@ -38,14 +38,16 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     var cacheStoragePolicy: NSURLCacheStoragePolicy
     var redirection: NSURLRequest?
     var responseDisposition: NSURLSessionResponseDisposition?
+    var securityPolicy: SecurityPolicy
     
 // MARK: Constructor
     
     init(sessionConfiguration: NSURLSessionConfiguration) {
         self.cacheStoragePolicy = NSURLCacheStoragePolicy.NotAllowed
-        self.dataTasksDelegates = Dictionary<Int, SessionTaskDelegate>()
+        self.dataTasksDelegates = Dictionary()
         self.queue = dispatch_queue_create("com.ngeen.sessionmanagerqueue", DISPATCH_QUEUE_CONCURRENT)
         dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
+        self.securityPolicy = SecurityPolicy()
         self.sessionConfiguration = sessionConfiguration
         super.init()
         self.session = NSURLSession(configuration: self.sessionConfiguration, delegate: self, delegateQueue: self.operationQueue)
@@ -276,7 +278,12 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         var credential: NSURLCredential? = self.credential
         if credential == nil {
             if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust {
-                //TODO chain certificates
+                if self.securityPolicy.trustedServer(challenge.protectionSpace.serverTrust, forDomain: challenge.protectionSpace.host) {
+                    disposition = NSURLSessionAuthChallengeDisposition.UseCredential
+                    credential =  NSURLCredential(forTrust: challenge.protectionSpace.serverTrust)
+                } else {
+                    disposition = NSURLSessionAuthChallengeDisposition.CancelAuthenticationChallenge
+                }
             }
         }
         completionHandler(disposition, credential)

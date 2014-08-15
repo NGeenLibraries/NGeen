@@ -57,6 +57,7 @@ class ApiQuery: NSObject, QueryProtocol {
         self.queue = dispatch_queue_create("com.ngeen.requestqueue", DISPATCH_QUEUE_CONCURRENT)
         dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
         self.sessionManager = SessionManager(sessionConfiguration: self.configuration.sessionConfiguration)
+        self.sessionManager!.securityPolicy = self.configuration.securityPolicy
         if let credential: NSURLCredential = self.configuration.credential {
             self.sessionManager!.setAuthenticationCredential(self.configuration.credential!, forProtectionSpace: self.configuration.protectionSpace!)
         }
@@ -107,7 +108,7 @@ class ApiQuery: NSObject, QueryProtocol {
     * @return Dictionary
     */
     
-    func getBodyItems() -> NSDictionary {
+    func getBodyItems() -> [String: AnyObject] {
         return self.configuration.bodyItems
     }
     
@@ -177,7 +178,7 @@ class ApiQuery: NSObject, QueryProtocol {
     * @return Dictionary
     */
     
-    func getHttpHeaders() -> Dictionary<String, String> {
+    func getHttpHeaders() -> [String: String] {
         return self.configuration.headers
     }
     
@@ -201,7 +202,7 @@ class ApiQuery: NSObject, QueryProtocol {
     * @return Dictionary
     */
     
-    func getPathItems() -> Dictionary<String, String> {
+    func getPathItems() -> [String: String] {
         return self.configuration.pathItems
     }
     
@@ -230,7 +231,7 @@ class ApiQuery: NSObject, QueryProtocol {
     }
     
     /**
-    * The function return the response type for the request
+    * The function return the response type for the session
     *
     * @param no need params.
     *
@@ -242,14 +243,26 @@ class ApiQuery: NSObject, QueryProtocol {
     }
     
     /**
-    * The function execute the request
+    * The function return the security policy for the session
+    *
+    * no need params.
+    *
+    * return Policy
+    */
+    
+    func getSecurityPolicy() -> Policy {
+        return self.configuration.securityPolicy.policy
+    }
+    
+    /**
+    * The function execute the task
     *
     * @param completionHandler The closure to be called when the function end.
     *
     */
     
     func execute(completionHandler closure: NGeenClosure) {
-        let request: NSURLRequest = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
+        let request: NSURLRequest = self.requestSerializer.requestSerializingWithConfiguration(self.configuration, endPoint: self.endPoint, error: nil)
         let sessionDataTask: NSURLSessionDataTask = self.sessionManager!.dataTaskWithRequest(request, completionHandler: {(data, urlResponse, error) in
             var response: AnyObject!
             if !error {
@@ -269,7 +282,7 @@ class ApiQuery: NSObject, QueryProtocol {
     *
     */
     
-    func execute(parameters: Dictionary<String, String>, completionHandler closure: NGeenClosure) {
+    func execute(parameters: [String: String], completionHandler closure: NGeenClosure) {
         switch self.endPoint.httpMethod {
             case .delete, .get, .head:
                 self.setQueryItems(parameters)
@@ -356,7 +369,7 @@ class ApiQuery: NSObject, QueryProtocol {
     *
     */
     
-    func setHeaders(headers: Dictionary<String, String>) {
+    func setHeaders(headers: [String: String]) {
         self.configuration.headers += headers
     }
 
@@ -391,7 +404,7 @@ class ApiQuery: NSObject, QueryProtocol {
     *
     */
     
-    func setPathItems(items: Dictionary<String, String>) {
+    func setPathItems(items: [String: String]) {
         self.configuration.pathItems += items
         for (key, value) in items {
             self.setPathItem(value, forKey: key)
@@ -417,7 +430,7 @@ class ApiQuery: NSObject, QueryProtocol {
     *
     */
     
-    func setQueryItems(items: Dictionary<String, AnyObject>) {
+    func setQueryItems(items: [String: AnyObject]) {
         self.configuration.queryItems += items
     }
     
@@ -441,6 +454,17 @@ class ApiQuery: NSObject, QueryProtocol {
     
     func setResponseType(type: ResponseType) {
         self.configuration.responseType = type
+    }
+    
+    /**
+    * The function set the security policy for the session
+    *
+    * @param policy The security policy for the session.
+    *
+    */
+    
+    func setSecurityPolicy(policy: Policy) {
+        self.configuration.securityPolicy.policy = policy
     }
     
     /**
