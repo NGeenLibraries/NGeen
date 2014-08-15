@@ -71,6 +71,14 @@ enum DatabaseType: Int {
     return left
 }
 
+//MARK: Policy
+
+enum Policy {
+    case certificate
+    case none
+    case publicKey
+}
+
 //MARK: Response type
 
 enum ResponseType: Int {

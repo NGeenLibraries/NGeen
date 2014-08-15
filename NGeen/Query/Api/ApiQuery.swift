@@ -57,6 +57,7 @@ class ApiQuery: NSObject, QueryProtocol {
         self.queue = dispatch_queue_create("com.ngeen.requestqueue", DISPATCH_QUEUE_CONCURRENT)
         dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
         self.sessionManager = SessionManager(sessionConfiguration: self.configuration.sessionConfiguration)
+        self.sessionManager!.securityPolicy.certificates = self.configuration.pinnedCertificates
         if let credential: NSURLCredential = self.configuration.credential {
             self.sessionManager!.setAuthenticationCredential(self.configuration.credential!, forProtectionSpace: self.configuration.protectionSpace!)
         }
@@ -230,7 +231,7 @@ class ApiQuery: NSObject, QueryProtocol {
     }
     
     /**
-    * The function return the response type for the request
+    * The function return the response type for the session
     *
     * @param no need params.
     *
@@ -242,7 +243,19 @@ class ApiQuery: NSObject, QueryProtocol {
     }
     
     /**
-    * The function execute the request
+    * The function return the security policy for the session
+    *
+    * no need params.
+    *
+    * return Policy
+    */
+    
+    func getSecurityPolicy() -> Policy {
+        return self.configuration.policy
+    }
+    
+    /**
+    * The function execute the task
     *
     * @param completionHandler The closure to be called when the function end.
     *
@@ -441,6 +454,17 @@ class ApiQuery: NSObject, QueryProtocol {
     
     func setResponseType(type: ResponseType) {
         self.configuration.responseType = type
+    }
+    
+    /**
+    * The function set the security policy for the session
+    *
+    * @param policy The security policy for the session.
+    *
+    */
+    
+    func setSecurityPolicy(policy: Policy) {
+        self.configuration.policy = policy
     }
     
     /**

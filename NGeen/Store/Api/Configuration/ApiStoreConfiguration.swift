@@ -33,6 +33,7 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
     var modelsPath: String
     var pathItems: [String: String]
     var pinnedCertificates: [NSData]
+    var policy: Policy
     var protectionSpace: NSURLProtectionSpace?
     var queryItems: [String: AnyObject]
     var redirection: NSURLRequest?
@@ -53,6 +54,7 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
         self.modelsPath = ""
         self.pathItems = Dictionary()
         self.pinnedCertificates = Array()
+        self.policy = Policy.none
         self.queryItems = Dictionary()
         self.responseDisposition = NSURLSessionResponseDisposition.Allow
         self.responseType = ResponseType.data

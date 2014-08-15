@@ -409,6 +409,33 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     }
     
     /**
+    * The function get the security policy for default server configuration
+    *
+    * no need params.
+    *
+    * return Policy
+    */
+    
+    func getSecurityPolicy() -> Policy {
+        return getSecurityPolicyForServer(kDefaultServerName)
+    }
+    
+    /**
+    * The function get the security policy for the given server
+    *
+    * @param server The name for the server to store the configuration.
+    *
+    * return Policy
+    */
+    
+    func getSecurityPolicyForServer(server: String) -> Policy {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            return configuration.policy
+        }
+        return Policy.none
+    }
+    
+    /**
     * The function get the session configuration for the default server config
     *
     * @param sessionConfiguration The session Configuration.
@@ -782,6 +809,33 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     func setResponseType(type: ResponseType, forServer server: String) {
         if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
             configuration.responseType = type
+            self.setConfiguration(configuration, forKey: server)
+        }
+    }
+    
+    /**
+    * The function set the security policy for the auth chanllenge for the default 
+    * server configuration
+    *
+    * @param policy The type of the policy.
+    *
+    */
+    
+    func setSecurityPolicy(policy: Policy) {
+        self.setSecurityPolicy(policy, forServer: kDefaultServerName)
+    }
+    
+    /**
+    * The function set the security policy for the auth chanllenge for the given server
+    *
+    * @param policy The type of the policy.
+    * @param server The name for the server to store the configuration.
+    *
+    */
+    
+    func setSecurityPolicy(policy: Policy, forServer server: String) {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            configuration.policy = policy
             self.setConfiguration(configuration, forKey: server)
         }
     }
