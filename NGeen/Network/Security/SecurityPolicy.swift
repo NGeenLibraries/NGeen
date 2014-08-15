@@ -21,7 +21,6 @@
 // THE SOFTWARE.
 
 /* TODO: 1. create the cfarray from the certificates
-         2. create the SecPolicyCreateSSL when the domain parameter is not empty
          3. finish validation for public keys
 */
 
@@ -29,13 +28,18 @@ import UIKit
 
 class SecurityPolicy: NSObject {
  
+    private var pinnedKeys: [SecKeyRef]
+    
+    var allowInvalidCertificates: Bool
     var certificates: NSArray
     var policy: Policy
     
 //MARK: Constructor
     
     override init() {
+        self.allowInvalidCertificates = false
         self.certificates = NSArray()
+        self.pinnedKeys = Array()
         self.policy = Policy.none
     }
     
@@ -69,15 +73,21 @@ class SecurityPolicy: NSObject {
             case .certificate:
                 let policies: NSMutableArray = NSMutableArray.array()
                 if !domain.isEmpty {
-                    //policies.addObject(SecPolicyCreateSSL(true, domain as CFStringRef).takeRetainedValue())
+                    let cfDomain = CFStringCreateWithCStringNoCopy(kCFAllocatorDefault, domain, CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding), kCFAllocatorDefault)
+                    policies.addObject(SecPolicyCreateSSL(1, cfDomain).takeUnretainedValue())
                 } else {
                     policies.addObject(SecPolicyCreateBasicX509().takeUnretainedValue())
                 }
                 SecTrustSetPolicies(server, policies)
+                var result: SecTrustResultType = UInt32(kSecTrustResultOtherError)
+                SecTrustEvaluate(server, &result)
+                if (Int(result) != kSecTrustResultUnspecified || Int(result) != kSecTrustResultProceed) && !self.allowInvalidCertificates {
+                    return false
+                }
                 let certificateCount: CFIndex = SecTrustGetCertificateCount(server)
                 let trustChains: NSMutableArray = NSMutableArray.array()
-                for (index: CFIndex) in 0...certificateCount {
-                    let certificate = SecTrustGetCertificateAtIndex(server, index).takeUnretainedValue()
+                for (index: CFIndex) in 0..<certificateCount {
+                    let certificate: SecCertificateRef = SecTrustGetCertificateAtIndex(server, index).takeUnretainedValue()
                     trustChains.addObject(SecCertificateCopyData(certificate).takeUnretainedValue())
                 }
                 let pinnedCertificates = NSMutableArray.array()
@@ -95,7 +105,7 @@ class SecurityPolicy: NSObject {
             case .none:
                 return true
             case .publicKey:
-                let trustedPublicKeys = 0
+                var trustedPublicKeys: Int = 0
                 let policy = SecPolicyCreateBasicX509().takeUnretainedValue()
                 let certificateCount: CFIndex = SecTrustGetCertificateCount(server)
                 let trustedChains: NSMutableArray = NSMutableArray.arrayWithCapacity(certificateCount)
@@ -103,14 +113,22 @@ class SecurityPolicy: NSObject {
                     let certificate: SecCertificateRef = SecTrustGetCertificateAtIndex(server, index).takeUnretainedValue()
                     let pointerCertificates = UnsafeMutablePointer<UnsafePointer<()>>(calloc(0, UInt(sizeof(CGFloat))))
                     let certificates: CFArrayRef = CFArrayCreate(kCFAllocatorDefault, pointerCertificates, 1, nil)
-                    var trust: UnsafeMutablePointer<Unmanaged<SecTrust>?> = nil
-                    SecTrustCreateWithCertificates(certificates, policy, trust)
-                    var trustResult: UnsafeMutablePointer<SecTrustResultType> = nil
-                    //SecTrustEvaluate(trust, trustResult)
-                    //if trust != nil {
-                      //  trustedChains.addObject(SecTrustCopyPublicKey(trust).takeUnretainedValue())
-                    //}
-                    
+                    var trust: Unmanaged<SecTrust>? = nil
+                    SecTrustCreateWithCertificates(certificates, policy, &trust)
+                    if trust != nil {
+                        let trusted = trust!.takeUnretainedValue()
+                        var trustResult: UnsafeMutablePointer<SecTrustResultType> = nil
+                        SecTrustEvaluate(trusted, trustResult)
+                        trustedChains.addObject(SecTrustCopyPublicKey(trusted).takeUnretainedValue())
+                    }
+                    for key in trustedChains {
+                        for pinnedKey in self.pinnedKeys {
+                            if key as SecKeyRef === pinnedKey as SecKeyRef {
+                                trustedPublicKeys += 1
+                            }
+                        }
+                    }
+                    return trustedPublicKeys > 0
                 }
             default:
                 return false

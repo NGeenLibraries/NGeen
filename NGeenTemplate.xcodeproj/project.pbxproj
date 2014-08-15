@@ -45,6 +45,12 @@
 		67D11879199DB5EB00C72923 /* SecurityPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D11878199DB5EB00C72923 /* SecurityPolicy.swift */; };
 		67D1187A199DB5EB00C72923 /* SecurityPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D11878199DB5EB00C72923 /* SecurityPolicy.swift */; };
 		67D1187D199DC03500C72923 /* SecurityPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67D1187C199DC03500C72923 /* SecurityPolicyTests.swift */; };
+		67D11885199E7B2500C72923 /* foo.cer in Resources */ = {isa = PBXBuildFile; fileRef = 67D11881199E7B2500C72923 /* foo.cer */; };
+		67D11886199E7B2500C72923 /* foo.cer in Resources */ = {isa = PBXBuildFile; fileRef = 67D11881199E7B2500C72923 /* foo.cer */; };
+		67D11887199E7B2500C72923 /* NoDomains.cer in Resources */ = {isa = PBXBuildFile; fileRef = 67D11882199E7B2500C72923 /* NoDomains.cer */; };
+		67D11888199E7B2500C72923 /* NoDomains.cer in Resources */ = {isa = PBXBuildFile; fileRef = 67D11882199E7B2500C72923 /* NoDomains.cer */; };
+		67D1188A199E9F8200C72923 /* foobar.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = 67D11889199E9F8200C72923 /* foobar.com.cer */; };
+		67D1188B199E9F8200C72923 /* foobar.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = 67D11889199E9F8200C72923 /* foobar.com.cer */; };
 		67E0BB97199406D000110068 /* ModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E0BB96199406D000110068 /* ModelTests.swift */; };
 		67E0BB981994071900110068 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4114AE519804388002F46A9 /* Model.swift */; };
 		67E0BB9B1994085300110068 /* ModelMockup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E0BB9A1994085300110068 /* ModelMockup.swift */; };
@@ -150,6 +156,9 @@
 		67CE34CD19954ABD00B0F97C /* ApiStoreConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ApiStoreConfiguration.swift; path = Configuration/ApiStoreConfiguration.swift; sourceTree = "<group>"; };
 		67D11878199DB5EB00C72923 /* SecurityPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SecurityPolicy.swift; path = Security/SecurityPolicy.swift; sourceTree = "<group>"; };
 		67D1187C199DC03500C72923 /* SecurityPolicyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SecurityPolicyTests.swift; path = NGeen/Network/Security/SecurityPolicyTests.swift; sourceTree = "<group>"; };
+		67D11881199E7B2500C72923 /* foo.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = foo.cer; sourceTree = "<group>"; };
+		67D11882199E7B2500C72923 /* NoDomains.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = NoDomains.cer; sourceTree = "<group>"; };
+		67D11889199E9F8200C72923 /* foobar.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = foobar.com.cer; sourceTree = "<group>"; };
 		67E0BB96199406D000110068 /* ModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModelTests.swift; path = NGeen/Model/ModelTests.swift; sourceTree = "<group>"; };
 		67E0BB9A1994085300110068 /* ModelMockup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModelMockup.swift; path = NGeen/Model/Mockup/ModelMockup.swift; sourceTree = "<group>"; };
 		67FF194B199AFC13005CEA0C /* Alamofire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Alamofire.swift; path = "../../../../../Downloads/Alamofire-master/Source/Alamofire.swift"; sourceTree = "<group>"; };
@@ -190,6 +199,7 @@
 				375DB4721951DC920094B34C /* Model */,
 				375DB4731951DC920094B34C /* Network */,
 				375DB4771951DC920094B34C /* Query */,
+				67D1187E199E7B2500C72923 /* Resource */,
 				375DB47A1951DC920094B34C /* Store */,
 			);
 			path = NGeen;
@@ -503,6 +513,24 @@
 			name = Security;
 			sourceTree = "<group>";
 		};
+		67D1187E199E7B2500C72923 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				67D1187F199E7B2500C72923 /* Certificate */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
+		67D1187F199E7B2500C72923 /* Certificate */ = {
+			isa = PBXGroup;
+			children = (
+				67D11889199E9F8200C72923 /* foobar.com.cer */,
+				67D11881199E7B2500C72923 /* foo.cer */,
+				67D11882199E7B2500C72923 /* NoDomains.cer */,
+			);
+			path = Certificate;
+			sourceTree = "<group>";
+		};
 		67E0BB95199406AB00110068 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -705,7 +733,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67D1188A199E9F8200C72923 /* foobar.com.cer in Resources */,
+				67D11885199E7B2500C72923 /* foo.cer in Resources */,
 				3DB0464E194F827B0028FEB1 /* Images.xcassets in Resources */,
+				67D11887199E7B2500C72923 /* NoDomains.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -713,6 +744,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67D1188B199E9F8200C72923 /* foobar.com.cer in Resources */,
+				67D11886199E7B2500C72923 /* foo.cer in Resources */,
+				67D11888199E7B2500C72923 /* NoDomains.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -23,6 +23,25 @@
 import UIKit
 import XCTest
 
+class Certificate: NSObject {
+    
+    class func createTrustSecForCertificateName(name: String, inout certificate cert: SecCertificateRef?, inout forTrust trust: SecTrustRef?) {
+        let path: String = NSBundle.mainBundle().pathForResource(name, ofType: "cer")
+        XCTAssertFalse(path.isEmpty, "The path for the certificate should not be null", file: __FILE__, line: __LINE__)
+        var error: NSErrorPointer = nil
+        let data: NSData = NSData.dataWithContentsOfFile(path, options: NSDataReadingOptions.DataReadingMappedAlways, error: error)
+        XCTAssert(error == nil, "The error should be null", file: __FILE__, line: __LINE__)
+        cert = SecCertificateCreateWithData(kCFAllocatorDefault, data).takeUnretainedValue()
+        let certificates: NSArray = NSArray(array: [cert!])
+        let policy = SecPolicyCreateBasicX509()
+        var trusted: Unmanaged<SecTrustRef>? = nil
+        SecTrustCreateWithCertificates(cert, policy.takeUnretainedValue(), &trusted)
+        if trusted != nil {
+            trust = trusted!.takeUnretainedValue()
+        }
+    }
+}
+
 class SecurityPolicyTests: XCTestCase {
 
     override func setUp() {
@@ -35,4 +54,35 @@ class SecurityPolicyTests: XCTestCase {
         super.tearDown()
     }
 
+    func testThatSelfSignedCertificateWithDomain() {
+        var certificate: SecCertificateRef?
+        var trust: SecTrustRef?
+        Certificate.createTrustSecForCertificateName("foobar.com", certificate: &certificate, forTrust: &trust)
+        let securityPolicy: SecurityPolicy = SecurityPolicy()
+        securityPolicy.allowInvalidCertificates = true
+        securityPolicy.certificates = [SecCertificateCopyData(certificate).takeUnretainedValue()]
+        securityPolicy.policy = Policy.certificate
+        XCTAssertTrue(securityPolicy.trustedServer(trust!, forDomain: "foobar.com"), "Certificate should be trusted", file: __FILE__, line: __LINE__)
+    }
+    
+    func testThatSelfSignedCertificateWithoutDomainShouldBeTrue() {
+        var certificate: SecCertificateRef?
+        var trust: SecTrustRef?
+        Certificate.createTrustSecForCertificateName("NoDomains", certificate: &certificate, forTrust: &trust)
+        let securityPolicy: SecurityPolicy = SecurityPolicy()
+        securityPolicy.allowInvalidCertificates = true
+        securityPolicy.certificates = [SecCertificateCopyData(certificate).takeUnretainedValue()]
+        securityPolicy.policy = Policy.certificate
+        XCTAssertTrue(securityPolicy.trustedServer(trust!, forDomain: ""), "Certificate should not be trusted", file: __FILE__, line: __LINE__)
+    }
+    
+    func testThatSelfSignedCertificateWithoutDomain() {
+        var certificate: SecCertificateRef?
+        var trust: SecTrustRef?
+        Certificate.createTrustSecForCertificateName("NoDomains", certificate: &certificate, forTrust: &trust)
+        let securityPolicy: SecurityPolicy = SecurityPolicy()
+        securityPolicy.certificates = [SecCertificateCopyData(certificate).takeUnretainedValue()]
+        securityPolicy.policy = Policy.certificate
+        XCTAssertFalse(securityPolicy.trustedServer(trust!, forDomain: "foo.bar"), "Certificate should not be trusted", file: __FILE__, line: __LINE__)
+    }
 }
