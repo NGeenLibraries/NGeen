@@ -21,37 +21,27 @@
 // THE SOFTWARE.
 
 
+/*TODO: 1. return the query
+*/
+
 import UIKit
 
 class ApiQuery: NSObject, QueryProtocol {
     
-    internal var config: ConfigurationStoreProtocol? {
+    internal var config: ConfigurationStoreProtocol {
         get {
-            return __config
+            return configuration
         }
         set(config) {
-            __config = config as? ApiStoreConfiguration
+            configuration = config as ApiStoreConfiguration
         }
     }
-    private struct NGImageBodyPart {
-        
-        var data: NSData
-        var fileName: String
-        var mimeType: String
-        var name: String
-
-        init(bodies: NSDictionary) {
-            self.data = bodies["data"] as NSData!
-            self.fileName = bodies["fileName"] as String!
-            self.mimeType = bodies["mimeType"] as String!
-            self.name = bodies["name"] as String!
-        }
-    }
-    private var __config: ApiStoreConfiguration?
+    private var configuration: ApiStoreConfiguration
     private var endPoint: ApiEndpoint
     private var queue: dispatch_queue_t?
+    private var requestSerializer: RequestSerializer
+    private var responseSerializer: ResponseSerializer
     private var sessionManager: SessionManager?
-    private var urlComponents: NSURLComponents = NSURLComponents(string: "")
     
     weak var delegate: ApiQueryDelegate?
     
@@ -59,18 +49,18 @@ class ApiQuery: NSObject, QueryProtocol {
     
     init(configuration: ConfigurationStoreProtocol, endPoint: ApiEndpoint) {
         self.endPoint = endPoint
-        self.urlComponents.path = (self.endPoint.path != nil ? self.endPoint.path : "")
+        self.configuration = ApiStoreConfiguration()
+        self.requestSerializer = RequestSerializer()
+        self.responseSerializer = ResponseSerializer()
         super.init()
         self.config = configuration
         self.queue = dispatch_queue_create("com.ngeen.requestqueue", DISPATCH_QUEUE_CONCURRENT)
         dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
-        self.sessionManager = SessionManager(sessionConfiguration: self.__config!.sessionConfiguration)
-        if let credential: NSURLCredential = self.__config!.credential {
-            self.sessionManager!.setAuthenticationCredential(self.__config!.credential!, forProtectionSpace: self.__config!.protectionSpace!)
+        self.sessionManager = SessionManager(sessionConfiguration: self.configuration.sessionConfiguration)
+        if let credential: NSURLCredential = self.configuration.credential {
+            self.sessionManager!.setAuthenticationCredential(self.configuration.credential!, forProtectionSpace: self.configuration.protectionSpace!)
         }
-        self.sessionManager!.responseDisposition = self.__config!.responseDisposition
-        self.urlComponents.scheme = self.__config!.scheme
-        self.urlComponents.host = self.__config!.host
+        self.sessionManager!.responseDisposition = self.configuration.responseDisposition
     }
     
 // MARK: Instance methods    
@@ -86,7 +76,8 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func download(destination: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionDownloadTask {
-        let downloadTask: NSURLSessionDownloadTask = self.sessionManager!.downloadTaskWithRequest(self.request(), destination: destination, progress: handler, completionHandler: closure)
+        let request: NSURLRequest = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
+        let downloadTask: NSURLSessionDownloadTask = self.sessionManager!.downloadTaskWithRequest(request, destination: destination, progress: handler, completionHandler: closure)
         downloadTask.resume()
         return downloadTask
     }
@@ -117,25 +108,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func getBodyItems() -> NSDictionary {
-        return self.__config!.bodyItems
-    }
-    
-    /**
-    * The function return the body
-    *
-    * @param no need params.
-    *
-    * @return String
-    */
-    
-    func getBody() -> String {
-        if self.endPoint.contentType! == ContentType.json {
-            let data: NSData = NSJSONSerialization.dataWithJSONObject(self.__config!.bodyItems, options: NSJSONWritingOptions.PrettyPrinted, error: nil)
-            return NSString(data: data, encoding: NSUTF8StringEncoding)
-        } else if self.endPoint.contentType == ContentType.multiPartForm {
-            return self.encodeMultipart(self.__config!.bodyItems)
-        }
-        return self.encode(self.__config!.bodyItems)
+        return self.configuration.bodyItems
     }
     
     /**
@@ -147,7 +120,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func getCachePolicy() -> NSURLRequestCachePolicy {
-        return self.__config!.sessionConfiguration.requestCachePolicy
+        return self.configuration.sessionConfiguration.requestCachePolicy
     }
     
     /**
@@ -159,7 +132,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func getCacheStoragePolicy() -> NSURLCacheStoragePolicy {
-        return self.__config!.cacheStoragePolicy
+        return self.configuration.cacheStoragePolicy
     }
     
     /**
@@ -169,7 +142,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func getConfiguration() -> ApiStoreConfiguration {
-        return self.__config!
+        return self.configuration
     }
     
     /**
@@ -180,8 +153,8 @@ class ApiQuery: NSObject, QueryProtocol {
     * return NSProgress
     */
     
-    func getDownloadProgressForTask(task: NSURLSessionUploadTask) -> NSProgress? {
-        return self.sessionManager!.getDownloadProgressForTask(task)
+    func getDownloadProgressForTask(task: NSURLSessionUploadTask) -> NSProgress {
+        return self.sessionManager!.getDownloadProgressForTask(task)!
     }
     
     /**
@@ -193,7 +166,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func getUploadProgressForTask(task: NSURLSessionUploadTask) -> NSProgress? {
-        return self.sessionManager!.getUploadProgressForTask(task)
+        return self.sessionManager!.getUploadProgressForTask(task)!
     }
     
     /**
@@ -205,7 +178,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func getHttpHeaders() -> Dictionary<String, String> {
-        return self.__config!.headers
+        return self.configuration.headers
     }
     
     /**
@@ -217,7 +190,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func getModelsPath() -> String {
-        return self.__config!.modelsPath
+        return self.configuration.modelsPath
     }
     
     /**
@@ -229,7 +202,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func getPathItems() -> Dictionary<String, String> {
-        return self.__config!.pathItems
+        return self.configuration.pathItems
     }
     
     /**
@@ -241,19 +214,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func getPath() -> String {
-        return self.urlComponents.path
-    }
-    
-    /**
-    * The function return the query string
-    *
-    * @param no need params.
-    *
-    * @return String
-    */
-    
-    func getQuery() -> String? {
-        return self.urlComponents.query
+        return self.endPoint.path
     }
     
     /**
@@ -265,7 +226,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func getResponseDisposition() -> NSURLSessionResponseDisposition {
-        return self.__config!.responseDisposition
+        return self.configuration.responseDisposition
     }
     
     /**
@@ -277,7 +238,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func getResponseType() -> ResponseType {
-        return self.__config!.responseType
+        return self.configuration.responseType
     }
     
     /**
@@ -288,11 +249,13 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func execute(completionHandler closure: NGeenClosure) {
-        assert(self.urlComponents.URL != nil, "The url cant be null", file: __FUNCTION__, line: __LINE__)
-        let sessionDataTask: NSURLSessionDataTask = self.sessionManager!.dataTaskWithRequest(self.request(), completionHandler: {(data, urlResponse, error) in
-            if closure != nil {
-                closure!(object: self.responseForData(data), error: error)
+        let request: NSURLRequest = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
+        let sessionDataTask: NSURLSessionDataTask = self.sessionManager!.dataTaskWithRequest(request, completionHandler: {(data, urlResponse, error) in
+            var response: AnyObject!
+            if !error {
+                response = self.responseSerializer.responseWithConfiguration(self.configuration, endPoint: self.endPoint, data: data, error: nil)
             }
+            closure?(object: response, error: error)
         })
         self.cachedResponseForTask(sessionDataTask)
         sessionDataTask.resume()
@@ -307,11 +270,11 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func execute(parameters: Dictionary<String, String>, completionHandler closure: NGeenClosure) {
-        switch self.endPoint.httpMethod! {
+        switch self.endPoint.httpMethod {
             case .delete, .get, .head:
                 self.setQueryItems(parameters)
             case .patch, .post, .put:
-                self.__config!.bodyItems += parameters
+                self.configuration.bodyItems += parameters
             default:
                 assert(false, "Invalid http method", file: __FILE__, line: __LINE__)
         }
@@ -327,7 +290,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func setBodyItem(item: AnyObject, forKey key: String) {
-        self.__config!.bodyItems[key] = item
+        self.configuration.bodyItems[key] = item
     }
     
     /**
@@ -338,7 +301,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func setBodyItems(items: [String: AnyObject]) {
-        self.__config!.bodyItems += items
+        self.configuration.bodyItems += items
     }
     
     /**
@@ -349,7 +312,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func setCachePolicy(policy: NSURLRequestCachePolicy) {
-        self.__config!.sessionConfiguration.requestCachePolicy = policy
+        self.configuration.sessionConfiguration.requestCachePolicy = policy
     }
     
     /**
@@ -360,24 +323,18 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func setCacheStoragePolicy(policy: NSURLCacheStoragePolicy) {
-        self.__config!.cacheStoragePolicy = policy
+        self.configuration.cacheStoragePolicy = policy
     }
     
     /**
     * The function set the data for a given image
     *
-    * @param data The data with the contents of the image.
-    * @param name The name for the image in the body.
-    * @param file The file name for the image in the body.
-    * @param mime The mime type of the image.
+    * @param closure The closure to call when the serializer need the image data.
     *
     */
     
-    func setFileData(data: NSData, forName name: String, fileName file: String, mimeType mime: String) {
-        assert(file != nil, "You should provide the file name for the file", file: __FILE__, line: __LINE__)
-        assert(name != nil, "You should provide a name for the file", file: __FILE__, line: __LINE__)
-        assert(mime != nil, "You should provide a mime type for the file", file: __FILE__, line: __LINE__)
-        self.__config!.bodyItems[kDefaultImageKeyData] = ["data": data, "fileName": file, "name": name, "mimeType": mime]
+    func setConstructingBodyClosure(closure: () -> (data: NSData!, name: String!, fileName: String!, mimeType: String!)) {
+        self.requestSerializer.constructingBodyClosure = closure
     }
     
     /**
@@ -389,7 +346,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func setHeader(header: String, forKey key: String) {
-        self.__config!.headers[key] = header
+        self.configuration.headers[key] = header
     }
     
     /**
@@ -400,7 +357,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func setHeaders(headers: Dictionary<String, String>) {
-        self.__config!.headers += headers
+        self.configuration.headers += headers
     }
 
     /**
@@ -411,7 +368,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func setModelsPath(path: String) {
-        self.__config?.modelsPath = path
+        self.configuration.modelsPath = path
     }
    
     /**
@@ -423,8 +380,8 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func setPathItem(item: String, forKey key: String) {
-        self.__config!.pathItems[key] = item
-        self.urlComponents.path = "\(self.urlComponents.path)/\(item)"
+        self.configuration.pathItems[key] = item
+        self.endPoint.path += "/\(item)"
     }
     
     /**
@@ -435,9 +392,9 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func setPathItems(items: Dictionary<String, String>) {
-        self.__config!.pathItems += items
+        self.configuration.pathItems += items
         for (key, value) in items {
-            self.urlComponents.path = "\(self.urlComponents.path)/\(value)"
+            self.setPathItem(value, forKey: key)
         }
     }
     
@@ -450,8 +407,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func setQueryItem(item: AnyObject, forKey key: String) {
-        self.__config!.queryItems[key] = item
-        self.urlComponents.query = (!self.urlComponents.query ? "" : self.urlComponents.query + "&") + "\(self.encode([key: item]))"
+        self.configuration.queryItems[key] = item
     }
     
     /**
@@ -462,7 +418,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func setQueryItems(items: Dictionary<String, AnyObject>) {
-        self.urlComponents.query = (!self.urlComponents.query ? "" : self.urlComponents.query + "&") + "\(self.encode(items))"
+        self.configuration.queryItems += items
     }
     
     /**
@@ -473,7 +429,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func setResponseDisposition(disposition: NSURLSessionResponseDisposition) {
-        self.__config!.responseDisposition = disposition
+        self.configuration.responseDisposition = disposition
     }
     
     /**
@@ -484,7 +440,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func setResponseType(type: ResponseType) {
-        self.__config!.responseType = type
+        self.configuration.responseType = type
     }
     
     /**
@@ -495,7 +451,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func setSessionConfiguration(sessionConfiguration: NSURLSessionConfiguration) {
-        self.__config!.sessionConfiguration = sessionConfiguration
+        self.configuration.sessionConfiguration = sessionConfiguration
     }
     
     /**
@@ -507,7 +463,8 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func upload(data: NSData, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) ->  NSURLSessionUploadTask {
-        let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithRequest(self.request(), data: data, progress: handler, completionHandler: closure)
+        let request: NSURLRequest = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
+        let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithRequest(request, data: data, progress: handler, completionHandler: closure)
         uploadTask.resume()
         return uploadTask
     }
@@ -521,7 +478,8 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func upload(file: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionUploadTask {
-        let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithRequest(self.request(), file: file, progress: handler, completionHandler: closure)
+        let request: NSURLRequest = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
+        let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithRequest(request, file: file, progress: handler, completionHandler: closure)
         uploadTask.resume()
         return uploadTask
     }
@@ -535,7 +493,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func upload(stream: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream), progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionUploadTask {
-        let request: NSMutableURLRequest = self.request().mutableCopy() as NSMutableURLRequest
+        let request: NSMutableURLRequest = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint).mutableCopy() as NSMutableURLRequest
         request.HTTPBodyStream = NSInputStream(data: request.HTTPBody)
         let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithStreamedRequest(request, stream: stream, progress: handler, completionHandler: closure)
         uploadTask.resume()
@@ -554,152 +512,18 @@ class ApiQuery: NSObject, QueryProtocol {
     private func cachedResponseForTask(task: NSURLSessionDataTask) {
         dispatch_async(self.queue, {
             var data: NSPurgeableData = NSPurgeableData()
-            if self.__config!.sessionConfiguration.requestCachePolicy != NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData {
+            if self.configuration.sessionConfiguration.requestCachePolicy != NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData {
                 data = DiskCache.defaultCache().dataForUrl(task.currentRequest.URL)
                 if self.delegate != nil && self.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") {
-                    self.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: self.responseForData(data))
+                    let response: AnyObject = self.responseSerializer.responseWithConfiguration(self.configuration, endPoint: self.endPoint, data: data, error: nil)
+                    self.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response)
                 }
-                if data.length > 0 && (self.__config!.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataDontLoad || self.__config!.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataElseLoad) {
+                if data.length > 0 && (self.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataDontLoad ||
+                    self.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataElseLoad) {
                     task.cancel()
                 }
             }
         })
-    }
-
-    /**
-    * The function encode the params for the given content type
-    *
-    * @param parameters The dictionary with the params to encode.
-    *
-    * @return String
-    */
-    
-    private func encode(parameters: [String: AnyObject]) -> String {
-        
-        func query() -> String! {
-            
-            func queryComponents(key: String, value: AnyObject) -> [(String, String)] {
-               
-                func arrayQueryComponents(key: String, array: [AnyObject]) -> [(String, String)] {
-                    var components: [(String, String)] = []
-                    for (index, value) in enumerate(array) {
-                        components += queryComponents("\(key)[\(index)]", value)
-                    }
-                    return components
-                }
-                
-                func dictionaryQueryComponents(key: String, dictionary: [String: AnyObject]) -> [(String, String)] {
-                    var components: [(String, String)] = []
-                    for (nestedKey, value) in dictionary {
-                        components += queryComponents("\(key)[\(nestedKey)]", value)
-                    }
-                    return components
-                }
-                
-                var components: [(String, String)] = []
-                if let dictionary = value as? [String: AnyObject] {
-                    components += dictionaryQueryComponents(key, dictionary)
-                } else if let array = value as? [AnyObject] {
-                    components += arrayQueryComponents(key, array)
-                } else {
-                    components.append(key, "\(value)")
-                }
-                return components
-            }
-            var components: [(String, String)] = []
-            for key in sorted(Array(parameters.keys), <) {
-                let value: AnyObject! = parameters[key]
-                components += queryComponents(key, value)
-            }
-            return join("&", components.map({"\($0)=\($1)"}) as [String])
-        }
-    
-        return query()
-    }
-    
-    /**
-    * The function encode the params in mutlipart form for the given content type
-    *
-    * @param parameters The dictionary with the params to encode.
-    *
-    * @return String
-    */
-    
-    private func encodeMultipart(parameters: [String: AnyObject]) -> String {
-        assert(parameters[kDefaultImageKeyData] != nil, "The multipart form should have at least a image in the body", file: __FUNCTION__, line: __LINE__)
-        let boundary: String = "--Boundary+\(CFAbsoluteTimeGetCurrent())\r\n"
-        var params: String = ""
-        for (key, value) in parameters {
-            if (key as String) == kDefaultImageKeyData {
-                let imageBodyPart: NGImageBodyPart = NGImageBodyPart(bodies: parameters[kDefaultImageKeyData] as NSDictionary)
-                params = "\(params)\(boundary) Content-Disposition: form-data; name=\"\(imageBodyPart.name)\"; filename=\"\(imageBodyPart.fileName)\"\r\n Content-Type: \(imageBodyPart.mimeType)\r\n\r\n \(imageBodyPart.data)\r\n"
-            } else {
-                params = "\(params)\(boundary) Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n \(value)\r\n"
-            }
-        }
-        params = "\(params)\(boundary)--\r\n"
-        return params
-    }
-    
-    /**
-    * The function create a new request for the session
-    *
-    * no need params.
-    *
-    * return NSURLRequest
-    */
-    
-    private func request() -> NSURLRequest {
-        let request: NSMutableURLRequest = NSMutableURLRequest(URL: self.urlComponents.URL)
-        request.HTTPMethod = self.endPoint.httpMethod!.toRaw()
-        request.setValue(self.endPoint.contentType!.toRaw(), forHTTPHeaderField: "Content-Type")
-        for (key, value) in self.__config!.headers {
-            request.setValue(value, forHTTPHeaderField: key)
-        }
-        if (self.__config!.bodyItems.count > 0) {
-            assert(self.endPoint.httpMethod != HttpMethod.delete, "You can`t set a body for http delete method", file: __FILE__, line: __LINE__)
-            assert(self.endPoint.httpMethod != HttpMethod.get, "You can`t set a body for http get method", file: __FILE__, line: __LINE__)
-            if self.endPoint.contentType! == ContentType.json {
-                request.HTTPBody = NSJSONSerialization.dataWithJSONObject(self.__config!.bodyItems, options: NSJSONWritingOptions.PrettyPrinted, error: nil)
-            } else if self.endPoint.contentType! == ContentType.multiPartForm {
-                request.HTTPBody = self.encodeMultipart(self.__config!.bodyItems).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-            } else {
-                request.HTTPBody = self.encode(self.__config!.bodyItems).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-            }
-            request.setValue(request.HTTPBody.length.description, forHTTPHeaderField: "Content-Length")
-        }
-        return request
-    }
-    
-    /**
-    * The function configure the response for the current request
-    *
-    * @param data The data from the response.
-    *
-    */
-    
-    private func responseForData(data: NSData) -> AnyObject {
-        if self.__config!.responseType == ResponseType.dictionary {
-            if let jsonDictionary: AnyObject = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: nil) {
-                return jsonDictionary
-            }
-            return NSString(data: data, encoding: NSUTF8StringEncoding)
-        } else if self.__config!.responseType == ResponseType.models {
-            assert(!self.__config!.modelsPath.isEmpty, "You should set the models path for the response type", file: __FUNCTION__, line: __LINE__)
-            if let jsonDictionary: NSDictionary = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: nil) as? NSDictionary {
-                var dictionaries: Array<NSDictionary> = jsonDictionary.valueForKeyPath(self.__config!.modelsPath) as Array<NSDictionary>
-                var models: Array<AnyObject> = Array<AnyObject>()
-                for value in dictionaries {
-                    var model = self.endPoint.modelClass!() as Model
-                    model.fill(value as Dictionary<String, AnyObject>)
-                    models.append(model)
-                }
-                return models
-            }
-        } else if self.__config!.responseType == ResponseType.string {
-            return NSString(data: data, encoding: NSUTF8StringEncoding)
-        }
-        return data
     }
     
 }

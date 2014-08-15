@@ -24,10 +24,10 @@ import UIKit
 
 class ApiEndpoint: NSObject {
     
-    var contentType: ContentType? = nil
-    var httpMethod: HttpMethod? = nil
+    var contentType: ContentType
+    var httpMethod: HttpMethod
     var modelClass: NSObject.Type? = nil
-    var path: String? = nil
+    var path: String
     
      init(contentType: ContentType, httpMethod: HttpMethod, path: String) {
         self.contentType = contentType
@@ -57,7 +57,7 @@ class ApiEndpoint: NSObject {
 //MARK: Instance methods
     
     func key() -> String {
-        return ApiEndpoint.keyForPath(self.path!, httpMethod: self.httpMethod!)
+        return ApiEndpoint.keyForPath(self.path, httpMethod: self.httpMethod)
     }
     
 }

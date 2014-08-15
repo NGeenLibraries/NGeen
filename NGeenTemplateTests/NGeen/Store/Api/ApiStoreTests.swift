@@ -57,14 +57,14 @@ class ApiStoreTests: XCTestCase {
         let endpoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "example")
         let fooEndpoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "foo")
         self.store?.setEndpoints([endpoint, fooEndpoint])
-        XCTAssertTrue(self.store!.createQueryForPath(endpoint.path!, httpMethod: HttpMethod.get).isKindOfClass(ApiQuery.self), "Invalid api query class", file: __FILE__, line: __LINE__)
+        XCTAssertTrue(self.store!.createQueryForPath(endpoint.path, httpMethod: HttpMethod.get).isKindOfClass(ApiQuery.self), "Invalid api query class", file: __FILE__, line: __LINE__)
     }
     
     func testThatCreateQueryForPathAndServer() {
         let endpoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "example")
         let fooEndpoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "foo")
         self.store?.setEndpoints([endpoint, fooEndpoint], forServer: kConfigKey)
-        XCTAssertTrue(self.store!.createQueryForPath(endpoint.path!, httpMethod: HttpMethod.get, server: kConfigKey).isKindOfClass(ApiQuery.self), "Invalid api query class", file: __FILE__, line: __LINE__)
+        XCTAssertTrue(self.store!.createQueryForPath(endpoint.path, httpMethod: HttpMethod.get, server: kConfigKey).isKindOfClass(ApiQuery.self), "Invalid api query class", file: __FILE__, line: __LINE__)
     }
     
     func testThatConfiguration() {
@@ -198,12 +198,12 @@ class ApiStoreTests: XCTestCase {
     }
     
     func testThatSetResponseType() {
-        self.store?.setResponseType(ResponseType.dictionary)
+        self.store?.setResponseType(ResponseType.json)
         XCTAssert(self.store!.getResponseType() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
     }
     
     func testThatSetResponseTypeForServer() {
-        self.store?.setResponseType(ResponseType.dictionary, forServer: kConfigKey)
+        self.store?.setResponseType(ResponseType.json, forServer: kConfigKey)
         XCTAssert(self.store!.getResponseType() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
     }
     

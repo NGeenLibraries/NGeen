@@ -37,6 +37,9 @@
 		671996D0199B272B00769A7B /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671996CE199B272B00769A7B /* SessionManager.swift */; };
 		671996D8199BB98F00769A7B /* SessionTaskDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671996D7199BB98F00769A7B /* SessionTaskDelegate.swift */; };
 		671996D9199BB98F00769A7B /* SessionTaskDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671996D7199BB98F00769A7B /* SessionTaskDelegate.swift */; };
+		67A60816199D869A0081AC7E /* ResponseSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A60815199D869A0081AC7E /* ResponseSerializer.swift */; };
+		67A60817199D869A0081AC7E /* ResponseSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A60815199D869A0081AC7E /* ResponseSerializer.swift */; };
+		67A6081D199D8F300081AC7E /* ResponseSerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A6081C199D8F300081AC7E /* ResponseSerializerTests.swift */; };
 		67CE34CE19954ABD00B0F97C /* ApiStoreConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67CE34CD19954ABD00B0F97C /* ApiStoreConfiguration.swift */; };
 		67CE34CF19954ABD00B0F97C /* ApiStoreConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67CE34CD19954ABD00B0F97C /* ApiStoreConfiguration.swift */; };
 		67E0BB97199406D000110068 /* ModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E0BB96199406D000110068 /* ModelTests.swift */; };
@@ -48,6 +51,9 @@
 		E4114AE619804388002F46A9 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4114AE519804388002F46A9 /* Model.swift */; };
 		E4C75941199D08B3008A74BD /* SessionTaskDelegateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C75940199D08B3008A74BD /* SessionTaskDelegateTests.swift */; };
 		E4C75943199D0C5D008A74BD /* SessionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C75942199D0C5D008A74BD /* SessionManagerTests.swift */; };
+		E4C75948199D2642008A74BD /* RequestSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C75947199D2642008A74BD /* RequestSerializer.swift */; };
+		E4C75949199D2642008A74BD /* RequestSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C75947199D2642008A74BD /* RequestSerializer.swift */; };
+		E4C7594D199D6002008A74BD /* RequestSerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C7594C199D6002008A74BD /* RequestSerializerTests.swift */; };
 		E4C872171981A8210084202C /* ApiEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C872161981A8210084202C /* ApiEndpoint.swift */; };
 		E4C872181981A8210084202C /* ApiEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C872161981A8210084202C /* ApiEndpoint.swift */; };
 /* End PBXBuildFile section */
@@ -136,6 +142,8 @@
 		3DBFC0F9195DEB310031D68A /* ApiQueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ApiQueryTests.swift; path = NGeen/Query/Api/ApiQueryTests.swift; sourceTree = "<group>"; };
 		671996CE199B272B00769A7B /* SessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SessionManager.swift; path = Session/SessionManager.swift; sourceTree = "<group>"; };
 		671996D7199BB98F00769A7B /* SessionTaskDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SessionTaskDelegate.swift; path = Session/Task/Delegate/SessionTaskDelegate.swift; sourceTree = "<group>"; };
+		67A60815199D869A0081AC7E /* ResponseSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ResponseSerializer.swift; path = Serializer/Response/ResponseSerializer.swift; sourceTree = "<group>"; };
+		67A6081C199D8F300081AC7E /* ResponseSerializerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ResponseSerializerTests.swift; path = NGeen/Network/Serializer/Response/ResponseSerializerTests.swift; sourceTree = "<group>"; };
 		67CE34CD19954ABD00B0F97C /* ApiStoreConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ApiStoreConfiguration.swift; path = Configuration/ApiStoreConfiguration.swift; sourceTree = "<group>"; };
 		67E0BB96199406D000110068 /* ModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModelTests.swift; path = NGeen/Model/ModelTests.swift; sourceTree = "<group>"; };
 		67E0BB9A1994085300110068 /* ModelMockup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModelMockup.swift; path = NGeen/Model/Mockup/ModelMockup.swift; sourceTree = "<group>"; };
@@ -144,6 +152,8 @@
 		E4114AE519804388002F46A9 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		E4C75940199D08B3008A74BD /* SessionTaskDelegateTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SessionTaskDelegateTests.swift; path = NGeen/Network/Session/Task/Delegate/SessionTaskDelegateTests.swift; sourceTree = "<group>"; };
 		E4C75942199D0C5D008A74BD /* SessionManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SessionManagerTests.swift; path = NGeen/Network/Session/SessionManagerTests.swift; sourceTree = "<group>"; };
+		E4C75947199D2642008A74BD /* RequestSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RequestSerializer.swift; path = Serializer/Request/RequestSerializer.swift; sourceTree = "<group>"; };
+		E4C7594C199D6002008A74BD /* RequestSerializerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RequestSerializerTests.swift; path = NGeen/Network/Serializer/Request/RequestSerializerTests.swift; sourceTree = "<group>"; };
 		E4C872161981A8210084202C /* ApiEndpoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ApiEndpoint.swift; path = Endpoint/ApiEndpoint.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -210,6 +220,7 @@
 		375DB4731951DC920094B34C /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				E4C75944199D2578008A74BD /* Serializer */,
 				671996CD199B26E500769A7B /* Session */,
 			);
 			path = Network;
@@ -331,6 +342,7 @@
 		3D4C61ED1953B5E0000DDE5C /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				E4C7594A199D5FCB008A74BD /* Serializer */,
 				E4C7593D199D0762008A74BD /* Session */,
 			);
 			name = Network;
@@ -460,6 +472,14 @@
 			name = Delegate;
 			sourceTree = "<group>";
 		};
+		67A60818199D8E8B0081AC7E /* Response */ = {
+			isa = PBXGroup;
+			children = (
+				67A6081C199D8F300081AC7E /* ResponseSerializerTests.swift */,
+			);
+			name = Response;
+			sourceTree = "<group>";
+		};
 		67E0BB95199406AB00110068 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -524,6 +544,48 @@
 				E4C75940199D08B3008A74BD /* SessionTaskDelegateTests.swift */,
 			);
 			name = Delegate;
+			sourceTree = "<group>";
+		};
+		E4C75944199D2578008A74BD /* Serializer */ = {
+			isa = PBXGroup;
+			children = (
+				E4C75946199D25D2008A74BD /* Request */,
+				E4C75945199D25C5008A74BD /* Response */,
+			);
+			name = Serializer;
+			sourceTree = "<group>";
+		};
+		E4C75945199D25C5008A74BD /* Response */ = {
+			isa = PBXGroup;
+			children = (
+				67A60815199D869A0081AC7E /* ResponseSerializer.swift */,
+			);
+			name = Response;
+			sourceTree = "<group>";
+		};
+		E4C75946199D25D2008A74BD /* Request */ = {
+			isa = PBXGroup;
+			children = (
+				E4C75947199D2642008A74BD /* RequestSerializer.swift */,
+			);
+			name = Request;
+			sourceTree = "<group>";
+		};
+		E4C7594A199D5FCB008A74BD /* Serializer */ = {
+			isa = PBXGroup;
+			children = (
+				E4C7594B199D5FD3008A74BD /* Request */,
+				67A60818199D8E8B0081AC7E /* Response */,
+			);
+			name = Serializer;
+			sourceTree = "<group>";
+		};
+		E4C7594B199D5FD3008A74BD /* Request */ = {
+			isa = PBXGroup;
+			children = (
+				E4C7594C199D6002008A74BD /* RequestSerializerTests.swift */,
+			);
+			name = Request;
 			sourceTree = "<group>";
 		};
 		E4C872151981A7EA0084202C /* Endpoint */ = {
@@ -640,10 +702,12 @@
 			files = (
 				E4C872171981A8210084202C /* ApiEndpoint.swift in Sources */,
 				3D4A4C091957F835006810B6 /* ApiQuery.swift in Sources */,
+				67A60816199D869A0081AC7E /* ResponseSerializer.swift in Sources */,
 				375DB4821951DD9F0094B34C /* DataBaseStore.swift in Sources */,
 				67CE34CE19954ABD00B0F97C /* ApiStoreConfiguration.swift in Sources */,
 				375DB4801951DD7A0094B34C /* ApiStore.swift in Sources */,
 				E4114AE619804388002F46A9 /* Model.swift in Sources */,
+				E4C75948199D2642008A74BD /* RequestSerializer.swift in Sources */,
 				67FF194C199AFC13005CEA0C /* Alamofire.swift in Sources */,
 				671996D8199BB98F00769A7B /* SessionTaskDelegate.swift in Sources */,
 				3DB0464C194F827B0028FEB1 /* AppDelegate.swift in Sources */,
@@ -661,7 +725,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4C75949199D2642008A74BD /* RequestSerializer.swift in Sources */,
 				671996D9199BB98F00769A7B /* SessionTaskDelegate.swift in Sources */,
+				67A60817199D869A0081AC7E /* ResponseSerializer.swift in Sources */,
 				67E0BB981994071900110068 /* Model.swift in Sources */,
 				6E7A4E0A196CE87300A93332 /* ApiStore.swift in Sources */,
 				3D47632A196FA0FD00E8BC09 /* DiskCacheTests.swift in Sources */,
@@ -677,11 +743,13 @@
 				3DBFC0FB195DFB6B0031D68A /* ApiQuery.swift in Sources */,
 				671996D0199B272B00769A7B /* SessionManager.swift in Sources */,
 				E4C75941199D08B3008A74BD /* SessionTaskDelegateTests.swift in Sources */,
+				E4C7594D199D6002008A74BD /* RequestSerializerTests.swift in Sources */,
 				37C40C0219547E7800184F53 /* DataTypes.swift in Sources */,
 				3DBFC0FA195DEB310031D68A /* ApiQueryTests.swift in Sources */,
 				E4C872181981A8210084202C /* ApiEndpoint.swift in Sources */,
 				6EDABFD0196BAF6E004EE3F7 /* ApiStoreTests.swift in Sources */,
 				375DB4831951DD9F0094B34C /* DataBaseStore.swift in Sources */,
+				67A6081D199D8F300081AC7E /* ResponseSerializerTests.swift in Sources */,
 				3D442669196B44EB00FE7355 /* Constants.swift in Sources */,
 				E4C75943199D0C5D008A74BD /* SessionManagerTests.swift in Sources */,
 				3DB0465A194F827B0028FEB1 /* NGeenTemplateTests.swift in Sources */,
