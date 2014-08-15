@@ -27,7 +27,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     lazy var data: NSMutableData = NSMutableData()
     private(set) var downloadProgress: ((NSURLSession!, NSURLSessionDownloadTask!, Int64!, Int64!, Int64!) -> Void)?
     private var credential: NSURLCredential?
-    private var dataTasksDelegates: Dictionary<Int, SessionTaskDelegate>
+    private var dataTasksDelegates: [Int: SessionTaskDelegate]
     private var destination: NSURL?
     private var operationQueue: NSOperationQueue = NSOperationQueue()
     private var queue: dispatch_queue_t?
@@ -43,7 +43,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     
     init(sessionConfiguration: NSURLSessionConfiguration) {
         self.cacheStoragePolicy = NSURLCacheStoragePolicy.NotAllowed
-        self.dataTasksDelegates = Dictionary<Int, SessionTaskDelegate>()
+        self.dataTasksDelegates = Dictionary()
         self.queue = dispatch_queue_create("com.ngeen.sessionmanagerqueue", DISPATCH_QUEUE_CONCURRENT)
         dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
         self.sessionConfiguration = sessionConfiguration

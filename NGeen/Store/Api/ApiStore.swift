@@ -24,19 +24,19 @@ import UIKit
 
 class ApiStore: NSObject, ConfigurableStoreProtocol {
     
-    internal var configurations: Dictionary<String, ConfigurationStoreProtocol>
+    internal var configurations: [String: ConfigurationStoreProtocol]
     private struct Static {
         static var instace: ApiStore? = nil
         static var token: dispatch_once_t = 0
     }
-    private(set) var endPoints: NSMutableDictionary
+    private(set) var endPoints: [String: [String: ApiEndpoint]]
     
 //MARK: Constructor
     
     init(config: ConfigurationStoreProtocol) {
-        self.configurations = Dictionary<String, ConfigurationStoreProtocol>()
+        self.configurations = Dictionary()
         self.configurations[kDefaultServerName] = config
-        self.endPoints = NSMutableDictionary.dictionary()
+        self.endPoints = Dictionary()
     }
     
 // MARK: Configurable store protocol
@@ -88,9 +88,8 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func createQueryForSever(server: String) -> ApiQuery {
-        if let endPoints: NSDictionary = self.endPoints[server] as? NSDictionary {
-            var key: String =  (endPoints.allKeys as NSArray).lastObject as String
-            return ApiQuery(configuration: self.configurationForKey(server), endPoint: endPoints[key] as ApiEndpoint)
+        if let endPoints: [String: ApiEndpoint] = self.endPoints[server] {
+            return ApiQuery(configuration: self.configurationForKey(server), endPoint: endPoints.values.last!)
         } else {
             assert(false, "The endpoint can't be null", file: __FILE__, line: __LINE__)
         }
@@ -122,7 +121,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func createQueryForPath(path: String, httpMethod method: HttpMethod, server name: String) -> ApiQuery {
-        if let endPoints: NSDictionary = self.endPoints[name] as? NSDictionary {
+         if let endPoints: AnyObject = self.endPoints[name] {
             if let endPoint: ApiEndpoint = endPoints[ApiEndpoint.keyForPath(path, httpMethod: method)] as? ApiEndpoint {
                 return ApiQuery(configuration: self.configurationForKey(name), endPoint: endPoint)
             } else {
@@ -183,8 +182,8 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func endpointForPath(path: String, httpMethod method: HttpMethod, serverName name: String) -> ApiEndpoint? {
-        if let serverEndpoints: NSMutableDictionary = self.endPoints[name] as? NSMutableDictionary {
-            return serverEndpoints[ApiEndpoint.keyForPath(path, httpMethod: method)] as? ApiEndpoint
+        if let serverEndpoints: [String: ApiEndpoint] = self.endPoints[name] {
+            return serverEndpoints[ApiEndpoint.keyForPath(path, httpMethod: method)]
         }
         return nil
     }
@@ -282,7 +281,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * @return Dictionary
     */
     
-    func getHeaders() -> Dictionary<String, String> {
+    func getHeaders() -> [String: String] {
         return self.getHeadersForServer(kDefaultServerName)
     }
     
@@ -294,7 +293,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * @return Dictionary
     */
     
-    func getHeadersForServer(server: String) -> Dictionary<String, String> {
+    func getHeadersForServer(server: String) -> [String: String] {
         if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
             return configuration.headers
         }
@@ -327,6 +326,32 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
             return configuration.modelsPath
         }
         return ""
+    }
+    
+    /**
+    * The function get the pinned certificates for the default api configuration
+    *
+    * no need params.
+    *
+    * return Array
+    */
+    
+    func getPinnedCertificates() -> [AnyObject] {
+        return self.getPinnedCertificatesForServer(kDefaultServerName)
+    }
+    
+    /**
+    * The function get the pinned certificates for the given server
+    *
+    * @param server The name of the server to store the configuration.
+    *
+    */
+    
+    func getPinnedCertificatesForServer(server: String) -> [AnyObject] {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            return configuration.pinnedCertificates
+        }
+        return Array()
     }
     
     /**
@@ -542,13 +567,14 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setEndpoint(endpoint: ApiEndpoint, forServer server: String) {
-        if let serverEndpoints: NSMutableDictionary = self.endPoints[server] as? NSMutableDictionary {
-             serverEndpoints[endpoint.key()] = endpoint
+        var endPoints: [String: ApiEndpoint] = Dictionary()
+        if let serverEndpoints: [String: ApiEndpoint] = self.endPoints[server] {
+            endPoints = serverEndpoints
+            endPoints[endpoint.key()] = endpoint
         } else {
-            var serverEndpoints: NSMutableDictionary = NSMutableDictionary.dictionary()
-            serverEndpoints.setObject(endpoint, forKey: endpoint.key())
-            self.endPoints[server] = serverEndpoints
+            endPoints[endpoint.key()] = endpoint
         }
+        self.endPoints[server] = endPoints
     }
     
     /**
@@ -652,6 +678,32 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     func setModelsPath(path: String, forServer server: String) {
         if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
             configuration.modelsPath = path
+            self.setConfiguration(configuration, forKey: server)
+        }
+    }
+    
+    /**
+    * The function set the pinned certificates for the api configuration
+    *
+    * @param certificates The array with the trusted certificates.
+    *
+    */
+    
+    func setPinnedCertificates(certificates: [NSData]) {
+        self.setPinnedCertificates(certificates, forServer: kDefaultServerName)
+    }
+    
+    /**
+    * The function set the pinned certificates for the api configuration
+    *
+    * @param certificates The array with the trusted certificates.
+    * @param server The name of the server to store the configuration.
+    *
+    */
+    
+    func setPinnedCertificates(certificates: [NSData], forServer server: String) {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            configuration.pinnedCertificates = certificates
             self.setConfiguration(configuration, forKey: server)
         }
     }

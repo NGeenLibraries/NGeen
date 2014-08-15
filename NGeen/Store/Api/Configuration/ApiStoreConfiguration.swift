@@ -26,14 +26,15 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
 
     var bodyItems: [String: AnyObject]
     var cacheStoragePolicy: NSURLCacheStoragePolicy
-    var configurations: Dictionary<String, ConfigurationStoreProtocol>
+    var configurations: [String: ConfigurationStoreProtocol]
     var credential: NSURLCredential?
-    var headers: Dictionary<String, String>
+    var headers: [String: String]
     var host: String
     var modelsPath: String
-    var pathItems: Dictionary<String, String>
+    var pathItems: [String: String]
+    var pinnedCertificates: [NSData]
     var protectionSpace: NSURLProtectionSpace?
-    var queryItems: Dictionary<String, AnyObject>
+    var queryItems: [String: AnyObject]
     var redirection: NSURLRequest?
     var responseDisposition: NSURLSessionResponseDisposition
     var responseType: ResponseType
@@ -45,13 +46,14 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
     override init() {
         self.bodyItems = Dictionary()
         self.cacheStoragePolicy = NSURLCacheStoragePolicy.NotAllowed
-        self.configurations = Dictionary<String, ConfigurationStoreProtocol>()
-        self.headers = Dictionary<String, String>()
+        self.configurations = Dictionary()
+        self.headers = Dictionary()
         self.host = ""
         self.scheme = "http"
         self.modelsPath = ""
-        self.pathItems = Dictionary<String, String>()
-        self.queryItems = Dictionary<String, String>()
+        self.pathItems = Dictionary()
+        self.pinnedCertificates = Array()
+        self.queryItems = Dictionary()
         self.responseDisposition = NSURLSessionResponseDisposition.Allow
         self.responseType = ResponseType.data
         self.sessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
@@ -60,7 +62,7 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
         self.sessionConfiguration.timeoutIntervalForResource = 30
     }
     
-    convenience init(headers: Dictionary<String, String>, host: String, scheme: String) {
+    convenience init(headers: [String: String], host: String, scheme: String) {
         self.init()
         self.headers = headers
         self.host = host
@@ -86,7 +88,7 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
     *  @return ApiStoreConfiguration
     */
     
-    class func configWithContentType(headers: Dictionary<String, String>, host: String, scheme: String) -> ApiStoreConfiguration {
+    class func configWithContentType(headers: [String: String], host: String, scheme: String) -> ApiStoreConfiguration {
         return ApiStoreConfiguration(headers: headers, host: host, scheme: scheme)
     }
     

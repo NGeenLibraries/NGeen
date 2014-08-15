@@ -88,6 +88,9 @@ ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
 Supported Authentication Schemes
 
 - HTTP Basic
+- HTTP Digest
+- Kerberos
+- NTLM
 
 #### Setting cache policy
 
@@ -124,7 +127,7 @@ Supported responses:
 ```swift
 enum ResponseType: Int {
     case data
-    case dictionary
+    case json
     case models
     case string
 }
@@ -179,12 +182,12 @@ Depends of the configuration setted in the api store config the body should be e
 - URI form encoded
 - MultiPart form
 
+
 ### Downloading 
 
 Supported Upload Types
 
 - Resume Data
-- Request
 
 #### Downloading a File
 
