@@ -349,7 +349,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     
     func getPinnedCertificatesForServer(server: String) -> [AnyObject] {
         if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
-            return configuration.pinnedCertificates
+            return configuration.securityPolicy.certificates
         }
         return Array()
     }
@@ -430,7 +430,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     
     func getSecurityPolicyForServer(server: String) -> Policy {
         if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
-            return configuration.policy
+            return configuration.securityPolicy.policy
         }
         return Policy.none
     }
@@ -460,6 +460,33 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
             return configuration.sessionConfiguration
         }
         return nil
+    }
+    
+    /**
+    * The function set the if the default server configuration accept invalid certificates
+    *
+    * @param allow The true or false.
+    * @param server The name of the server to store the configuration.
+    *
+    */
+    
+    func setAllowInvalidCertificates(allow: Bool) {
+        self.setAllowInvalidCertificates(allow, forServer: kDefaultServerName)
+    }
+    
+    /**
+    * The function set the if the given server configuration accept invalid certificates
+    *
+    * @param allow The true or false.
+    * @param server The name of the server to store the configuration.
+    *
+    */
+    
+    func setAllowInvalidCertificates(allow: Bool, forServer server: String) {
+        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+            configuration.securityPolicy.allowInvalidCertificates = allow
+            self.setConfiguration(configuration, forKey: server)
+        }
     }
     
     /**
@@ -730,7 +757,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     
     func setPinnedCertificates(certificates: [NSData], forServer server: String) {
         if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
-            configuration.pinnedCertificates = certificates
+            configuration.securityPolicy.certificates = certificates
             self.setConfiguration(configuration, forKey: server)
         }
     }
@@ -835,7 +862,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     
     func setSecurityPolicy(policy: Policy, forServer server: String) {
         if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
-            configuration.policy = policy
+            configuration.securityPolicy.policy = policy
             self.setConfiguration(configuration, forKey: server)
         }
     }

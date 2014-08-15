@@ -32,8 +32,7 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
     var host: String
     var modelsPath: String
     var pathItems: [String: String]
-    var pinnedCertificates: [NSData]
-    var policy: Policy
+    var securityPolicy: SecurityPolicy
     var protectionSpace: NSURLProtectionSpace?
     var queryItems: [String: AnyObject]
     var redirection: NSURLRequest?
@@ -53,11 +52,10 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
         self.scheme = "http"
         self.modelsPath = ""
         self.pathItems = Dictionary()
-        self.pinnedCertificates = Array()
-        self.policy = Policy.none
         self.queryItems = Dictionary()
         self.responseDisposition = NSURLSessionResponseDisposition.Allow
         self.responseType = ResponseType.data
+        self.securityPolicy = SecurityPolicy()
         self.sessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
         self.sessionConfiguration.requestCachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData
         self.sessionConfiguration.timeoutIntervalForRequest = 30

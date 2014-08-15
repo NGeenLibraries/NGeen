@@ -57,7 +57,7 @@ class ApiQuery: NSObject, QueryProtocol {
         self.queue = dispatch_queue_create("com.ngeen.requestqueue", DISPATCH_QUEUE_CONCURRENT)
         dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
         self.sessionManager = SessionManager(sessionConfiguration: self.configuration.sessionConfiguration)
-        self.sessionManager!.securityPolicy.certificates = self.configuration.pinnedCertificates
+        self.sessionManager!.securityPolicy = self.configuration.securityPolicy
         if let credential: NSURLCredential = self.configuration.credential {
             self.sessionManager!.setAuthenticationCredential(self.configuration.credential!, forProtectionSpace: self.configuration.protectionSpace!)
         }
@@ -251,7 +251,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func getSecurityPolicy() -> Policy {
-        return self.configuration.policy
+        return self.configuration.securityPolicy.policy
     }
     
     /**
@@ -464,7 +464,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func setSecurityPolicy(policy: Policy) {
-        self.configuration.policy = policy
+        self.configuration.securityPolicy.policy = policy
     }
     
     /**
