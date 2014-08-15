@@ -22,8 +22,6 @@
 
 
 /*TODO: 1. return the query
-        2. return the path items
-        3. Best way to set the data for the multipart form
 */
 
 import UIKit
@@ -42,6 +40,7 @@ class ApiQuery: NSObject, QueryProtocol {
     private var endPoint: ApiEndpoint
     private var queue: dispatch_queue_t?
     private var requestSerializer: RequestSerializer
+    private var responseSerializer: ResponseSerializer
     private var sessionManager: SessionManager?
     
     weak var delegate: ApiQueryDelegate?
@@ -52,6 +51,7 @@ class ApiQuery: NSObject, QueryProtocol {
         self.endPoint = endPoint
         self.configuration = ApiStoreConfiguration()
         self.requestSerializer = RequestSerializer()
+        self.responseSerializer = ResponseSerializer()
         super.init()
         self.config = configuration
         self.queue = dispatch_queue_create("com.ngeen.requestqueue", DISPATCH_QUEUE_CONCURRENT)
@@ -251,9 +251,11 @@ class ApiQuery: NSObject, QueryProtocol {
     func execute(completionHandler closure: NGeenClosure) {
         let request: NSURLRequest = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
         let sessionDataTask: NSURLSessionDataTask = self.sessionManager!.dataTaskWithRequest(request, completionHandler: {(data, urlResponse, error) in
-            if closure != nil {
-                closure!(object: self.responseForData(data), error: error)
+            var response: AnyObject!
+            if !error {
+                response = self.responseSerializer.responseWithConfiguration(self.configuration, endPoint: self.endPoint, data: data, error: nil)
             }
+            closure?(object: response, error: error)
         })
         self.cachedResponseForTask(sessionDataTask)
         sessionDataTask.resume()
@@ -327,18 +329,12 @@ class ApiQuery: NSObject, QueryProtocol {
     /**
     * The function set the data for a given image
     *
-    * @param data The data with the contents of the image.
-    * @param name The name for the image in the body.
-    * @param file The file name for the image in the body.
-    * @param mime The mime type of the image.
+    * @param closure The closure to call when the serializer need the image data.
     *
     */
     
-    func setFileData(data: NSData, forName name: String, fileName file: String, mimeType mime: String) {
-        assert(file != nil, "You should provide the file name for the file", file: __FILE__, line: __LINE__)
-        assert(name != nil, "You should provide a name for the file", file: __FILE__, line: __LINE__)
-        assert(mime != nil, "You should provide a mime type for the file", file: __FILE__, line: __LINE__)
-        //self.configuration.bodyItems[kDefaultImageKeyData] = ["data": data, "fileName": file, "name": name, "mimeType": mime]
+    func setConstructingBodyClosure(closure: () -> (data: NSData!, name: String!, fileName: String!, mimeType: String!)) {
+        self.requestSerializer.constructingBodyClosure = closure
     }
     
     /**
@@ -385,6 +381,7 @@ class ApiQuery: NSObject, QueryProtocol {
     
     func setPathItem(item: String, forKey key: String) {
         self.configuration.pathItems[key] = item
+        self.endPoint.path += "/\(item)"
     }
     
     /**
@@ -396,6 +393,9 @@ class ApiQuery: NSObject, QueryProtocol {
     
     func setPathItems(items: Dictionary<String, String>) {
         self.configuration.pathItems += items
+        for (key, value) in items {
+            self.setPathItem(value, forKey: key)
+        }
     }
     
     /**
@@ -515,7 +515,8 @@ class ApiQuery: NSObject, QueryProtocol {
             if self.configuration.sessionConfiguration.requestCachePolicy != NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData {
                 data = DiskCache.defaultCache().dataForUrl(task.currentRequest.URL)
                 if self.delegate != nil && self.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") {
-                    self.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: self.responseForData(data))
+                    let response: AnyObject = self.responseSerializer.responseWithConfiguration(self.configuration, endPoint: self.endPoint, data: data, error: nil)
+                    self.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response)
                 }
                 if data.length > 0 && (self.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataDontLoad ||
                     self.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataElseLoad) {
@@ -523,37 +524,6 @@ class ApiQuery: NSObject, QueryProtocol {
                 }
             }
         })
-    }
-    
-    /**
-    * The function configure the response for the current request
-    *
-    * @param data The data from the response.
-    *
-    */
-    
-    private func responseForData(data: NSData) -> AnyObject {
-        if self.configuration.responseType == ResponseType.dictionary {
-            if let jsonDictionary: AnyObject = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: nil) {
-                return jsonDictionary
-            }
-            return NSString(data: data, encoding: NSUTF8StringEncoding)
-        } else if self.configuration.responseType == ResponseType.models {
-            assert(!self.configuration.modelsPath.isEmpty, "You should set the models path for the response type", file: __FUNCTION__, line: __LINE__)
-            if let jsonDictionary: NSDictionary = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: nil) as? NSDictionary {
-                var dictionaries: Array<NSDictionary> = jsonDictionary.valueForKeyPath(self.configuration.modelsPath) as Array<NSDictionary>
-                var models: Array<AnyObject> = Array<AnyObject>()
-                for value in dictionaries {
-                    var model = self.endPoint.modelClass!() as Model
-                    model.fill(value as Dictionary<String, AnyObject>)
-                    models.append(model)
-                }
-                return models
-            }
-        } else if self.configuration.responseType == ResponseType.string {
-            return NSString(data: data, encoding: NSUTF8StringEncoding)
-        }
-        return data
     }
     
 }

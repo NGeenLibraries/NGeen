@@ -75,7 +75,7 @@ enum DatabaseType: Int {
 
 enum ResponseType: Int {
     case data
-    case dictionary
+    case json
     case models
     case string
 }

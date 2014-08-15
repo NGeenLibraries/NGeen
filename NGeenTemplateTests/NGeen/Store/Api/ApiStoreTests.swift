@@ -198,12 +198,12 @@ class ApiStoreTests: XCTestCase {
     }
     
     func testThatSetResponseType() {
-        self.store?.setResponseType(ResponseType.dictionary)
+        self.store?.setResponseType(ResponseType.json)
         XCTAssert(self.store!.getResponseType() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
     }
     
     func testThatSetResponseTypeForServer() {
-        self.store?.setResponseType(ResponseType.dictionary, forServer: kConfigKey)
+        self.store?.setResponseType(ResponseType.json, forServer: kConfigKey)
         XCTAssert(self.store!.getResponseType() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
     }
     
