@@ -1,7 +1,7 @@
 NGeen
 =====
 
-NGeen is a delightful library for swift. It's built based on factory design pattern, extending the powerful high-level networking and database abstractions built into Cocoa.
+NGeen is a great library for agile development built in swift. It's built based on factory design pattern, extending the powerful high-level networking and database abstractions built into Cocoa.
 
 Choose NGeen for your next project, or migrate over your existing projects—you'll be happy you did!
 
