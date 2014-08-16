@@ -46,9 +46,20 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 - Model
 
 #### Network
-- Request	
-	- Request
 
+- Security
+	- SecurityPolicy
+- Serializer	
+	- Request
+	 	- RequestSerializer
+	- Response 	
+		- ResponseSerializer
+- Session
+	- Task
+		- Delegate
+			- SessionTaskDelegate
+	- SessionManager
+					
 #### Query
 - Api	
 	- ApiQuery
