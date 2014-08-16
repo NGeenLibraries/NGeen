@@ -89,16 +89,26 @@ class ResponseSerializer: NSObject {
     * @return Array
     */
     
-    func responseInModelsForData(data: NSData, modelClass className: NSObject.Type, modelsPath path: String, error: NSErrorPointer) -> Array<Model> {
-        let jsonDictionary: NSDictionary = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: error) as NSDictionary
-            var dictionaries: Array<NSDictionary> = jsonDictionary.valueForKeyPath(path) as Array<NSDictionary>
-            var models: Array<Model> = Array<Model>()
-            for value in dictionaries {
+    func responseInModelsForData(data: NSData, modelClass className: NSObject.Type, modelsPath path: String, error: NSErrorPointer) -> [String: AnyObject] {
+        if let jsonDictionary: NSDictionary = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: error) as? NSDictionary {
+            var response: NSMutableDictionary = jsonDictionary.mutableCopy() as NSMutableDictionary
+            let values: AnyObject! = jsonDictionary.valueForKeyPath(path)
+            if values is Array<NSDictionary> {
+                var models: Array<Model> = Array<Model>()
+                for value in values as [NSDictionary] {
+                    var model = className() as Model
+                    model.fill(value as [String: AnyObject])
+                    models.append(model)
+                }
+                response.setValue(models, forKeyPath: path)
+            } else if values is Dictionary<String, AnyObject> {
                 var model = className() as Model
-                model.fill(value as Dictionary<String, AnyObject>)
-                models.append(model)
+                model.fill(values as [String: AnyObject])
+                response.setValue(model, forKeyPath: path)
             }
-            return models
+            return response.copy() as Dictionary<String, AnyObject>
+        }
+        return Dictionary()
     }
     
     /**
