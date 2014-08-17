@@ -1,5 +1,5 @@
 //
-// NGeen-Bridging-Header.h
+// HeroListCell.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,5 +20,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <sqlite3.h>
-#import <SystemConfiguration/SystemConfiguration.h>
+import UIKit
+
+@IBDesignable
+
+class HeroListCell: UITableViewCell {
+
+    @IBOutlet weak var bio: UILabel!
+    @IBOutlet weak var name: UILabel!
+    @IBOutlet weak var picture: UIImageView!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+    }
+
+//MARK: Instance methods
+    
+    func configure(#hero: Hero) {
+        self.bio.text = hero.description
+        self.name.text = hero.name
+        self.name.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
+        self.bio.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+    }
+    
+}

@@ -25,7 +25,7 @@ import UIKit
 class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate {
     
     private(set) var progress: NSProgress
-    private var data: NSMutableData
+    private(set) var data: NSMutableData
     
     var closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?
     var downloadProgressHandler: ((Int64!, Int64!, Int64!) -> Void)?
@@ -81,7 +81,11 @@ class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownl
 //MARK: NSURLSessionTask delegate
     
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didCompleteWithError error: NSError!) {
-        self.closure?(self.data, task.response, error)
+        dispatch_async(dispatch_get_main_queue(), {
+            if self.closure != nil {
+                self.closure!(self.data, task.response, error)
+            }
+        })
     }
     
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, needNewBodyStream completionHandler: ((NSInputStream!) -> Void)!) {

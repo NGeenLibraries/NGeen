@@ -1,5 +1,5 @@
 //
-// NGeen-Bridging-Header.h
+// Serie.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,5 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <sqlite3.h>
-#import <SystemConfiguration/SystemConfiguration.h>
+import UIKit
+
+class Serie: Model {
+   
+    var available: Int = 0
+    var collectionURI: String = ""
+    var items: [AnyObject] = Array()
+    var returned: Int = 0
+    
+//Constructor
+    
+    required init() {}
+    
+}

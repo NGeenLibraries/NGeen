@@ -45,7 +45,7 @@ class ResponseSerializer: NSObject {
                return self.responseInJSONFormatForData(data, error: error)
             case .models:
                 assert(endpoint.modelClass! != nil, "The model class should be diferent than null", file: __FILE__, line: __LINE__)
-                assert(configuration.modelsPath != nil, "The path for the models should be diferent than null", file: __FILE__, line: __LINE__)
+                assert(!configuration.modelsPath.isEmpty, "The path for the models should be diferent than null", file: __FILE__, line: __LINE__)
                 return self.responseInModelsForData(data, modelClass: endpoint.modelClass!, modelsPath: configuration.modelsPath, error: error)
             default:
                 return self.responseInStringFormatForData(data, error: error)
@@ -91,8 +91,8 @@ class ResponseSerializer: NSObject {
     
     func responseInModelsForData(data: NSData, modelClass className: NSObject.Type, modelsPath path: String, error: NSErrorPointer) -> [String: AnyObject] {
         if let jsonDictionary: NSDictionary = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: error) as? NSDictionary {
-            var response: NSMutableDictionary = jsonDictionary.mutableCopy() as NSMutableDictionary
-            let values: AnyObject! = jsonDictionary.valueForKeyPath(path)
+            let response: NSMutableDictionary = CFPropertyListCreateDeepCopy(kCFAllocatorDefault, jsonDictionary, 1) as NSMutableDictionary
+            let values: AnyObject! = response.valueForKeyPath(path).mutableCopy()
             if values is Array<NSDictionary> {
                 var models: Array<Model> = Array<Model>()
                 for value in values as [NSDictionary] {

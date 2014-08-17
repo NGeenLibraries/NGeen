@@ -21,4 +21,3 @@
 // THE SOFTWARE.
 
 #import <sqlite3.h>
-#import <SystemConfiguration/SystemConfiguration.h>

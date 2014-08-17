@@ -22,6 +22,12 @@
 
 import UIKit
 
+/*TODO: 1. map childs models
+        2. pluralize and singularize model
+        3. First letter fo the model in upper case
+        4. Allow map parent class when the model extends from other
+*/
+
 class Model: NSObject {
     
     lazy private var __properties: [String: AnyObject] = {
@@ -57,7 +63,7 @@ class Model: NSObject {
     /**
     * The function fill the properties of the model with the given dictioanry of values
     *
-    * @param dictionary The dictionary with the valus for the model.
+    * @param dictionary The dictionary with the values for the model.
     *
     */
     

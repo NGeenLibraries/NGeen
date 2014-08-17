@@ -1,5 +1,5 @@
 //
-// NGeen-Bridging-Header.h
+// HeroDatasource.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,5 +20,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <sqlite3.h>
-#import <SystemConfiguration/SystemConfiguration.h>
+import UIKit
+
+class HeroDatasource: NSObject, UITableViewDataSource, UITableViewDelegate {
+   
+    var tableData: [Hero] =  Array()
+    
+//MARK: UITableView delegate
+    
+    func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
+        return self.tableData.count
+    }
+    
+    func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell! {
+        let cellIdentifier: String = "HeroListCell"
+        var cell: HeroListCell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as HeroListCell
+        if cell == nil {
+            let nib: [AnyObject] = NSBundle.mainBundle().loadNibNamed(cellIdentifier, owner: self, options: nil)
+            cell = nib.first as HeroListCell
+        }
+        cell.configure(hero: self.tableData[indexPath.row] as Hero)
+        return cell
+    }
+}

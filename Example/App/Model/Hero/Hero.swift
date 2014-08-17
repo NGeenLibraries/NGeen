@@ -1,5 +1,5 @@
 //
-// NGeen-Bridging-Header.h
+// Hero.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,5 +20,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <sqlite3.h>
-#import <SystemConfiguration/SystemConfiguration.h>
+import UIKit
+
+class Hero: Model {
+   
+    var id: Int = 0
+    var name: String = ""
+    var bio: String = ""
+    override var description: String {
+        set {
+            self.bio = newValue
+        }
+        get {
+            return self.bio
+        }
+    }
+    var modified: NSDate = NSDate()
+    var resourceURI: String = ""
+    var urls: [AnyObject] = Array()
+    var thumbnail: [String: AnyObject] = Dictionary()
+    var comics: [AnyObject] = Array()
+    var stories: [AnyObject] = Array()
+    var events: [AnyObject] = Array()
+    var series: [AnyObject] = Array()
+    
+//MARK: Constructor
+    
+    required init () {}
+    
+}

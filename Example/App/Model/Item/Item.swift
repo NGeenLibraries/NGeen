@@ -1,5 +1,5 @@
 //
-// NGeen-Bridging-Header.h
+// Item.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,5 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <sqlite3.h>
-#import <SystemConfiguration/SystemConfiguration.h>
+import UIKit
+
+class Item: Model {
+    
+    var name: String = ""
+    var resourceURI: String = ""
+    var type: String = ""
+    
+//MARK: Constructor
+    
+    required init() {}
+   
+}

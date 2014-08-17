@@ -23,8 +23,7 @@
 import UIKit
 
 class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate {
-   
-    lazy var data: NSMutableData = NSMutableData()
+
     private(set) var downloadProgress: ((NSURLSession!, NSURLSessionDownloadTask!, Int64!, Int64!, Int64!) -> Void)?
     private var credential: NSURLCredential?
     private var dataTasksDelegates: [Int: SessionTaskDelegate]
@@ -209,7 +208,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     */
 
     func uploadTaskWithRequest(request: NSURLRequest, data bodyData: NSData, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionUploadTask {
-        var dataTask: NSURLSessionUploadTask = self.session!.uploadTaskWithRequest(request, fromData: data)
+        var dataTask: NSURLSessionUploadTask = self.session!.uploadTaskWithRequest(request, fromData: bodyData)
         self.setDelegateForUploadTask(dataTask, stream: nil, progress: handler, completionHandler: closure)
         return dataTask
     }
@@ -264,10 +263,10 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     }
 
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didCompleteWithError error: NSError!) {
-        if self.cacheStoragePolicy != NSURLCacheStoragePolicy.NotAllowed && !error {
-            DiskCache.defaultCache().storeData(NSPurgeableData(data: self.data), forUrl: task.currentRequest.URL, completionHandler: nil)
-        }
         if let delegate: SessionTaskDelegate = self.delegateForTask(task) {
+            if self.cacheStoragePolicy != NSURLCacheStoragePolicy.NotAllowed && !error {
+                DiskCache.defaultCache().storeData(NSPurgeableData(data: delegate.data), forUrl: task.currentRequest.URL, completionHandler: nil)
+            }
             delegate.URLSession(session, task: task, didCompleteWithError: error)
             self.removeDelegateForTask(task)
         }

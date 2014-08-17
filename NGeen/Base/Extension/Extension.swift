@@ -1,5 +1,5 @@
 //
-// NGeen-Bridging-Header.h
+//  Extension.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,5 +20,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <sqlite3.h>
-#import <SystemConfiguration/SystemConfiguration.h>
+import UIKit
+
+extension String {
+    
+    private struct Static {
+        static var instace: Inflector? = nil
+        static var token: dispatch_once_t = 0
+    }
+    
+    func pluralize() -> String {
+        dispatch_once(&Static.token, {
+            Static.instace = Inflector()
+        })
+        return Static.instace!.pluralize(self)
+    }
+    
+    func singularize() -> String {
+        dispatch_once(&Static.token, {
+            Static.instace = Inflector()
+        })
+        return Static.instace!.singularize(self)
+    }
+    
+}
