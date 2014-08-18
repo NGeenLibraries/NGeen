@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 /* TODO: 1. create the cfarray from the certificates
+         2. Validate equal keys for chains certificates
          3. finish validation for public keys
 */
 
@@ -111,7 +112,7 @@ class SecurityPolicy: NSObject {
                 let trustedChains: NSMutableArray = NSMutableArray.arrayWithCapacity(certificateCount)
                 for index in 0...certificateCount {
                     let certificate: SecCertificateRef = SecTrustGetCertificateAtIndex(server, index).takeUnretainedValue()
-                    let pointerCertificates = UnsafeMutablePointer<UnsafePointer<()>>(calloc(0, UInt(sizeof(CGFloat))))
+                    let pointerCertificates = UnsafeMutablePointer<UnsafePointer<()>>(calloc(0, UInt(sizeof(SecCertificateRef))))
                     let certificates: CFArrayRef = CFArrayCreate(kCFAllocatorDefault, pointerCertificates, 1, nil)
                     var trust: Unmanaged<SecTrust>? = nil
                     SecTrustCreateWithCertificates(certificates, policy, &trust)
