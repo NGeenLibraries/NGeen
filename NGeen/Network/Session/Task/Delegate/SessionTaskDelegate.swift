@@ -63,7 +63,9 @@ class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownl
         if self.destinationURL != nil {
             var error: NSError?
             NSFileManager.defaultManager().moveItemAtURL(location, toURL: self.destinationURL, error: &error)
-            //TODO: Handle error
+            if error != nil {
+                NSNotificationCenter.defaultCenter().postNotificationName(kNGeenDownloadTaskDidFailToMoveFileNotification, object: downloadTask, userInfo: error?.userInfo)
+            }
         }
     }
     

@@ -20,10 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-
-/*TODO: 1. return the query
-*/
-
 import UIKit
 
 class ApiQuery: NSObject, QueryProtocol {
@@ -57,6 +53,7 @@ class ApiQuery: NSObject, QueryProtocol {
         self.queue = dispatch_queue_create("com.ngeen.requestqueue", DISPATCH_QUEUE_CONCURRENT)
         dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
         self.sessionManager = SessionManager(sessionConfiguration: self.configuration.sessionConfiguration)
+        self.sessionManager!.cacheStoragePolicy = self.configuration.cacheStoragePolicy
         self.sessionManager!.securityPolicy = self.configuration.securityPolicy
         if let credential: NSURLCredential = self.configuration.credential {
             self.sessionManager!.setAuthenticationCredential(self.configuration.credential!, forProtectionSpace: self.configuration.protectionSpace!)
@@ -292,6 +289,17 @@ class ApiQuery: NSObject, QueryProtocol {
     
     func getSecurityPolicy() -> Policy {
         return self.configuration.securityPolicy.policy
+    }
+    
+    /**
+    * The function set the closure to call when the task become in download task
+    *
+    * @param closure The closure to call when the task become in download task.
+    *
+    */
+    
+    func setBecomeDownloadTaskClosure(closure: ((NSURLSession!, NSURLSessionDataTask!, NSURLSessionDownloadTask!) -> Void)) {
+        self.sessionManager!.setBecomeDownloadTaskClosure(closure)
     }
     
     /**
@@ -538,12 +546,13 @@ class ApiQuery: NSObject, QueryProtocol {
             var data: NSPurgeableData = NSPurgeableData()
             if self.configuration.sessionConfiguration.requestCachePolicy != NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData {
                 data = DiskCache.defaultCache().dataForUrl(task.currentRequest.URL)
-                if self.delegate != nil && self.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") {
+                if self.delegate != nil && self.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 {
                     let response: AnyObject = self.responseSerializer.responseWithConfiguration(self.configuration, endPoint: self.endPoint, data: data, error: nil)
                     self.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response)
-                }
-                if data.length > 0 && (self.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataDontLoad ||
+                } else if self.delegate != nil && self.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 && (self.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataDontLoad ||
                     self.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataElseLoad) {
+                    let response: AnyObject = self.responseSerializer.responseWithConfiguration(self.configuration, endPoint: self.endPoint, data: data, error: nil)
+                    self.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response)
                     task.cancel()
                 }
             }

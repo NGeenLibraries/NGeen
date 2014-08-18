@@ -22,7 +22,7 @@
 
 import UIKit
 
-class HeroListTableViewController: UITableViewController {
+class HeroListTableViewController: UITableViewController, ApiQueryDelegate {
         
     @IBOutlet var datasource: HeroDatasource!
     
@@ -31,17 +31,25 @@ class HeroListTableViewController: UITableViewController {
         self.tableView.estimatedRowHeight = 80
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.readHeros()
-    }
+ }
 
+//MARK: ApiQuery delegate
+    
+    func cachedResponseForUrl(url: NSURL, cachedData data: AnyObject) {
+        println(data)
+    }
+    
 //MARK: Private methods
     
     private func readHeros() {
         let apiQuery: ApiQuery = ApiStore.defaultStore().createQueryForPath("/v1/public/characters", httpMethod: HttpMethod.get, server: kMarvelServer)
+        apiQuery.delegate = self
         apiQuery.execute(completionHandler: {(object, error) in
-            let response: NSDictionary = object as NSDictionary
-            if let heros: [Hero] = response.valueForKeyPath("data.results") as? [Hero] {
-                self.datasource.tableData = heros
-                self.tableView.reloadData()
+            if let response: NSDictionary = object as? NSDictionary {
+                if let heros: [Hero] = response.valueForKeyPath("data.results") as? [Hero] {
+                    self.datasource.tableData = heros
+                    self.tableView.reloadData()
+                }
             }
         })
     }

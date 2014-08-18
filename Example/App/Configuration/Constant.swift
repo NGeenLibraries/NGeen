@@ -20,7 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+let kDropBoxAppKey: String = "x30coecna5t1osq"
+let kDropBoxSecretKey: String = "t5rpdejos1xveik"
+let kDropBoxServer: String = "__DropBoxServer"
 let kMarvelServer: String = "__MarvelServer"
-let kParseServer: String = "__ParseServer"
 let kMarvelPrivateKey: String = "ddd8ee63a2f05578b48ae39e7b17bdffdccde476"
 let kMarvelPublicKey: String = "71764b1899e4612a9ecf8b59ea727ec7"
+let kParseServer: String = "__ParseServer"

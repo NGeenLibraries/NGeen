@@ -24,10 +24,11 @@ import UIKit
 
 class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate {
 
-    private(set) var downloadProgress: ((NSURLSession!, NSURLSessionDownloadTask!, Int64!, Int64!, Int64!) -> Void)?
+    private(set) var becomeDownloadTaskClosure: ((NSURLSession!, NSURLSessionDataTask!, NSURLSessionDownloadTask!) -> Void)?
     private var credential: NSURLCredential?
     private var dataTasksDelegates: [Int: SessionTaskDelegate]
     private var destination: NSURL?
+    private(set) var downloadProgress: ((NSURLSession!, NSURLSessionDownloadTask!, Int64!, Int64!, Int64!) -> Void)?
     private var operationQueue: NSOperationQueue = NSOperationQueue()
     private var queue: dispatch_queue_t?
     private var session: NSURLSession?
@@ -154,6 +155,17 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     }
     
     /**
+    * The function set the closure to call when the task become in download task
+    *
+    * @param closure The closure to call when the task become in download task.
+    *
+    */
+    
+    func setBecomeDownloadTaskClosure(closure: ((NSURLSession!, NSURLSessionDataTask!, NSURLSessionDownloadTask!) -> Void)) {
+        self.becomeDownloadTaskClosure = closure
+    }
+    
+    /**
     * The function set the request redirection for the session
     *
     * @param redirection The request for the redirection.
@@ -229,6 +241,15 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     }
 
 //MARK: NSURLSessionData delegate
+    
+    func URLSession(session: NSURLSession!, dataTask: NSURLSessionDataTask!, didBecomeDownloadTask downloadTask: NSURLSessionDownloadTask!) {
+        let delegate: SessionTaskDelegate? = self.delegateForTask(dataTask)
+        if delegate != nil {
+            self.removeDelegateForTask(dataTask)
+            self.setDelegate(delegate!, ForTask: dataTask)
+        }
+        self.becomeDownloadTaskClosure?(session, dataTask, downloadTask)
+    }
     
     func URLSession(session: NSURLSession!, dataTask: NSURLSessionDataTask!, didReceiveData data: NSData!) {
         if let sessionTaskDelegate: SessionTaskDelegate = self.delegateForTask(dataTask) {
@@ -340,6 +361,21 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         })
     }
 
+    /**
+    * The function set the delegate for the given task
+    *
+    * @Param delegate The instance of the delegate.
+    * @param task The task to set the delegate.
+    *
+    */
+    
+    private func setDelegate(delegate: SessionTaskDelegate, ForTask task: NSURLSessionTask) {
+        let sessionTaskDelegate: SessionTaskDelegate = SessionTaskDelegate()
+        dispatch_barrier_async(self.queue, {
+            self.dataTasksDelegates[task.taskIdentifier] = sessionTaskDelegate
+        })
+    }
+    
     /**
     * The function add a new delegate for the given task
     *
