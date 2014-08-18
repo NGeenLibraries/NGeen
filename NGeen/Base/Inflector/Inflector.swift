@@ -23,7 +23,7 @@
 import UIKit
 
 class Inflector: NSObject {
- 
+    
     private var pluralRules: [InflectorRule]
     private var singularRules: [InflectorRule]
     private var words: NSMutableSet
@@ -40,7 +40,7 @@ class Inflector: NSObject {
             self.setRulesFromDictionary(NSDictionary(contentsOfFile: path))
         }
     }
-  
+    
 //MARK: Instance methods
     
     /**

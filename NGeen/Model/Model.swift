@@ -23,7 +23,6 @@
 import UIKit
 
 /*TODO: 1. map childs models
-        2. pluralize and singularize model
         3. First letter fo the model in upper case
         4. Allow map parent class when the model extends from other
 */
@@ -41,14 +40,13 @@ class Model: NSObject {
         }
         return __properties
     }()
+    private var queue: dispatch_queue_t
     
 //MARK: Constructor
     
-    required override init() {}
-
-    convenience init(dictionary: [String: AnyObject]) {
-        self.init()
-        self.fill(dictionary)
+    required override init() {
+        self.queue = dispatch_queue_create("com.ngeen.modelqueue", DISPATCH_QUEUE_CONCURRENT)
+        dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
     }
     
     /*required init(coder decoder: NSCoder!) {
@@ -68,9 +66,27 @@ class Model: NSObject {
     */
     
     func fill(dictionary: [String: AnyObject]) {
+        let bundleName: String = (NSBundle.mainBundle().infoDictionary as NSDictionary)[kCFBundleNameKey] as String
         for (key, value) in dictionary {
-            if  self.hasProperty(key) {
-                self.setValue(value, forKey: key)
+            if self.hasProperty(key) {
+                if let modelClass: NSObject.Type = NSClassFromString("\(bundleName).\(key.singularize().capitalizedString)") as? NSObject.Type {
+                    //TODO: Check if iskindofclass model
+                    if value is [[String: AnyObject]] {
+                        var models: [AnyObject] = Array()
+                        for values in value as [[String: AnyObject]] {
+                            let model = modelClass() as Model
+                            model.fill(values as [String: AnyObject])
+                            models.append(model)
+                        }
+                        self.setValue(models, forKey: key)
+                    } else if value is [String: AnyObject] {
+                        let model: Model = modelClass() as Model
+                        model.fill(value as [String: AnyObject])
+                        self.setValue(model, forKey: key)
+                    }
+                } else {
+                    self.setValue(value, forKey: key)
+                }
             }
         }
     }

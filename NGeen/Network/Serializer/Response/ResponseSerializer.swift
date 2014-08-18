@@ -106,7 +106,7 @@ class ResponseSerializer: NSObject {
                 model.fill(values as [String: AnyObject])
                 response.setValue(model, forKeyPath: path)
             }
-            return response.copy() as Dictionary<String, AnyObject>
+            return response.copy() as [String: AnyObject]
         }
         return Dictionary()
     }

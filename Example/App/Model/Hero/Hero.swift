@@ -39,10 +39,10 @@ class Hero: Model {
     var resourceURI: String = ""
     var urls: [AnyObject] = Array()
     var thumbnail: [String: AnyObject] = Dictionary()
-    var comics: [AnyObject] = Array()
-    var stories: [AnyObject] = Array()
-    var events: [AnyObject] = Array()
-    var series: [AnyObject] = Array()
+    var comics: Comic?
+    var stories: Story?
+    var events: Event?
+    var series: Serie?
     
 //MARK: Constructor
     

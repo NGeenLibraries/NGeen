@@ -8,26 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		674FD8F919A01DF500B6B9B3 /* ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD8F819A01DF500B6B9B3 /* ExampleTests.swift */; };
-		674FD93119A01FCF00B6B9B3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD90519A01FCF00B6B9B3 /* Constants.swift */; };
-		674FD93219A01FCF00B6B9B3 /* DataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD90719A01FCF00B6B9B3 /* DataTypes.swift */; };
-		674FD93319A01FCF00B6B9B3 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD90A19A01FCF00B6B9B3 /* Protocols.swift */; };
-		674FD93419A01FCF00B6B9B3 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD90C19A01FCF00B6B9B3 /* Cache.swift */; };
-		674FD93519A01FCF00B6B9B3 /* DiskCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD90E19A01FCF00B6B9B3 /* DiskCache.swift */; };
-		674FD93619A01FCF00B6B9B3 /* CacheEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD91019A01FCF00B6B9B3 /* CacheEntity.swift */; };
-		674FD93719A01FCF00B6B9B3 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD91219A01FCF00B6B9B3 /* Model.swift */; };
-		674FD93819A01FCF00B6B9B3 /* SecurityPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD91519A01FCF00B6B9B3 /* SecurityPolicy.swift */; };
-		674FD93919A01FCF00B6B9B3 /* RequestSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD91819A01FCF00B6B9B3 /* RequestSerializer.swift */; };
-		674FD93A19A01FCF00B6B9B3 /* ResponseSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD91A19A01FCF00B6B9B3 /* ResponseSerializer.swift */; };
-		674FD93B19A01FCF00B6B9B3 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD91C19A01FCF00B6B9B3 /* SessionManager.swift */; };
-		674FD93C19A01FCF00B6B9B3 /* SessionTaskDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD91F19A01FCF00B6B9B3 /* SessionTaskDelegate.swift */; };
-		674FD93D19A01FCF00B6B9B3 /* ApiQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD92219A01FCF00B6B9B3 /* ApiQuery.swift */; };
-		674FD93E19A01FCF00B6B9B3 /* foo.cer in Resources */ = {isa = PBXBuildFile; fileRef = 674FD92519A01FCF00B6B9B3 /* foo.cer */; };
-		674FD93F19A01FCF00B6B9B3 /* foobar.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = 674FD92619A01FCF00B6B9B3 /* foobar.com.cer */; };
-		674FD94019A01FCF00B6B9B3 /* NoDomains.cer in Resources */ = {isa = PBXBuildFile; fileRef = 674FD92719A01FCF00B6B9B3 /* NoDomains.cer */; };
-		674FD94119A01FCF00B6B9B3 /* ApiStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD92A19A01FCF00B6B9B3 /* ApiStore.swift */; };
-		674FD94219A01FCF00B6B9B3 /* ApiStoreConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD92C19A01FCF00B6B9B3 /* ApiStoreConfiguration.swift */; };
-		674FD94319A01FCF00B6B9B3 /* ApiEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD92E19A01FCF00B6B9B3 /* ApiEndpoint.swift */; };
-		674FD94419A01FCF00B6B9B3 /* DataBaseStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD93019A01FCF00B6B9B3 /* DataBaseStore.swift */; };
 		6754282019A020EC00F1E674 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6754281C19A020EC00F1E674 /* AppDelegate.swift */; };
 		6754282719A0210200F1E674 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6754282319A0210200F1E674 /* Main.storyboard */; };
 		6754282819A0210200F1E674 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6754282519A0210200F1E674 /* Images.xcassets */; };
@@ -37,6 +17,30 @@
 		6754283E19A0250300F1E674 /* Hero.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6754283D19A0250300F1E674 /* Hero.swift */; };
 		6754284219A0274C00F1E674 /* HeroListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6754284019A0274C00F1E674 /* HeroListCell.swift */; };
 		6754284519A02EA900F1E674 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6754284419A02EA900F1E674 /* Constant.swift */; };
+		6759811C19A18C2B0023951F /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675980E919A18C2B0023951F /* Constants.swift */; };
+		6759811D19A18C2B0023951F /* DataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675980EB19A18C2B0023951F /* DataTypes.swift */; };
+		6759811E19A18C2B0023951F /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675980ED19A18C2B0023951F /* Extension.swift */; };
+		6759811F19A18C2B0023951F /* Inflector.plist in Resources */ = {isa = PBXBuildFile; fileRef = 675980EF19A18C2B0023951F /* Inflector.plist */; };
+		6759812019A18C2B0023951F /* Inflector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675980F019A18C2B0023951F /* Inflector.swift */; };
+		6759812119A18C2B0023951F /* InflectorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675980F219A18C2B0023951F /* InflectorRule.swift */; };
+		6759812219A18C2B0023951F /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675980F519A18C2B0023951F /* Protocols.swift */; };
+		6759812319A18C2B0023951F /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675980F719A18C2B0023951F /* Cache.swift */; };
+		6759812419A18C2B0023951F /* DiskCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675980F919A18C2B0023951F /* DiskCache.swift */; };
+		6759812519A18C2B0023951F /* CacheEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675980FB19A18C2B0023951F /* CacheEntity.swift */; };
+		6759812619A18C2B0023951F /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675980FD19A18C2B0023951F /* Model.swift */; };
+		6759812719A18C2B0023951F /* SecurityPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6759810019A18C2B0023951F /* SecurityPolicy.swift */; };
+		6759812819A18C2B0023951F /* RequestSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6759810319A18C2B0023951F /* RequestSerializer.swift */; };
+		6759812919A18C2B0023951F /* ResponseSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6759810519A18C2B0023951F /* ResponseSerializer.swift */; };
+		6759812A19A18C2B0023951F /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6759810719A18C2B0023951F /* SessionManager.swift */; };
+		6759812B19A18C2B0023951F /* SessionTaskDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6759810A19A18C2B0023951F /* SessionTaskDelegate.swift */; };
+		6759812C19A18C2B0023951F /* ApiQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6759810D19A18C2B0023951F /* ApiQuery.swift */; };
+		6759812D19A18C2B0023951F /* foo.cer in Resources */ = {isa = PBXBuildFile; fileRef = 6759811019A18C2B0023951F /* foo.cer */; };
+		6759812E19A18C2B0023951F /* foobar.com.cer in Resources */ = {isa = PBXBuildFile; fileRef = 6759811119A18C2B0023951F /* foobar.com.cer */; };
+		6759812F19A18C2B0023951F /* NoDomains.cer in Resources */ = {isa = PBXBuildFile; fileRef = 6759811219A18C2B0023951F /* NoDomains.cer */; };
+		6759813019A18C2B0023951F /* ApiStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6759811519A18C2B0023951F /* ApiStore.swift */; };
+		6759813119A18C2B0023951F /* ApiStoreConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6759811719A18C2B0023951F /* ApiStoreConfiguration.swift */; };
+		6759813219A18C2B0023951F /* ApiEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6759811919A18C2B0023951F /* ApiEndpoint.swift */; };
+		6759813319A18C2B0023951F /* DataBaseStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6759811B19A18C2B0023951F /* DataBaseStore.swift */; };
 		675CEC9819A0368E0066796A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 675CEC9719A0368E0066796A /* SystemConfiguration.framework */; };
 		675CEC9B19A064C50066796A /* HeroListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675CEC9919A064C50066796A /* HeroListTableViewController.swift */; };
 		675CEC9E19A066D90066796A /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 675CEC9D19A066D90066796A /* Storyboard.storyboard */; };
@@ -46,13 +50,6 @@
 		675CECAA19A078670066796A /* Story.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675CECA919A078670066796A /* Story.swift */; };
 		675CECAD19A0791C0066796A /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675CECAC19A0791C0066796A /* Event.swift */; };
 		675CECB019A079930066796A /* Url.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675CECAF19A079930066796A /* Url.swift */; };
-		675CECB319A145DC0066796A /* Inflector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675CECB219A145DC0066796A /* Inflector.swift */; };
-		675CECB419A145DC0066796A /* Inflector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675CECB219A145DC0066796A /* Inflector.swift */; };
-		675CECB719A146290066796A /* InflectorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675CECB619A146290066796A /* InflectorRule.swift */; };
-		675CECB819A146290066796A /* InflectorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675CECB619A146290066796A /* InflectorRule.swift */; };
-		675CECBA19A147BA0066796A /* Inflector.plist in Resources */ = {isa = PBXBuildFile; fileRef = 675CECB919A147BA0066796A /* Inflector.plist */; };
-		675CECBB19A147BA0066796A /* Inflector.plist in Resources */ = {isa = PBXBuildFile; fileRef = 675CECB919A147BA0066796A /* Inflector.plist */; };
-		67749E1319A154F600B425AB /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67749E1219A154F600B425AB /* Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,27 +67,6 @@
 		674FD8F219A01DF500B6B9B3 /* ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		674FD8F719A01DF500B6B9B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		674FD8F819A01DF500B6B9B3 /* ExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleTests.swift; sourceTree = "<group>"; };
-		674FD90519A01FCF00B6B9B3 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		674FD90719A01FCF00B6B9B3 /* DataTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTypes.swift; sourceTree = "<group>"; };
-		674FD90819A01FCF00B6B9B3 /* NGeen-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NGeen-Bridging-Header.h"; sourceTree = "<group>"; };
-		674FD90A19A01FCF00B6B9B3 /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
-		674FD90C19A01FCF00B6B9B3 /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
-		674FD90E19A01FCF00B6B9B3 /* DiskCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskCache.swift; sourceTree = "<group>"; };
-		674FD91019A01FCF00B6B9B3 /* CacheEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheEntity.swift; sourceTree = "<group>"; };
-		674FD91219A01FCF00B6B9B3 /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
-		674FD91519A01FCF00B6B9B3 /* SecurityPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecurityPolicy.swift; sourceTree = "<group>"; };
-		674FD91819A01FCF00B6B9B3 /* RequestSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestSerializer.swift; sourceTree = "<group>"; };
-		674FD91A19A01FCF00B6B9B3 /* ResponseSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponseSerializer.swift; sourceTree = "<group>"; };
-		674FD91C19A01FCF00B6B9B3 /* SessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
-		674FD91F19A01FCF00B6B9B3 /* SessionTaskDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionTaskDelegate.swift; sourceTree = "<group>"; };
-		674FD92219A01FCF00B6B9B3 /* ApiQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiQuery.swift; sourceTree = "<group>"; };
-		674FD92519A01FCF00B6B9B3 /* foo.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = foo.cer; sourceTree = "<group>"; };
-		674FD92619A01FCF00B6B9B3 /* foobar.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = foobar.com.cer; sourceTree = "<group>"; };
-		674FD92719A01FCF00B6B9B3 /* NoDomains.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = NoDomains.cer; sourceTree = "<group>"; };
-		674FD92A19A01FCF00B6B9B3 /* ApiStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiStore.swift; sourceTree = "<group>"; };
-		674FD92C19A01FCF00B6B9B3 /* ApiStoreConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiStoreConfiguration.swift; sourceTree = "<group>"; };
-		674FD92E19A01FCF00B6B9B3 /* ApiEndpoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiEndpoint.swift; sourceTree = "<group>"; };
-		674FD93019A01FCF00B6B9B3 /* DataBaseStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataBaseStore.swift; sourceTree = "<group>"; };
 		6754281C19A020EC00F1E674 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6754282419A0210200F1E674 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6754282519A0210200F1E674 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -101,6 +77,31 @@
 		6754283D19A0250300F1E674 /* Hero.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Hero.swift; path = Model/Hero/Hero.swift; sourceTree = "<group>"; };
 		6754284019A0274C00F1E674 /* HeroListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HeroListCell.swift; path = Hero/List/Cell/HeroListCell.swift; sourceTree = "<group>"; };
 		6754284419A02EA900F1E674 /* Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
+		675980E919A18C2B0023951F /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		675980EB19A18C2B0023951F /* DataTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTypes.swift; sourceTree = "<group>"; };
+		675980ED19A18C2B0023951F /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		675980EF19A18C2B0023951F /* Inflector.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Inflector.plist; sourceTree = "<group>"; };
+		675980F019A18C2B0023951F /* Inflector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Inflector.swift; sourceTree = "<group>"; };
+		675980F219A18C2B0023951F /* InflectorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InflectorRule.swift; sourceTree = "<group>"; };
+		675980F319A18C2B0023951F /* NGeen-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NGeen-Bridging-Header.h"; sourceTree = "<group>"; };
+		675980F519A18C2B0023951F /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
+		675980F719A18C2B0023951F /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
+		675980F919A18C2B0023951F /* DiskCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskCache.swift; sourceTree = "<group>"; };
+		675980FB19A18C2B0023951F /* CacheEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheEntity.swift; sourceTree = "<group>"; };
+		675980FD19A18C2B0023951F /* Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		6759810019A18C2B0023951F /* SecurityPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecurityPolicy.swift; sourceTree = "<group>"; };
+		6759810319A18C2B0023951F /* RequestSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestSerializer.swift; sourceTree = "<group>"; };
+		6759810519A18C2B0023951F /* ResponseSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponseSerializer.swift; sourceTree = "<group>"; };
+		6759810719A18C2B0023951F /* SessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
+		6759810A19A18C2B0023951F /* SessionTaskDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionTaskDelegate.swift; sourceTree = "<group>"; };
+		6759810D19A18C2B0023951F /* ApiQuery.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiQuery.swift; sourceTree = "<group>"; };
+		6759811019A18C2B0023951F /* foo.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = foo.cer; sourceTree = "<group>"; };
+		6759811119A18C2B0023951F /* foobar.com.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = foobar.com.cer; sourceTree = "<group>"; };
+		6759811219A18C2B0023951F /* NoDomains.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = NoDomains.cer; sourceTree = "<group>"; };
+		6759811519A18C2B0023951F /* ApiStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiStore.swift; sourceTree = "<group>"; };
+		6759811719A18C2B0023951F /* ApiStoreConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiStoreConfiguration.swift; sourceTree = "<group>"; };
+		6759811919A18C2B0023951F /* ApiEndpoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiEndpoint.swift; sourceTree = "<group>"; };
+		6759811B19A18C2B0023951F /* DataBaseStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataBaseStore.swift; sourceTree = "<group>"; };
 		675CEC9719A0368E0066796A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		675CEC9919A064C50066796A /* HeroListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HeroListTableViewController.swift; path = Hero/List/HeroListTableViewController.swift; sourceTree = "<group>"; };
 		675CEC9D19A066D90066796A /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
@@ -110,10 +111,6 @@
 		675CECA919A078670066796A /* Story.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Story.swift; path = Model/Story/Story.swift; sourceTree = "<group>"; };
 		675CECAC19A0791C0066796A /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Event.swift; path = Model/Event/Event.swift; sourceTree = "<group>"; };
 		675CECAF19A079930066796A /* Url.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Url.swift; path = Model/Url/Url.swift; sourceTree = "<group>"; };
-		675CECB219A145DC0066796A /* Inflector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Inflector.swift; path = Inflector/Inflector.swift; sourceTree = "<group>"; };
-		675CECB619A146290066796A /* InflectorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InflectorRule.swift; path = Inflector/Rule/InflectorRule.swift; sourceTree = "<group>"; };
-		675CECB919A147BA0066796A /* Inflector.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Inflector.plist; path = Inflector/Inflector.plist; sourceTree = "<group>"; };
-		67749E1219A154F600B425AB /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Extension.swift; path = Extension/Extension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,7 +140,7 @@
 				6754281A19A020EC00F1E674 /* App */,
 				674FD8F519A01DF500B6B9B3 /* ExampleTests */,
 				6754282D19A0219600F1E674 /* Framework */,
-				674FD90219A01FCF00B6B9B3 /* NGeen */,
+				675980E619A18C2B0023951F /* NGeen */,
 				674FD8E119A01DF500B6B9B3 /* Products */,
 				6754282219A0210200F1E674 /* Project */,
 			);
@@ -173,237 +170,6 @@
 				674FD8F719A01DF500B6B9B3 /* Info.plist */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		674FD90219A01FCF00B6B9B3 /* NGeen */ = {
-			isa = PBXGroup;
-			children = (
-				674FD90319A01FCF00B6B9B3 /* Base */,
-				674FD90B19A01FCF00B6B9B3 /* Cache */,
-				674FD91119A01FCF00B6B9B3 /* Model */,
-				674FD91319A01FCF00B6B9B3 /* Network */,
-				674FD92019A01FCF00B6B9B3 /* Query */,
-				674FD92319A01FCF00B6B9B3 /* Resource */,
-				674FD92819A01FCF00B6B9B3 /* Store */,
-			);
-			name = NGeen;
-			path = ../NGeen;
-			sourceTree = "<group>";
-		};
-		674FD90319A01FCF00B6B9B3 /* Base */ = {
-			isa = PBXGroup;
-			children = (
-				674FD90419A01FCF00B6B9B3 /* Constants */,
-				674FD90619A01FCF00B6B9B3 /* DataTypes */,
-				67749E1119A154C600B425AB /* Extension */,
-				675CECB119A145920066796A /* Inflector */,
-				674FD90819A01FCF00B6B9B3 /* NGeen-Bridging-Header.h */,
-				674FD90919A01FCF00B6B9B3 /* Protocols */,
-			);
-			path = Base;
-			sourceTree = "<group>";
-		};
-		674FD90419A01FCF00B6B9B3 /* Constants */ = {
-			isa = PBXGroup;
-			children = (
-				674FD90519A01FCF00B6B9B3 /* Constants.swift */,
-			);
-			path = Constants;
-			sourceTree = "<group>";
-		};
-		674FD90619A01FCF00B6B9B3 /* DataTypes */ = {
-			isa = PBXGroup;
-			children = (
-				674FD90719A01FCF00B6B9B3 /* DataTypes.swift */,
-			);
-			path = DataTypes;
-			sourceTree = "<group>";
-		};
-		674FD90919A01FCF00B6B9B3 /* Protocols */ = {
-			isa = PBXGroup;
-			children = (
-				674FD90A19A01FCF00B6B9B3 /* Protocols.swift */,
-			);
-			path = Protocols;
-			sourceTree = "<group>";
-		};
-		674FD90B19A01FCF00B6B9B3 /* Cache */ = {
-			isa = PBXGroup;
-			children = (
-				674FD90C19A01FCF00B6B9B3 /* Cache.swift */,
-				674FD90D19A01FCF00B6B9B3 /* DiskCache */,
-				674FD90F19A01FCF00B6B9B3 /* Entity */,
-			);
-			path = Cache;
-			sourceTree = "<group>";
-		};
-		674FD90D19A01FCF00B6B9B3 /* DiskCache */ = {
-			isa = PBXGroup;
-			children = (
-				674FD90E19A01FCF00B6B9B3 /* DiskCache.swift */,
-			);
-			path = DiskCache;
-			sourceTree = "<group>";
-		};
-		674FD90F19A01FCF00B6B9B3 /* Entity */ = {
-			isa = PBXGroup;
-			children = (
-				674FD91019A01FCF00B6B9B3 /* CacheEntity.swift */,
-			);
-			path = Entity;
-			sourceTree = "<group>";
-		};
-		674FD91119A01FCF00B6B9B3 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				674FD91219A01FCF00B6B9B3 /* Model.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		674FD91319A01FCF00B6B9B3 /* Network */ = {
-			isa = PBXGroup;
-			children = (
-				674FD91419A01FCF00B6B9B3 /* Security */,
-				674FD91619A01FCF00B6B9B3 /* Serializer */,
-				674FD91B19A01FCF00B6B9B3 /* Session */,
-			);
-			path = Network;
-			sourceTree = "<group>";
-		};
-		674FD91419A01FCF00B6B9B3 /* Security */ = {
-			isa = PBXGroup;
-			children = (
-				674FD91519A01FCF00B6B9B3 /* SecurityPolicy.swift */,
-			);
-			path = Security;
-			sourceTree = "<group>";
-		};
-		674FD91619A01FCF00B6B9B3 /* Serializer */ = {
-			isa = PBXGroup;
-			children = (
-				674FD91719A01FCF00B6B9B3 /* Request */,
-				674FD91919A01FCF00B6B9B3 /* Response */,
-			);
-			path = Serializer;
-			sourceTree = "<group>";
-		};
-		674FD91719A01FCF00B6B9B3 /* Request */ = {
-			isa = PBXGroup;
-			children = (
-				674FD91819A01FCF00B6B9B3 /* RequestSerializer.swift */,
-			);
-			path = Request;
-			sourceTree = "<group>";
-		};
-		674FD91919A01FCF00B6B9B3 /* Response */ = {
-			isa = PBXGroup;
-			children = (
-				674FD91A19A01FCF00B6B9B3 /* ResponseSerializer.swift */,
-			);
-			path = Response;
-			sourceTree = "<group>";
-		};
-		674FD91B19A01FCF00B6B9B3 /* Session */ = {
-			isa = PBXGroup;
-			children = (
-				674FD91C19A01FCF00B6B9B3 /* SessionManager.swift */,
-				674FD91D19A01FCF00B6B9B3 /* Task */,
-			);
-			path = Session;
-			sourceTree = "<group>";
-		};
-		674FD91D19A01FCF00B6B9B3 /* Task */ = {
-			isa = PBXGroup;
-			children = (
-				674FD91E19A01FCF00B6B9B3 /* Delegate */,
-			);
-			path = Task;
-			sourceTree = "<group>";
-		};
-		674FD91E19A01FCF00B6B9B3 /* Delegate */ = {
-			isa = PBXGroup;
-			children = (
-				674FD91F19A01FCF00B6B9B3 /* SessionTaskDelegate.swift */,
-			);
-			path = Delegate;
-			sourceTree = "<group>";
-		};
-		674FD92019A01FCF00B6B9B3 /* Query */ = {
-			isa = PBXGroup;
-			children = (
-				674FD92119A01FCF00B6B9B3 /* Api */,
-			);
-			path = Query;
-			sourceTree = "<group>";
-		};
-		674FD92119A01FCF00B6B9B3 /* Api */ = {
-			isa = PBXGroup;
-			children = (
-				674FD92219A01FCF00B6B9B3 /* ApiQuery.swift */,
-			);
-			path = Api;
-			sourceTree = "<group>";
-		};
-		674FD92319A01FCF00B6B9B3 /* Resource */ = {
-			isa = PBXGroup;
-			children = (
-				674FD92419A01FCF00B6B9B3 /* Certificate */,
-			);
-			path = Resource;
-			sourceTree = "<group>";
-		};
-		674FD92419A01FCF00B6B9B3 /* Certificate */ = {
-			isa = PBXGroup;
-			children = (
-				674FD92519A01FCF00B6B9B3 /* foo.cer */,
-				674FD92619A01FCF00B6B9B3 /* foobar.com.cer */,
-				674FD92719A01FCF00B6B9B3 /* NoDomains.cer */,
-			);
-			path = Certificate;
-			sourceTree = "<group>";
-		};
-		674FD92819A01FCF00B6B9B3 /* Store */ = {
-			isa = PBXGroup;
-			children = (
-				674FD92919A01FCF00B6B9B3 /* Api */,
-				674FD92F19A01FCF00B6B9B3 /* DataBase */,
-			);
-			path = Store;
-			sourceTree = "<group>";
-		};
-		674FD92919A01FCF00B6B9B3 /* Api */ = {
-			isa = PBXGroup;
-			children = (
-				674FD92A19A01FCF00B6B9B3 /* ApiStore.swift */,
-				674FD92B19A01FCF00B6B9B3 /* Configuration */,
-				674FD92D19A01FCF00B6B9B3 /* Endpoint */,
-			);
-			path = Api;
-			sourceTree = "<group>";
-		};
-		674FD92B19A01FCF00B6B9B3 /* Configuration */ = {
-			isa = PBXGroup;
-			children = (
-				674FD92C19A01FCF00B6B9B3 /* ApiStoreConfiguration.swift */,
-			);
-			path = Configuration;
-			sourceTree = "<group>";
-		};
-		674FD92D19A01FCF00B6B9B3 /* Endpoint */ = {
-			isa = PBXGroup;
-			children = (
-				674FD92E19A01FCF00B6B9B3 /* ApiEndpoint.swift */,
-			);
-			path = Endpoint;
-			sourceTree = "<group>";
-		};
-		674FD92F19A01FCF00B6B9B3 /* DataBase */ = {
-			isa = PBXGroup;
-			children = (
-				674FD93019A01FCF00B6B9B3 /* DataBaseStore.swift */,
-			);
-			path = DataBase;
 			sourceTree = "<group>";
 		};
 		6754281A19A020EC00F1E674 /* App */ = {
@@ -533,6 +299,263 @@
 			name = Cell;
 			sourceTree = "<group>";
 		};
+		675980E619A18C2B0023951F /* NGeen */ = {
+			isa = PBXGroup;
+			children = (
+				675980E719A18C2B0023951F /* Base */,
+				675980F619A18C2B0023951F /* Cache */,
+				675980FC19A18C2B0023951F /* Model */,
+				675980FE19A18C2B0023951F /* Network */,
+				6759810B19A18C2B0023951F /* Query */,
+				6759810E19A18C2B0023951F /* Resource */,
+				6759811319A18C2B0023951F /* Store */,
+			);
+			name = NGeen;
+			path = ../NGeen;
+			sourceTree = "<group>";
+		};
+		675980E719A18C2B0023951F /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				675980E819A18C2B0023951F /* Constants */,
+				675980EA19A18C2B0023951F /* DataTypes */,
+				675980EC19A18C2B0023951F /* Extension */,
+				675980EE19A18C2B0023951F /* Inflector */,
+				675980F319A18C2B0023951F /* NGeen-Bridging-Header.h */,
+				675980F419A18C2B0023951F /* Protocols */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		675980E819A18C2B0023951F /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				675980E919A18C2B0023951F /* Constants.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
+		675980EA19A18C2B0023951F /* DataTypes */ = {
+			isa = PBXGroup;
+			children = (
+				675980EB19A18C2B0023951F /* DataTypes.swift */,
+			);
+			path = DataTypes;
+			sourceTree = "<group>";
+		};
+		675980EC19A18C2B0023951F /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				675980ED19A18C2B0023951F /* Extension.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		675980EE19A18C2B0023951F /* Inflector */ = {
+			isa = PBXGroup;
+			children = (
+				675980EF19A18C2B0023951F /* Inflector.plist */,
+				675980F019A18C2B0023951F /* Inflector.swift */,
+				675980F119A18C2B0023951F /* Rule */,
+			);
+			path = Inflector;
+			sourceTree = "<group>";
+		};
+		675980F119A18C2B0023951F /* Rule */ = {
+			isa = PBXGroup;
+			children = (
+				675980F219A18C2B0023951F /* InflectorRule.swift */,
+			);
+			path = Rule;
+			sourceTree = "<group>";
+		};
+		675980F419A18C2B0023951F /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				675980F519A18C2B0023951F /* Protocols.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		675980F619A18C2B0023951F /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				675980F719A18C2B0023951F /* Cache.swift */,
+				675980F819A18C2B0023951F /* DiskCache */,
+				675980FA19A18C2B0023951F /* Entity */,
+			);
+			path = Cache;
+			sourceTree = "<group>";
+		};
+		675980F819A18C2B0023951F /* DiskCache */ = {
+			isa = PBXGroup;
+			children = (
+				675980F919A18C2B0023951F /* DiskCache.swift */,
+			);
+			path = DiskCache;
+			sourceTree = "<group>";
+		};
+		675980FA19A18C2B0023951F /* Entity */ = {
+			isa = PBXGroup;
+			children = (
+				675980FB19A18C2B0023951F /* CacheEntity.swift */,
+			);
+			path = Entity;
+			sourceTree = "<group>";
+		};
+		675980FC19A18C2B0023951F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				675980FD19A18C2B0023951F /* Model.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		675980FE19A18C2B0023951F /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				675980FF19A18C2B0023951F /* Security */,
+				6759810119A18C2B0023951F /* Serializer */,
+				6759810619A18C2B0023951F /* Session */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		675980FF19A18C2B0023951F /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				6759810019A18C2B0023951F /* SecurityPolicy.swift */,
+			);
+			path = Security;
+			sourceTree = "<group>";
+		};
+		6759810119A18C2B0023951F /* Serializer */ = {
+			isa = PBXGroup;
+			children = (
+				6759810219A18C2B0023951F /* Request */,
+				6759810419A18C2B0023951F /* Response */,
+			);
+			path = Serializer;
+			sourceTree = "<group>";
+		};
+		6759810219A18C2B0023951F /* Request */ = {
+			isa = PBXGroup;
+			children = (
+				6759810319A18C2B0023951F /* RequestSerializer.swift */,
+			);
+			path = Request;
+			sourceTree = "<group>";
+		};
+		6759810419A18C2B0023951F /* Response */ = {
+			isa = PBXGroup;
+			children = (
+				6759810519A18C2B0023951F /* ResponseSerializer.swift */,
+			);
+			path = Response;
+			sourceTree = "<group>";
+		};
+		6759810619A18C2B0023951F /* Session */ = {
+			isa = PBXGroup;
+			children = (
+				6759810719A18C2B0023951F /* SessionManager.swift */,
+				6759810819A18C2B0023951F /* Task */,
+			);
+			path = Session;
+			sourceTree = "<group>";
+		};
+		6759810819A18C2B0023951F /* Task */ = {
+			isa = PBXGroup;
+			children = (
+				6759810919A18C2B0023951F /* Delegate */,
+			);
+			path = Task;
+			sourceTree = "<group>";
+		};
+		6759810919A18C2B0023951F /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				6759810A19A18C2B0023951F /* SessionTaskDelegate.swift */,
+			);
+			path = Delegate;
+			sourceTree = "<group>";
+		};
+		6759810B19A18C2B0023951F /* Query */ = {
+			isa = PBXGroup;
+			children = (
+				6759810C19A18C2B0023951F /* Api */,
+			);
+			path = Query;
+			sourceTree = "<group>";
+		};
+		6759810C19A18C2B0023951F /* Api */ = {
+			isa = PBXGroup;
+			children = (
+				6759810D19A18C2B0023951F /* ApiQuery.swift */,
+			);
+			path = Api;
+			sourceTree = "<group>";
+		};
+		6759810E19A18C2B0023951F /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				6759810F19A18C2B0023951F /* Certificate */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
+		6759810F19A18C2B0023951F /* Certificate */ = {
+			isa = PBXGroup;
+			children = (
+				6759811019A18C2B0023951F /* foo.cer */,
+				6759811119A18C2B0023951F /* foobar.com.cer */,
+				6759811219A18C2B0023951F /* NoDomains.cer */,
+			);
+			path = Certificate;
+			sourceTree = "<group>";
+		};
+		6759811319A18C2B0023951F /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				6759811419A18C2B0023951F /* Api */,
+				6759811A19A18C2B0023951F /* DataBase */,
+			);
+			path = Store;
+			sourceTree = "<group>";
+		};
+		6759811419A18C2B0023951F /* Api */ = {
+			isa = PBXGroup;
+			children = (
+				6759811519A18C2B0023951F /* ApiStore.swift */,
+				6759811619A18C2B0023951F /* Configuration */,
+				6759811819A18C2B0023951F /* Endpoint */,
+			);
+			path = Api;
+			sourceTree = "<group>";
+		};
+		6759811619A18C2B0023951F /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				6759811719A18C2B0023951F /* ApiStoreConfiguration.swift */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		6759811819A18C2B0023951F /* Endpoint */ = {
+			isa = PBXGroup;
+			children = (
+				6759811919A18C2B0023951F /* ApiEndpoint.swift */,
+			);
+			path = Endpoint;
+			sourceTree = "<group>";
+		};
+		6759811A19A18C2B0023951F /* DataBase */ = {
+			isa = PBXGroup;
+			children = (
+				6759811B19A18C2B0023951F /* DataBaseStore.swift */,
+			);
+			path = DataBase;
+			sourceTree = "<group>";
+		};
 		675CEC9F19A0750F0066796A /* Comic */ = {
 			isa = PBXGroup;
 			children = (
@@ -579,32 +602,6 @@
 				675CECAF19A079930066796A /* Url.swift */,
 			);
 			name = Url;
-			sourceTree = "<group>";
-		};
-		675CECB119A145920066796A /* Inflector */ = {
-			isa = PBXGroup;
-			children = (
-				675CECB519A1460E0066796A /* Rule */,
-				675CECB919A147BA0066796A /* Inflector.plist */,
-				675CECB219A145DC0066796A /* Inflector.swift */,
-			);
-			name = Inflector;
-			sourceTree = "<group>";
-		};
-		675CECB519A1460E0066796A /* Rule */ = {
-			isa = PBXGroup;
-			children = (
-				675CECB619A146290066796A /* InflectorRule.swift */,
-			);
-			name = Rule;
-			sourceTree = "<group>";
-		};
-		67749E1119A154C600B425AB /* Extension */ = {
-			isa = PBXGroup;
-			children = (
-				67749E1219A154F600B425AB /* Extension.swift */,
-			);
-			name = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -687,13 +684,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				674FD93F19A01FCF00B6B9B3 /* foobar.com.cer in Resources */,
+				6759812E19A18C2B0023951F /* foobar.com.cer in Resources */,
 				6754282819A0210200F1E674 /* Images.xcassets in Resources */,
-				674FD93E19A01FCF00B6B9B3 /* foo.cer in Resources */,
-				674FD94019A01FCF00B6B9B3 /* NoDomains.cer in Resources */,
-				675CECBA19A147BA0066796A /* Inflector.plist in Resources */,
 				675CEC9E19A066D90066796A /* Storyboard.storyboard in Resources */,
+				6759812F19A18C2B0023951F /* NoDomains.cer in Resources */,
 				6754282719A0210200F1E674 /* Main.storyboard in Resources */,
+				6759811F19A18C2B0023951F /* Inflector.plist in Resources */,
+				6759812D19A18C2B0023951F /* foo.cer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -701,7 +698,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				675CECBB19A147BA0066796A /* Inflector.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -712,39 +708,39 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				674FD94419A01FCF00B6B9B3 /* DataBaseStore.swift in Sources */,
+				6759812819A18C2B0023951F /* RequestSerializer.swift in Sources */,
 				6754282C19A0213A00F1E674 /* ApiConfiguration.swift in Sources */,
-				674FD94119A01FCF00B6B9B3 /* ApiStore.swift in Sources */,
-				674FD93D19A01FCF00B6B9B3 /* ApiQuery.swift in Sources */,
-				674FD94219A01FCF00B6B9B3 /* ApiStoreConfiguration.swift in Sources */,
-				674FD93719A01FCF00B6B9B3 /* Model.swift in Sources */,
-				674FD93319A01FCF00B6B9B3 /* Protocols.swift in Sources */,
 				675CECAA19A078670066796A /* Story.swift in Sources */,
 				6754283A19A0246000F1E674 /* HeroDatasource.swift in Sources */,
-				674FD93919A01FCF00B6B9B3 /* RequestSerializer.swift in Sources */,
 				6754284219A0274C00F1E674 /* HeroListCell.swift in Sources */,
+				6759812019A18C2B0023951F /* Inflector.swift in Sources */,
+				6759812419A18C2B0023951F /* DiskCache.swift in Sources */,
+				6759813219A18C2B0023951F /* ApiEndpoint.swift in Sources */,
 				6754284519A02EA900F1E674 /* Constant.swift in Sources */,
-				675CECB719A146290066796A /* InflectorRule.swift in Sources */,
-				674FD93819A01FCF00B6B9B3 /* SecurityPolicy.swift in Sources */,
-				674FD93219A01FCF00B6B9B3 /* DataTypes.swift in Sources */,
-				67749E1319A154F600B425AB /* Extension.swift in Sources */,
-				674FD93419A01FCF00B6B9B3 /* Cache.swift in Sources */,
-				674FD93C19A01FCF00B6B9B3 /* SessionTaskDelegate.swift in Sources */,
+				6759813119A18C2B0023951F /* ApiStoreConfiguration.swift in Sources */,
+				6759812319A18C2B0023951F /* Cache.swift in Sources */,
+				6759812119A18C2B0023951F /* InflectorRule.swift in Sources */,
 				675CEC9B19A064C50066796A /* HeroListTableViewController.swift in Sources */,
-				674FD93A19A01FCF00B6B9B3 /* ResponseSerializer.swift in Sources */,
+				6759812A19A18C2B0023951F /* SessionManager.swift in Sources */,
 				675CECA119A0753A0066796A /* Comic.swift in Sources */,
+				6759812219A18C2B0023951F /* Protocols.swift in Sources */,
+				6759811E19A18C2B0023951F /* Extension.swift in Sources */,
 				675CECB019A079930066796A /* Url.swift in Sources */,
+				6759812619A18C2B0023951F /* Model.swift in Sources */,
 				675CECAD19A0791C0066796A /* Event.swift in Sources */,
+				6759813319A18C2B0023951F /* DataBaseStore.swift in Sources */,
+				6759812C19A18C2B0023951F /* ApiQuery.swift in Sources */,
 				6754282019A020EC00F1E674 /* AppDelegate.swift in Sources */,
-				674FD93619A01FCF00B6B9B3 /* CacheEntity.swift in Sources */,
 				675CECA419A076C70066796A /* Item.swift in Sources */,
-				675CECB319A145DC0066796A /* Inflector.swift in Sources */,
+				6759812519A18C2B0023951F /* CacheEntity.swift in Sources */,
+				6759811C19A18C2B0023951F /* Constants.swift in Sources */,
+				6759812B19A18C2B0023951F /* SessionTaskDelegate.swift in Sources */,
+				6759811D19A18C2B0023951F /* DataTypes.swift in Sources */,
+				6759812919A18C2B0023951F /* ResponseSerializer.swift in Sources */,
+				6759813019A18C2B0023951F /* ApiStore.swift in Sources */,
 				6754283E19A0250300F1E674 /* Hero.swift in Sources */,
-				674FD93519A01FCF00B6B9B3 /* DiskCache.swift in Sources */,
 				675CECA719A077870066796A /* Serie.swift in Sources */,
-				674FD93119A01FCF00B6B9B3 /* Constants.swift in Sources */,
-				674FD93B19A01FCF00B6B9B3 /* SessionManager.swift in Sources */,
-				674FD94319A01FCF00B6B9B3 /* ApiEndpoint.swift in Sources */,
+				6759812719A18C2B0023951F /* SecurityPolicy.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -752,8 +748,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				675CECB819A146290066796A /* InflectorRule.swift in Sources */,
-				675CECB419A145DC0066796A /* Inflector.swift in Sources */,
 				674FD8F919A01DF500B6B9B3 /* ExampleTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

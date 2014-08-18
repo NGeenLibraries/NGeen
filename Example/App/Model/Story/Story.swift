@@ -26,7 +26,7 @@ class Story: Model {
    
     var available: Int = 0
     var collectionURI: String = ""
-    var items: [AnyObject] = Array()
+    var items: [Item] = Array()
     var returned: Int = 0
     
 //MARK: Constructor

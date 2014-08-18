@@ -23,7 +23,7 @@
 import UIKit
 
 class InflectorRule: NSObject {
-   
+    
     var rule: String
     var replacement: String
     

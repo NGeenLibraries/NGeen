@@ -34,14 +34,24 @@ class ModelTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock() {
-            // Put the code you want to measure the time of here.
-        }
-    }
    
+    func testThatFillWithoutChildsModels() {
+        let model: ModelMockup = ModelMockup()
+        model.fill(["lastName": "bar", "name": "bar1"])
+        XCTAssertEqual(model.lastName, "bar", "the last name var value should be equal to bar", file: __FILE__, line: __LINE__)
+        XCTAssertEqual(model.name, "bar1", "the name var value should be equal to bar1", file: __FILE__, line: __LINE__)
+    }
+    
+    func testThatFillWithChildsModels() {
+        let model: ModelMockup = ModelMockup()
+        model.fill(["lastName": "bar", "name": "bar1", "childs": [["foo": "bar", "foo1": "bar1"]]])
+        XCTAssertEqual(model.lastName, "bar", "the last name var value should be equal to bar", file: __FILE__, line: __LINE__)
+        XCTAssertEqual(model.name, "bar1", "the name var value should be equal to bar1", file: __FILE__, line: __LINE__)
+        let child: Child = model.childs.first!
+        XCTAssertEqual(child.foo, "bar", "the foo var value should be equal to bar", file: __FILE__, line: __LINE__)
+        XCTAssertEqual(child.foo1, "bar1", "the foo1 var value should be equal to bar1", file: __FILE__, line: __LINE__)
+    }
+    
     func testThatHashPropertyFalse() {
         let model: ModelMockup = ModelMockup()
         XCTAssertFalse(model.hasProperty("second"), "The method should return false", file: __FILE__, line: __LINE__)

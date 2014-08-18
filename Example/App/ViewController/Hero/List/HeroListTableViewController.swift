@@ -31,21 +31,8 @@ class HeroListTableViewController: UITableViewController {
         self.tableView.estimatedRowHeight = 80
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.readHeros()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "contentSizeCategoryChanged:", name: UIContentSizeCategoryDidChangeNotification, object: nil)
     }
-    
-    override func viewDidDisappear(animated: Bool)
-    {
-        super.viewDidDisappear(animated)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIContentSizeCategoryDidChangeNotification, object: nil)
-    }
-    
-//MARK: Observer methods
 
-    func contentSizeCategoryChanged(notification: NSNotification) {
-        tableView.reloadData()
-    }
-    
 //MARK: Private methods
     
     private func readHeros() {
