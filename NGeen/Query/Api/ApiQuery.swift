@@ -101,6 +101,46 @@ class ApiQuery: NSObject, QueryProtocol {
     }
     
     /**
+    * The function execute the task
+    *
+    * @param completionHandler The closure to be called when the function end.
+    *
+    */
+    
+    func execute(#completionHandler: NGeenClosure) {
+        let request: NSURLRequest = self.requestSerializer.requestSerializingWithConfiguration(self.configuration, endPoint: self.endPoint, error: nil)
+        let sessionDataTask: NSURLSessionDataTask = self.sessionManager!.dataTaskWithRequest(request, completionHandler: {(data, urlResponse, error) in
+            var response: AnyObject!
+            if !error {
+                response = self.responseSerializer.responseWithConfiguration(self.configuration, endPoint: self.endPoint, data: data, error: nil)
+            }
+            completionHandler?(object: response, error: error)
+        })
+        self.cachedResponseForTask(sessionDataTask)
+        sessionDataTask.resume()
+    }
+    
+    /**
+    * The function execute the request
+    *
+    * @params parameters The parameters for the request.
+    * @param completionHandler The closure to be called when the function end.
+    *
+    */
+    
+    func execute(parameters: [String: String], completionHandler closure: NGeenClosure) {
+        switch self.endPoint.httpMethod {
+        case .delete, .get, .head:
+            self.setQueryItems(parameters)
+        case .patch, .post, .put:
+            self.configuration.bodyItems += parameters
+        default:
+            assert(false, "Invalid http method", file: __FILE__, line: __LINE__)
+        }
+        self.execute(completionHandler: closure)
+    }
+    
+    /**
     * The function return the body items
     *
     * @param no need params.
@@ -252,46 +292,6 @@ class ApiQuery: NSObject, QueryProtocol {
     
     func getSecurityPolicy() -> Policy {
         return self.configuration.securityPolicy.policy
-    }
-    
-    /**
-    * The function execute the task
-    *
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func execute(completionHandler closure: NGeenClosure) {
-        let request: NSURLRequest = self.requestSerializer.requestSerializingWithConfiguration(self.configuration, endPoint: self.endPoint, error: nil)
-        let sessionDataTask: NSURLSessionDataTask = self.sessionManager!.dataTaskWithRequest(request, completionHandler: {(data, urlResponse, error) in
-            var response: AnyObject!
-            if !error {
-                response = self.responseSerializer.responseWithConfiguration(self.configuration, endPoint: self.endPoint, data: data, error: nil)
-            }
-            closure?(object: response, error: error)
-        })
-        self.cachedResponseForTask(sessionDataTask)
-        sessionDataTask.resume()
-    }
-
-    /**
-    * The function execute the request
-    *
-    * @params parameters The parameters for the request.
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func execute(parameters: [String: String], completionHandler closure: NGeenClosure) {
-        switch self.endPoint.httpMethod {
-            case .delete, .get, .head:
-                self.setQueryItems(parameters)
-            case .patch, .post, .put:
-                self.configuration.bodyItems += parameters
-            default:
-                assert(false, "Invalid http method", file: __FILE__, line: __LINE__)
-        }
-        self.execute(completionHandler: closure)
     }
     
     /**

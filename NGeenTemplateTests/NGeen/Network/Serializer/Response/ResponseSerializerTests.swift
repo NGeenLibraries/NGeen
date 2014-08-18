@@ -52,12 +52,15 @@ class ResponseSerializerTests: XCTestCase {
     }
     
     func testThatResponseInModelsFormat() {
+        let expectation: XCTestExpectation = self.expectationWithDescription("model serialization block")
         let data: NSData = NSJSONSerialization.dataWithJSONObject(["foo": "bar", "foo1": "bar1", "models": [["foo": "bar", "foo1": "bar1"]]], options: NSJSONWritingOptions.PrettyPrinted, error: nil)
         let response = self.responseSerializer!.responseInModelsForData(data, modelClass: Test.self, modelsPath: "models", error: nil)
         let models: Array<Test> = response["models"]! as Array
         let test: Test = models.first!
         XCTAssertEqual(test.foo, "bar", "the foo var value should be equal to bar", file: __FILE__, line: __LINE__)
         XCTAssertEqual(test.foo1, "bar1", "the foo1 var value should be equal to bar1", file: __FILE__, line: __LINE__)
+        expectation.fulfill()
+        self.waitForExpectationsWithTimeout(10, handler: nil)
     }
     
     func testThatResponseInStringFormat() {

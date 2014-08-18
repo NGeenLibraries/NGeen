@@ -1,5 +1,5 @@
 //
-// ModelMockup.swift
+// Serie.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,14 +22,15 @@
 
 import UIKit
 
-class ModelMockup: Model {
+class Serie: Model {
    
-    var lastName: String = ""
-    var name: String = ""
-    var childs: [Child] = Array()
-}
-
-class Child: Model {
-    var foo: String = ""
-    var foo1: String = ""
+    var available: Int = 0
+    var collectionURI: String = ""
+    var items: [Item] = Array()
+    var returned: Int = 0
+    
+//Constructor
+    
+    required init() {}
+    
 }

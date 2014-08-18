@@ -1,5 +1,5 @@
 //
-// ModelMockup.swift
+// Hero.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,14 +22,30 @@
 
 import UIKit
 
-class ModelMockup: Model {
+class Hero: Model {
    
-    var lastName: String = ""
+    var id: Int = 0
     var name: String = ""
-    var childs: [Child] = Array()
-}
-
-class Child: Model {
-    var foo: String = ""
-    var foo1: String = ""
+    var bio: String = ""
+    override var description: String {
+        set {
+            self.bio = newValue
+        }
+        get {
+            return self.bio
+        }
+    }
+    var modified: NSDate = NSDate()
+    var resourceURI: String = ""
+    var urls: [AnyObject] = Array()
+    var thumbnail: [String: AnyObject] = Dictionary()
+    var comics: Comic?
+    var stories: Story?
+    var events: Event?
+    var series: Serie?
+    
+//MARK: Constructor
+    
+    required init () {}
+    
 }

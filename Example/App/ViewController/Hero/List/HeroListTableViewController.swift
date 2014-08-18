@@ -1,5 +1,5 @@
 //
-// ModelMockup.swift
+// HeroListTableViewController.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,14 +22,28 @@
 
 import UIKit
 
-class ModelMockup: Model {
-   
-    var lastName: String = ""
-    var name: String = ""
-    var childs: [Child] = Array()
-}
+class HeroListTableViewController: UITableViewController {
+        
+    @IBOutlet var datasource: HeroDatasource!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.tableView.estimatedRowHeight = 80
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.readHeros()
+    }
 
-class Child: Model {
-    var foo: String = ""
-    var foo1: String = ""
+//MARK: Private methods
+    
+    private func readHeros() {
+        let apiQuery: ApiQuery = ApiStore.defaultStore().createQueryForPath("/v1/public/characters", httpMethod: HttpMethod.get, server: kMarvelServer)
+        apiQuery.execute(completionHandler: {(object, error) in
+            let response: NSDictionary = object as NSDictionary
+            if let heros: [Hero] = response.valueForKeyPath("data.results") as? [Hero] {
+                self.datasource.tableData = heros
+                self.tableView.reloadData()
+            }
+        })
+    }
+    
 }

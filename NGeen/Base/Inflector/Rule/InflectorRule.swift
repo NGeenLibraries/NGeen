@@ -1,5 +1,5 @@
 //
-// ModelMockup.swift
+// InflectorRule.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,14 +22,16 @@
 
 import UIKit
 
-class ModelMockup: Model {
-   
-    var lastName: String = ""
-    var name: String = ""
-    var childs: [Child] = Array()
-}
-
-class Child: Model {
-    var foo: String = ""
-    var foo1: String = ""
+class InflectorRule: NSObject {
+    
+    var rule: String
+    var replacement: String
+    
+//MARK: Constructor
+    
+    init(rule: String, replacement: String) {
+        self.rule = rule
+        self.replacement = replacement
+    }
+    
 }

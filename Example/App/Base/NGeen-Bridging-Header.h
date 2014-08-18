@@ -1,5 +1,5 @@
 //
-// ModelMockup.swift
+// NGeen-Bridging-Header.h
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,16 +20,4 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import UIKit
-
-class ModelMockup: Model {
-   
-    var lastName: String = ""
-    var name: String = ""
-    var childs: [Child] = Array()
-}
-
-class Child: Model {
-    var foo: String = ""
-    var foo1: String = ""
-}
+#import <sqlite3.h>

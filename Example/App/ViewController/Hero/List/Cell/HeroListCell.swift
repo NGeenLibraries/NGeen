@@ -1,5 +1,5 @@
 //
-// ModelMockup.swift
+// HeroListCell.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,14 +22,25 @@
 
 import UIKit
 
-class ModelMockup: Model {
-   
-    var lastName: String = ""
-    var name: String = ""
-    var childs: [Child] = Array()
-}
+@IBDesignable
 
-class Child: Model {
-    var foo: String = ""
-    var foo1: String = ""
+class HeroListCell: UITableViewCell {
+
+    @IBOutlet weak var bio: UILabel!
+    @IBOutlet weak var name: UILabel!
+    @IBOutlet weak var picture: UIImageView!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+    }
+
+//MARK: Instance methods
+    
+    func configure(#hero: Hero) {
+        self.bio.text = hero.description
+        self.name.text = hero.name
+        self.name.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
+        self.bio.font = UIFont.preferredFontForTextStyle(UIFontTextStyleSubheadline)
+    }
+    
 }

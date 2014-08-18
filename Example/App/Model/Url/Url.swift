@@ -1,5 +1,5 @@
 //
-// ModelMockup.swift
+// Url.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,14 +22,13 @@
 
 import UIKit
 
-class ModelMockup: Model {
-   
-    var lastName: String = ""
-    var name: String = ""
-    var childs: [Child] = Array()
-}
+class Url: Model {
 
-class Child: Model {
-    var foo: String = ""
-    var foo1: String = ""
+    var type: String = ""
+    var url: [AnyObject] = Array()
+    
+//MARK: Constructor
+    
+    required init() {}
+    
 }

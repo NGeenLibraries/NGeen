@@ -1,5 +1,5 @@
 //
-// ModelMockup.swift
+//  Extension.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,14 +22,25 @@
 
 import UIKit
 
-class ModelMockup: Model {
-   
-    var lastName: String = ""
-    var name: String = ""
-    var childs: [Child] = Array()
-}
-
-class Child: Model {
-    var foo: String = ""
-    var foo1: String = ""
+extension String {
+    
+    private struct Static {
+        static var instace: Inflector? = nil
+        static var token: dispatch_once_t = 0
+    }
+    
+    func pluralize() -> String {
+        dispatch_once(&Static.token, {
+            Static.instace = Inflector()
+        })
+        return Static.instace!.pluralize(self)
+    }
+    
+    func singularize() -> String {
+        dispatch_once(&Static.token, {
+            Static.instace = Inflector()
+        })
+        return Static.instace!.singularize(self)
+    }
+    
 }
