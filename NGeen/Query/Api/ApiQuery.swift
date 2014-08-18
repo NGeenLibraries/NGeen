@@ -20,10 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-
-/*TODO: 1. return the query
-*/
-
 import UIKit
 
 class ApiQuery: NSObject, QueryProtocol {
@@ -293,6 +289,17 @@ class ApiQuery: NSObject, QueryProtocol {
     
     func getSecurityPolicy() -> Policy {
         return self.configuration.securityPolicy.policy
+    }
+    
+    /**
+    * The function set the closure to call when the task become in download task
+    *
+    * @param closure The closure to call when the task become in download task.
+    *
+    */
+    
+    func setBecomeDownloadTaskClosure(closure: ((NSURLSession!, NSURLSessionDataTask!, NSURLSessionDownloadTask!) -> Void)) {
+        self.sessionManager!.setBecomeDownloadTaskClosure(closure)
     }
     
     /**
