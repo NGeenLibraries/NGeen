@@ -44,9 +44,14 @@ class ResponseSerializer: NSObject {
             case .json:
                return self.responseInJSONFormatForData(data, error: error)
             case .models:
-                assert(endpoint.modelClass! != nil, "The model class should be diferent than null", file: __FILE__, line: __LINE__)
-                assert(!configuration.modelsPath.isEmpty, "The path for the models should be diferent than null", file: __FILE__, line: __LINE__)
-                return self.responseInModelsForData(data, modelClass: endpoint.modelClass!, modelsPath: configuration.modelsPath, error: error)
+                switch endpoint.httpMethod {
+                    case .get:
+                        assert(endpoint.modelClass! != nil, "The model class should be diferent than null", file: __FILE__, line: __LINE__)
+                        assert(!configuration.modelsPath.isEmpty, "The path for the models should be diferent than null", file: __FILE__, line: __LINE__)
+                        return self.responseInModelsForData(data, modelClass: endpoint.modelClass!, modelsPath: configuration.modelsPath, error: error)
+                    default:
+                        return self.responseInJSONFormatForData(data, error: error)
+                }
             default:
                 return self.responseInStringFormatForData(data, error: error)
         }
