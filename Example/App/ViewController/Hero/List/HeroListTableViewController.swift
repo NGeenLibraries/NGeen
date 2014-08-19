@@ -46,7 +46,7 @@ class HeroListTableViewController: UITableViewController, ApiQueryDelegate {
         apiQuery.delegate = self
         apiQuery.execute(completionHandler: {(object, error) in
             if let response: NSDictionary = object as? NSDictionary {
-                if let heros: [Hero] = response.valueForKeyPath("models") as? [Hero] {
+                if let heros: [Hero] = response.valueForKeyPath(kNGeenModelsField) as? [Hero] {
                     self.datasource.tableData = heros
                     self.tableView.reloadData()
                 }
