@@ -36,7 +36,7 @@ class HeroListTableViewController: UITableViewController, ApiQueryDelegate {
 //MARK: ApiQuery delegate
     
     func cachedResponseForUrl(url: NSURL, cachedData data: AnyObject) {
-        println(data)
+        println("Cached data ---> ", data)
     }
     
 //MARK: Private methods
@@ -46,7 +46,7 @@ class HeroListTableViewController: UITableViewController, ApiQueryDelegate {
         apiQuery.delegate = self
         apiQuery.execute(completionHandler: {(object, error) in
             if let response: NSDictionary = object as? NSDictionary {
-                if let heros: [Hero] = response.valueForKeyPath("data.results") as? [Hero] {
+                if let heros: [Hero] = response.valueForKeyPath("models") as? [Hero] {
                     self.datasource.tableData = heros
                     self.tableView.reloadData()
                 }

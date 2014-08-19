@@ -22,12 +22,7 @@
 
 import UIKit
 
-class Serie: Model {
-   
-    var available: Int = 0
-    var collectionURI: String = ""
-    var items: [Item] = Array()
-    var returned: Int = 0
+class Serie: Base {
     
 //Constructor
     

@@ -128,11 +128,6 @@ class Cache: NSObject, NSCacheDelegate {
     
 //MARK: NSCache delegate
 
-    //================================================================================
-    // TODO: check or search for new way to implement this delegate is giving a deadlock
-    // UPDATE: apparently is fixed by apple
-    //================================================================================
-    
     func cache(cache: NSCache!, willEvictObject obj: AnyObject!) {
         var entity: CacheEntity = obj as CacheEntity
         if entity.dirty {
