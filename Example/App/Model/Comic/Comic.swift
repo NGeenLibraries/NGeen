@@ -22,12 +22,7 @@
 
 import UIKit
 
-class Comic: Model {
-   
-    var available: Int = 0
-    var collectionURI: String = ""
-    var items: [Item] = Array()
-    var returned: Int = 0
+class Comic: Base {
     
 //MARK: Constructor
     

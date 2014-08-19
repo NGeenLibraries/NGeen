@@ -74,8 +74,8 @@ class SessionManagerTests: XCTestCase {
     
     func testThatUploadTask() {
         let expectation: XCTestExpectation = expectationWithDescription("upload task")
-        let request: NSURLRequest = NSURLRequest(URL: NSURL.URLWithString("/post", relativeToURL: kTestUrl))
-        let URL: NSURL = NSURL(string: "http://httpbin.org/post")
+        let request: NSMutableURLRequest = NSMutableURLRequest(URL: NSURL.URLWithString("/post", relativeToURL: kTestUrl))
+        request.HTTPMethod = "multipart/form-data"
         let data: NSData = "Lorem ipsum dolor sit amet".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
         let task = self.session!.uploadTaskWithRequest(request, data: data, progress: nil, completionHandler: {(data, urlResponse, error) in
             XCTAssertNil(error, "error should be nil", file: __FUNCTION__, line: __LINE__)

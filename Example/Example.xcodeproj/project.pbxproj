@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		670DFDB419A2AC5B001F34ED /* Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670DFDB319A2AC5B001F34ED /* Base.swift */; };
 		674FD8F919A01DF500B6B9B3 /* ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674FD8F819A01DF500B6B9B3 /* ExampleTests.swift */; };
 		6754282019A020EC00F1E674 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6754281C19A020EC00F1E674 /* AppDelegate.swift */; };
 		6754282719A0210200F1E674 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6754282319A0210200F1E674 /* Main.storyboard */; };
@@ -63,6 +64,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		670DFDB319A2AC5B001F34ED /* Base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Base.swift; path = Model/Base/Base.swift; sourceTree = "<group>"; };
 		674FD8E019A01DF500B6B9B3 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		674FD8F219A01DF500B6B9B3 /* ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		674FD8F719A01DF500B6B9B3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -133,6 +135,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		670DFDB219A2AC1F001F34ED /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				670DFDB319A2AC5B001F34ED /* Base.swift */,
+			);
+			name = Base;
+			sourceTree = "<group>";
+		};
 		674FD8D719A01DF400B6B9B3 = {
 			isa = PBXGroup;
 			children = (
@@ -272,6 +282,7 @@
 		6754283B19A024CD00F1E674 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				670DFDB219A2AC1F001F34ED /* Base */,
 				675CEC9F19A0750F0066796A /* Comic */,
 				675CECAB19A078FA0066796A /* Event */,
 				6754283C19A024E000F1E674 /* Hero */,
@@ -716,6 +727,7 @@
 				6759812019A18C2B0023951F /* Inflector.swift in Sources */,
 				6759812419A18C2B0023951F /* DiskCache.swift in Sources */,
 				6759813219A18C2B0023951F /* ApiEndpoint.swift in Sources */,
+				670DFDB419A2AC5B001F34ED /* Base.swift in Sources */,
 				6754284519A02EA900F1E674 /* Constant.swift in Sources */,
 				6759813119A18C2B0023951F /* ApiStoreConfiguration.swift in Sources */,
 				6759812319A18C2B0023951F /* Cache.swift in Sources */,

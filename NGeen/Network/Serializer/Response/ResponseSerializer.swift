@@ -96,8 +96,8 @@ class ResponseSerializer: NSObject {
     
     func responseInModelsForData(data: NSData, modelClass className: NSObject.Type, modelsPath path: String, error: NSErrorPointer) -> [String: AnyObject] {
         if let jsonDictionary: NSDictionary = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: error) as? NSDictionary {
-            let response: NSMutableDictionary = CFPropertyListCreateDeepCopy(kCFAllocatorDefault, jsonDictionary, 1) as NSMutableDictionary
-            let values: AnyObject! = response.valueForKeyPath(path).mutableCopy()
+            let response: NSMutableDictionary = jsonDictionary.mutableCopy() as NSMutableDictionary
+            let values: AnyObject! = response.valueForKeyPath(path)
             if values is Array<NSDictionary> {
                 var models: Array<Model> = Array<Model>()
                 for value in values as [NSDictionary] {
@@ -105,11 +105,11 @@ class ResponseSerializer: NSObject {
                     model.fill(value as [String: AnyObject])
                     models.append(model)
                 }
-                response.setValue(models, forKeyPath: path)
+                response.setValue(models, forKey: kNGeenModelsField)
             } else if values is Dictionary<String, AnyObject> {
                 var model = className() as Model
                 model.fill(values as [String: AnyObject])
-                response.setValue(model, forKeyPath: path)
+                response.setValue(model, forKey: kNGeenModelsField)
             }
             return response.copy() as [String: AnyObject]
         }

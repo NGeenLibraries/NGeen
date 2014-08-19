@@ -1,5 +1,5 @@
 //
-// Event.swift
+// Base.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,7 +22,12 @@
 
 import UIKit
 
-class Event: Base {
+class Base: Model {
+   
+    var available: Int = 0
+    var collectionURI: String = ""
+    var items: [Item] = Array()
+    var returned: Int = 0
     
 //MARK: Constructor
     

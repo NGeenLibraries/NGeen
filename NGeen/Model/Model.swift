@@ -29,15 +29,7 @@ import UIKit
 class Model: NSObject {
     
     lazy private var __properties: [String: AnyObject] = {
-        var __properties: [String: AnyObject] = Dictionary()
-        var outCount: CUnsignedInt = 0;
-        var cProperties: UnsafeMutablePointer<objc_property_t> = class_copyPropertyList(self.dynamicType, &outCount)
-        for counter in 0..<outCount {
-            let property: objc_property_t = cProperties[Int(counter)]
-            let propertyName: String = String.stringWithCString(property_getName(property), encoding: NSUTF8StringEncoding)!
-            __properties[propertyName] = String.stringWithCString(property_getAttributes(property), encoding: NSUTF8StringEncoding)!
-        }
-        return __properties
+        return self.getPropertiesFromClass(self.dynamicType)
     }()
     private var queue: dispatch_queue_t
     
@@ -83,7 +75,7 @@ class Model: NSObject {
                         model.fill(value as [String: AnyObject])
                         self.setValue(model, forKey: key)
                     }
-                } else {
+                } else if value != nil && !value.isKindOfClass(NSNull.self) {
                     self.setValue(value, forKey: key)
                 }
             }
@@ -134,5 +126,29 @@ class Model: NSObject {
     }
 
 //MARK: Private methods
+
+    /**
+    * The function get the properties for the class included the parents class
+    *
+    * @param className The name of the class to fecth the properties.
+    *
+    * @return Dictionary
+    */
+
+    private func getPropertiesFromClass(className: AnyClass) -> [String: AnyObject] {
+        var properties: [String: AnyObject] = Dictionary()
+        if (className.superclass().isSubclassOfClass(Model.self)) {
+            properties += self.getPropertiesFromClass(className.superclass())
+        }
+        properties.removeValueForKey("description")
+        var outCount: CUnsignedInt = 0;
+        var cProperties: UnsafeMutablePointer<objc_property_t> = class_copyPropertyList(className, &outCount)
+        for counter in 0..<outCount {
+            let property: objc_property_t = cProperties[Int(counter)]
+            let propertyName: String = String.stringWithCString(property_getName(property), encoding: NSUTF8StringEncoding)!
+            properties[propertyName] = String.stringWithCString(property_getAttributes(property), encoding: NSUTF8StringEncoding)!
+        }
+        return properties
+    }
 
 }
