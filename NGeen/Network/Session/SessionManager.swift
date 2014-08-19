@@ -285,8 +285,13 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
 
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didCompleteWithError error: NSError!) {
         if let delegate: SessionTaskDelegate = self.delegateForTask(task) {
-            if self.cacheStoragePolicy != NSURLCacheStoragePolicy.NotAllowed && !error {
-                DiskCache.defaultCache().storeData(NSPurgeableData(data: delegate.data), forUrl: task.currentRequest.URL, completionHandler: nil)
+            switch task.currentRequest.HTTPMethod {
+                case HttpMethod.head.toRaw(), HttpMethod.options.toRaw(), HttpMethod.get.toRaw():
+                    if self.cacheStoragePolicy != NSURLCacheStoragePolicy.NotAllowed && !error {
+                        DiskCache.defaultCache().storeData(NSPurgeableData(data: delegate.data), forUrl: task.currentRequest.URL, completionHandler: nil)
+                    }
+                default:
+                    ""
             }
             delegate.URLSession(session, task: task, didCompleteWithError: error)
             self.removeDelegateForTask(task)
