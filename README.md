@@ -1,7 +1,7 @@
 NGeen
 =====
 
-NGeen is a delightful library for swift. It's built based on factory design pattern, extending the powerful high-level networking and database abstractions built into Cocoa.
+NGeen is a great library for agile development built in swift. It's built based on factory design pattern, extending the powerful high-level networking and database abstractions built into Cocoa.
 
 Choose NGeen for your next project, or migrate over your existing projects—you'll be happy you did!
 
@@ -46,9 +46,20 @@ Choose NGeen for your next project, or migrate over your existing projects—you
 - Model
 
 #### Network
-- Request	
-	- Request
 
+- Security
+	- SecurityPolicy
+- Serializer	
+	- Request
+	 	- RequestSerializer
+	- Response 	
+		- ResponseSerializer
+- Session
+	- Task
+		- Delegate
+			- SessionTaskDelegate
+	- SessionManager
+					
 #### Query
 - Api	
 	- ApiQuery
@@ -88,6 +99,9 @@ ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
 Supported Authentication Schemes
 
 - HTTP Basic
+- HTTP Digest
+- Kerberos
+- NTLM
 
 #### Setting cache policy
 
@@ -124,7 +138,7 @@ Supported responses:
 ```swift
 enum ResponseType: Int {
     case data
-    case dictionary
+    case json
     case models
     case string
 }
@@ -179,12 +193,12 @@ Depends of the configuration setted in the api store config the body should be e
 - URI form encoded
 - MultiPart form
 
+
 ### Downloading 
 
 Supported Upload Types
 
 - Resume Data
-- Request
 
 #### Downloading a File
 

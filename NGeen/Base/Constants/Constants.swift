@@ -24,8 +24,9 @@ import UIKit
 
 let kCacheFileName: String = "NGeenCache.db"
 let kCacheFolder: String = "NGeenCache"
-let kDefaultFileKeyData: String = "__DefaultFileBodyKey"
 let kDefaultServerName: String = "__kDefaultServerName"
 let kMaxDiskCacheCapacity = 10 * 1024 * 1024; // 10MB
 let kMaxMemoryCacheCapacity = 8 * 1024 * 1024; // 8MB
+let kNGeenModelsField = "__NGeenModelsField"
+let kNGeenDownloadTaskDidFailToMoveFileNotification = "__NGeenDownloadTaskDidFailToMoveFileNotification"
 let kTestUrl: NSURL = NSURL(string: "https://httpbin.org/")

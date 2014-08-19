@@ -22,49 +22,61 @@
 
 import UIKit
 
-class Model: NSObject, NSCoding {
+/*TODO: 1. Check if iskindofclass model
+*/
+
+class Model: NSObject {
     
-    lazy private var __properties: Dictionary<String, AnyObject> = {
-        var __properties: Dictionary<String, AnyObject> = Dictionary<String, AnyObject>()
-        var outCount: CUnsignedInt = 0;
-        var cProperties: UnsafeMutablePointer<objc_property_t> = class_copyPropertyList(self.dynamicType, &outCount)
-        for counter in 0..<outCount {
-            let property: objc_property_t = cProperties[Int(counter)]
-            let propertyName: String = String.stringWithCString(property_getName(property), encoding: NSUTF8StringEncoding)!
-            __properties[propertyName] = String.stringWithCString(property_getAttributes(property), encoding: NSUTF8StringEncoding)!
-        }
-        return __properties
+    lazy private var __properties: [String: AnyObject] = {
+        return self.getPropertiesFromClass(self.dynamicType)
     }()
+    private var queue: dispatch_queue_t
     
 //MARK: Constructor
     
-    override init() {}
-    
-    convenience init(dictionary: Dictionary<String, AnyObject>) {
-        self.init()
-        self.fill(dictionary)
+    required override init() {
+        self.queue = dispatch_queue_create("com.ngeen.modelqueue", DISPATCH_QUEUE_CONCURRENT)
+        dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
     }
     
-    required init(coder decoder: NSCoder!) {
+    /*required init(coder decoder: NSCoder!) {
         super.init()
         for (key, value) in self.__properties {
             self.setValue(decoder.decodeObjectForKey(key), forKey: key)
         }
-    }
+    }*/
     
 //MARK: Instance methods
 
     /**
     * The function fill the properties of the model with the given dictioanry of values
     *
-    * @param dictionary The dictionary with the valus for the model.
+    * @param dictionary The dictionary with the values for the model.
     *
     */
     
-    func fill(dictionary: Dictionary<String, AnyObject>) {
+    func fill(dictionary: [String: AnyObject]) {
+        let bundleName: String = (NSBundle.mainBundle().infoDictionary as NSDictionary)[kCFBundleNameKey] as String
         for (key, value) in dictionary {
-            if  self.hasProperty(key) {
-                self.setValue(value, forKey: key)
+            if self.hasProperty(key) {
+                if let modelClass: NSObject.Type = NSClassFromString("\(bundleName).\(key.singularize().capitalizedString)") as? NSObject.Type {
+                    //TODO: Check if iskindofclass model
+                    if value is [[String: AnyObject]] {
+                        var models: [AnyObject] = Array()
+                        for values in value as [[String: AnyObject]] {
+                            let model = modelClass() as Model
+                            model.fill(values as [String: AnyObject])
+                            models.append(model)
+                        }
+                        self.setValue(models, forKey: key)
+                    } else if value is [String: AnyObject] {
+                        let model: Model = modelClass() as Model
+                        model.fill(value as [String: AnyObject])
+                        self.setValue(model, forKey: key)
+                    }
+                } else if value != nil && !value.isKindOfClass(NSNull.self) {
+                    self.setValue(value, forKey: key)
+                }
             }
         }
     }
@@ -92,8 +104,8 @@ class Model: NSObject, NSCoding {
     * @return Dictionary
     */
     
-    func properties() -> Dictionary<String, AnyObject> {
-        var properties: Dictionary<String, AnyObject> = Dictionary<String, AnyObject>()
+    func properties() -> [String: AnyObject] {
+        var properties: [String: AnyObject] = Dictionary()
         for (key, value) in self.__properties {
             if let value: AnyObject = self.valueForKey(key) {
                 properties[key] = value
@@ -113,5 +125,29 @@ class Model: NSObject, NSCoding {
     }
 
 //MARK: Private methods
+
+    /**
+    * The function get the properties for the class included the parents class
+    *
+    * @param className The name of the class to fecth the properties.
+    *
+    * @return Dictionary
+    */
+
+    private func getPropertiesFromClass(className: AnyClass) -> [String: AnyObject] {
+        var properties: [String: AnyObject] = Dictionary()
+        if (className.superclass().isSubclassOfClass(Model.self)) {
+            properties += self.getPropertiesFromClass(className.superclass())
+        }
+        properties.removeValueForKey("description")
+        var outCount: CUnsignedInt = 0;
+        var cProperties: UnsafeMutablePointer<objc_property_t> = class_copyPropertyList(className, &outCount)
+        for counter in 0..<outCount {
+            let property: objc_property_t = cProperties[Int(counter)]
+            let propertyName: String = String.stringWithCString(property_getName(property), encoding: NSUTF8StringEncoding)!
+            properties[propertyName] = String.stringWithCString(property_getAttributes(property), encoding: NSUTF8StringEncoding)!
+        }
+        return properties
+    }
 
 }

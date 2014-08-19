@@ -1,5 +1,5 @@
 //
-//  ModelMockup.swift
+// ModelMockup.swift
 // Copyright (c) 2014 NGeen
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,5 +26,10 @@ class ModelMockup: Model {
    
     var lastName: String = ""
     var name: String = ""
-    
+    var childs: [Child] = Array()
+}
+
+class Child: Model {
+    var foo: String = ""
+    var foo1: String = ""
 }

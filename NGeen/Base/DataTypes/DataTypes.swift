@@ -62,6 +62,14 @@ enum DatabaseType: Int {
     case sqlite
 }
 
+//MARK: DataTask closure response
+
+typealias NGeenTaskClosure = ((data: NSData!, response: NSURLResponse!, error: NSError!) -> Void)?
+
+//MARK: DataTask progress closure
+
+typealias NGeenProgressClosure = ((Int64!, Int64!, Int64!) -> Void)?
+
 //MARK: Overload operators
 
  func +=<K, V> (inout left: Dictionary<K, V>, right: Dictionary<K, V>) -> Dictionary<K, V> {
@@ -71,11 +79,19 @@ enum DatabaseType: Int {
     return left
 }
 
+//MARK: Policy
+
+enum Policy {
+    case certificate
+    case none
+    case publicKey
+}
+
 //MARK: Response type
 
 enum ResponseType: Int {
     case data
-    case dictionary
+    case json
     case models
     case string
 }

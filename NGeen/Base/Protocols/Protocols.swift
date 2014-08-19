@@ -43,7 +43,7 @@ import UIKit
 
 protocol ConfigurableStoreProtocol: NSObjectProtocol {
     
-    var configurations: Dictionary<String, ConfigurationStoreProtocol> { get }
+    var configurations: [String: ConfigurationStoreProtocol] { get }
     
     func configuration() -> ConfigurationStoreProtocol
     func configurationForKey(key: String) -> ConfigurationStoreProtocol

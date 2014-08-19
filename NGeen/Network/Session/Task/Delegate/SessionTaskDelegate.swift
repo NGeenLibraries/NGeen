@@ -25,13 +25,13 @@ import UIKit
 class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate {
     
     private(set) var progress: NSProgress
-    private var data: NSMutableData
+    private(set) var data: NSMutableData
     
     var closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?
-    var downloadProgressHandler: ((Int64!, Int64!, Int64!) -> Void)?
+    var downloadProgressHandler: NGeenProgressClosure
     var destinationURL: NSURL?
     var streamHandler: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream)?
-    var uploadProgressHandler: ((Int64!, Int64!, Int64!) -> Void)?
+    var uploadProgressHandler: NGeenProgressClosure
     
     override init() {
         self.data = NSMutableData()
@@ -63,7 +63,9 @@ class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownl
         if self.destinationURL != nil {
             var error: NSError?
             NSFileManager.defaultManager().moveItemAtURL(location, toURL: self.destinationURL, error: &error)
-            //TODO: Handle error
+            if error != nil {
+                NSNotificationCenter.defaultCenter().postNotificationName(kNGeenDownloadTaskDidFailToMoveFileNotification, object: downloadTask, userInfo: error?.userInfo)
+            }
         }
     }
     
@@ -81,7 +83,11 @@ class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownl
 //MARK: NSURLSessionTask delegate
     
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didCompleteWithError error: NSError!) {
-        self.closure?(self.data, task.response, error)
+        dispatch_async(dispatch_get_main_queue(), {
+            if self.closure != nil {
+                self.closure!(self.data, task.response, error)
+            }
+        })
     }
     
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, needNewBodyStream completionHandler: ((NSInputStream!) -> Void)!) {

@@ -25,8 +25,9 @@ import UIKit
 class RequestSerializer: NSObject {
 
 /*TODO: 1. allow to set json writing options
-        2. Define way to get the data for the multipart form
 */
+    
+    var constructingBodyClosure: (() -> (data: NSData!, name: String!, fileName: String!, mimeType: String!))?
     
 //MARK: Instance methods
     
@@ -41,9 +42,12 @@ class RequestSerializer: NSObject {
     
     func requestSerializingInJSONFormatWithConfiguration(configuration: ApiStoreConfiguration, endPoint endpoint: ApiEndpoint, error: NSErrorPointer) -> NSURLRequest {
         let mutableRequest: NSMutableURLRequest = self.requestWithConfiguration(configuration, endPoint: endpoint).mutableCopy() as NSMutableURLRequest
-        let charset = CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding))
-        mutableRequest.setValue("\(ContentType.json.toRaw()); charset=\(charset)", forHTTPHeaderField: "Content-Type")
-        mutableRequest.HTTPBody = NSJSONSerialization.dataWithJSONObject(configuration.bodyItems, options: NSJSONWritingOptions.PrettyPrinted, error: error)
+        switch endpoint.httpMethod {
+            case .patch, .post, .put:
+                mutableRequest.HTTPBody = NSJSONSerialization.dataWithJSONObject(configuration.bodyItems, options: NSJSONWritingOptions.PrettyPrinted, error: error)
+            default:
+                ""
+        }
         return mutableRequest
     }
     
@@ -61,19 +65,15 @@ class RequestSerializer: NSObject {
         let boundary: String = "Boundary+\(CFAbsoluteTimeGetCurrent())"
         var params: String = ""
         for (key, value) in configuration.bodyItems {
-            //TODO: define way to get the multipart dta
-            //if (key as String) == kDefaultImageKeyData {
-                //let imageBodyPart: NGImageBodyPart = NGImageBodyPart(bodies: parameters[kDefaultImageKeyData] as NSDictionary)
-                //params = "\(params)\(boundary) Content-Disposition: form-data; name=\"\(imageBodyPart.name)\"; filename=\"\(imageBodyPart.fileName)\"\r\n Content-Type: \(imageBodyPart.mimeType)\r\n\r\n \(imageBodyPart.data)\r\n"
-            //} else {
-                params = "\(params)--\(boundary)\r\n Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n \(value)\r\n"
-            //}
+            params = "\(params)--\(boundary)\r\n Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n \(value)\r\n"
         }
+        let(data, name, fileName, mimeType) = self.constructingBodyClosure!()
+        params = "\(params)\(boundary) Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(fileName)\"\r\n Content-Type: \(mimeType)\r\n\r\n \(data)\r\n"
         params = "\(params)--\(boundary)\r\n--\r\n"
-        let data: NSData = params.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+        let body: NSData = params.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
         request.HTTPBodyStream = NSInputStream(data: data)
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        request.setValue(data.length.description, forHTTPHeaderField: "Content-Length")
+        request.setValue(body.length.description, forHTTPHeaderField: "Content-Length")
         return request
     }
     
@@ -86,12 +86,13 @@ class RequestSerializer: NSObject {
     * @return NSURLRequest
     */
     
-    func requestSerializingWithConfiguration(configuration: ApiStoreConfiguration, endPoint endpoint: ApiEndpoint, inout error: NSError?) -> NSURLRequest {
+    func requestSerializingWithConfiguration(configuration: ApiStoreConfiguration, endPoint endpoint: ApiEndpoint, error: NSErrorPointer) -> NSURLRequest {
         var request: NSURLRequest! = nil
         switch endpoint.contentType {
             case .json:
-                request = self.requestSerializingInJSONFormatWithConfiguration(configuration, endPoint: endpoint, error: &error)
+                request = self.requestSerializingInJSONFormatWithConfiguration(configuration, endPoint: endpoint, error: error)
             case .multiPartForm:
+                assert(self.constructingBodyClosure != nil, "The body closure can't be null", file: __FILE__, line: __LINE__)
                 request = self.requestSerializingInMultipartWithConfiguration(configuration, endPoint: endpoint)
             default:
                 request = self.requestSerializingInUrlencodedWithConfiguration(configuration, endPoint: endpoint)
@@ -124,15 +125,9 @@ class RequestSerializer: NSObject {
     
     func requestSerializingRequestInUrlencoded(request: NSURLRequest, withConfiguration configuration: ApiStoreConfiguration) -> NSURLRequest {
         let mutableRequest: NSMutableURLRequest = request.mutableCopy() as NSMutableURLRequest
-        switch mutableRequest.HTTPMethod {
-            case HttpMethod.delete.toRaw(), HttpMethod.get.toRaw(), HttpMethod.head.toRaw() :
-                let query: String = (mutableRequest.URL.query)+(mutableRequest.URL.query ? "&" : "?")+self.queryStringWithParameters(configuration.queryItems)
-                mutableRequest.URL = NSURL(string: "\(mutableRequest.URL.absoluteString)/\(query)")
-            default:
-                mutableRequest.HTTPBody = self.queryStringWithParameters(configuration.bodyItems).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
-                if let body: NSData = mutableRequest.HTTPBody {
-                    mutableRequest.setValue("\(body.length)", forHTTPHeaderField: "Content-Length")
-                }
+        mutableRequest.HTTPBody = self.queryStringWithParameters(configuration.bodyItems).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+        if let body: NSData = mutableRequest.HTTPBody {
+            mutableRequest.setValue("\(body.length)", forHTTPHeaderField: "Content-Length")
         }
         return mutableRequest
     }
@@ -151,9 +146,18 @@ class RequestSerializer: NSObject {
         urlComponents.host = configuration.host
         urlComponents.path = (endpoint.path != nil ? endpoint.path : "")
         urlComponents.scheme = configuration.scheme
+        switch endpoint.httpMethod {
+            case .delete, .get, .head :
+                if configuration.queryItems.count > 0 {
+                    urlComponents.query = self.queryStringWithParameters(configuration.queryItems)
+                }
+            default:
+                ""
+        }
+        let charset = CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding))
         let request: NSMutableURLRequest = NSMutableURLRequest(URL: urlComponents.URL)
         request.HTTPMethod = endpoint.httpMethod.toRaw()
-        request.setValue(endpoint.contentType.toRaw(), forHTTPHeaderField: "Content-Type")
+        request.setValue("\(ContentType.json.toRaw()); charset=\(charset)", forHTTPHeaderField: "Content-Type")
         for (key, value) in configuration.headers {
             if !request.valueForHTTPHeaderField(key) {
                 request.setValue(value, forHTTPHeaderField: key)

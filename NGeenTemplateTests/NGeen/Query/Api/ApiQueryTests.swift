@@ -94,8 +94,13 @@ class ApiQueryTests: XCTestCase {
     }
     
     func testThatSetResponseType() {
-        self.apiQuery!.setResponseType(ResponseType.dictionary)
+        self.apiQuery!.setResponseType(ResponseType.json)
         XCTAssert(self.apiQuery!.getResponseType() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
+    }
+    
+    func testThatSetSecurityPolicy() {
+        self.apiQuery?.setSecurityPolicy(Policy.certificate)
+        XCTAssert(self.apiQuery!.getSecurityPolicy() != Policy.none, "The security policy should be different than security policy none", file: __FILE__, line: __LINE__)
     }
     
 }

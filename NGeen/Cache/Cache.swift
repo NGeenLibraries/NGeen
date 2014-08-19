@@ -128,11 +128,6 @@ class Cache: NSObject, NSCacheDelegate {
     
 //MARK: NSCache delegate
 
-    //================================================================================
-    // TODO: check or search for new way to implement this delegate is giving a deadlock
-    // UPDATE: apparently is fixed by apple
-    //================================================================================
-    
     func cache(cache: NSCache!, willEvictObject obj: AnyObject!) {
         var entity: CacheEntity = obj as CacheEntity
         if entity.dirty {
@@ -262,7 +257,7 @@ class Cache: NSObject, NSCacheDelegate {
         assert(NSThread.mainThread(), "The method should be called in background", file: __FUNCTION__, line: __LINE__)
         let existing: CacheEntity? = self.readEntityForKey(entity.key!)
         if existing != nil {
-            self.updateEntity(existing!)
+            self.updateEntity(entity)
             if existing!.uid != entity.uid {
                 self.delegate?.cache(self, deleteFileWithName: existing!.uid!, andKey: existing!.key!)
             }
