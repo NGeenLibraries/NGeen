@@ -73,7 +73,7 @@ class ApiQuery: NSObject, QueryProtocol {
     * return NSURLSessionDownloadTask
     */
     
-    func download(destination: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionDownloadTask {
+    func download(destination: NSURL, progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionDownloadTask {
         let request: NSURLRequest = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
         let downloadTask: NSURLSessionDownloadTask = self.sessionManager!.downloadTaskWithRequest(request, destination: destination, progress: handler, completionHandler: closure)
         downloadTask.resume()
@@ -91,7 +91,7 @@ class ApiQuery: NSObject, QueryProtocol {
     * return NSURLSessionDownloadTask
     */
     
-    func downloadWithResumeData(data: NSData, destination url: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionDownloadTask {
+    func downloadWithResumeData(data: NSData, destination url: NSURL, progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionDownloadTask {
         let downloadTask: NSURLSessionDownloadTask = self.sessionManager!.downloadTaskWithResumeData(data, destination: url, progress: handler, completionHandler: closure)
         downloadTask.resume()
         return downloadTask
@@ -494,7 +494,7 @@ class ApiQuery: NSObject, QueryProtocol {
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(data: NSData, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) ->  NSURLSessionUploadTask {
+    func upload(data: NSData, progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) ->  NSURLSessionUploadTask {
         let request: NSURLRequest = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
         let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithRequest(request, data: data, progress: handler, completionHandler: closure)
         uploadTask.resume()
@@ -509,7 +509,7 @@ class ApiQuery: NSObject, QueryProtocol {
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(file: NSURL, progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionUploadTask {
+    func upload(file: NSURL, progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionUploadTask {
         let request: NSURLRequest = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
         let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithRequest(request, file: file, progress: handler, completionHandler: closure)
         uploadTask.resume()
@@ -524,7 +524,7 @@ class ApiQuery: NSObject, QueryProtocol {
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(stream: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream), progress handler: ((Int64!, Int64!, Int64!) -> Void)?, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?) -> NSURLSessionUploadTask {
+    func upload(stream: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream), progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionUploadTask {
         let request: NSMutableURLRequest = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint).mutableCopy() as NSMutableURLRequest
         request.HTTPBodyStream = NSInputStream(data: request.HTTPBody)
         let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithStreamedRequest(request, stream: stream, progress: handler, completionHandler: closure)

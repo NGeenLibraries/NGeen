@@ -23,7 +23,6 @@
 import UIKit
 
 /*TODO: 1. Check if iskindofclass model
-        4. Allow map parent class when the model extends from other
 */
 
 class Model: NSObject {
