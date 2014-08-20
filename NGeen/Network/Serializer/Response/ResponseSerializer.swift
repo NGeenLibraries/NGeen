@@ -22,6 +22,8 @@
 
 import UIKit
 
+/*TODO: find way to do a deep copy of the response when the dictionary have null value */
+
 class ResponseSerializer: NSObject {
    
     // MARK: Instance methods
@@ -95,9 +97,10 @@ class ResponseSerializer: NSObject {
     */
     
     func responseInModelsForData(data: NSData, modelClass className: NSObject.Type, modelsPath path: String, error: NSErrorPointer) -> [String: AnyObject] {
+        var response: [String: AnyObject] = Dictionary()
         if let jsonDictionary: NSDictionary = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: error) as? NSDictionary {
-            let response: NSMutableDictionary = jsonDictionary.mutableCopy() as NSMutableDictionary
-            let values: AnyObject! = response.valueForKeyPath(path)
+            response = jsonDictionary.mutableCopy() as [String: AnyObject]
+            let values: AnyObject! = jsonDictionary.valueForKeyPath(path)
             if values is Array<NSDictionary> {
                 var models: Array<Model> = Array<Model>()
                 for value in values as [NSDictionary] {
@@ -105,15 +108,14 @@ class ResponseSerializer: NSObject {
                     model.fill(value as [String: AnyObject])
                     models.append(model)
                 }
-                response.setValue(models, forKey: kNGeenModelsField)
+                response[kNGeenModelsField] = models
             } else if values is Dictionary<String, AnyObject> {
                 var model = className() as Model
                 model.fill(values as [String: AnyObject])
-                response.setValue(model, forKey: kNGeenModelsField)
+                response[kNGeenModelsField] = model
             }
-            return response.copy() as [String: AnyObject]
         }
-        return Dictionary()
+        return response
     }
     
     /**
