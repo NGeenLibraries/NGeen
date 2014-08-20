@@ -30,7 +30,7 @@ class CacheEntity: NSObject {
     var size: Int?
     var uid: String?
     
-//MARK: Constructor 
+    // MARK: Constructor 
     
     override init() {
         super.init()

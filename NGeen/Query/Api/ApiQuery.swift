@@ -41,7 +41,7 @@ class ApiQuery: NSObject, QueryProtocol {
     
     weak var delegate: ApiQueryDelegate?
     
-//MARK: Constructor
+    // MARK: Constructor
     
     init(configuration: ConfigurationStoreProtocol, endPoint: ApiEndpoint) {
         self.endPoint = endPoint

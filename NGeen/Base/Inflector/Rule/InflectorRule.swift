@@ -27,7 +27,7 @@ class InflectorRule: NSObject {
     var rule: String
     var replacement: String
     
-//MARK: Constructor
+    // MARK: Constructor
     
     init(rule: String, replacement: String) {
         self.rule = rule

@@ -22,7 +22,7 @@
 
 import UIKit
 
-//MARK: ApiQuery delegate
+// MARK: ApiQuery delegate
 
 @objc protocol ApiQueryDelegate: NSObjectProtocol {
     
@@ -30,7 +30,7 @@ import UIKit
     
 }
 
-//MARK: Cache delegate
+// MARK: Cache delegate
 
 @objc protocol CacheDelegate: NSObjectProtocol {
     
@@ -39,7 +39,7 @@ import UIKit
     
 }
 
-//MARK: Configurable Store protocol
+// MARK: Configurable Store protocol
 
 protocol ConfigurableStoreProtocol: NSObjectProtocol {
     
@@ -52,13 +52,13 @@ protocol ConfigurableStoreProtocol: NSObjectProtocol {
     
 }
 
-//MARK: Configuration Store protocol
+// MARK: Configuration Store protocol
 
 @objc protocol ConfigurationStoreProtocol: NSObjectProtocol {
     
 }
 
-//MARK: Persistence protocol
+// MARK: Persistence protocol
 
 @objc protocol PersistenceProtocol: NSObjectProtocol {
     
@@ -69,7 +69,7 @@ protocol ConfigurableStoreProtocol: NSObjectProtocol {
     
 }
 
-//MARK: Query protocol
+// MARK: Query protocol
 
 @objc protocol QueryProtocol: NSObjectProtocol {
     
@@ -85,14 +85,14 @@ protocol ConfigurableStoreProtocol: NSObjectProtocol {
     //func setData(data: AnyObject, forKey key: String)
 }
 
-//MARK: SessionTask delegate
+// MARK: SessionTask delegate
 
 @objc protocol SessionDelegate: NSObjectProtocol {
     
     optional func cachedResponseForUrl(url: NSURL, cachedData data: NSData)
 }
 
-//MARK: Store config
+// MARK: Store config
 
 protocol StoreProtocol: NSObjectProtocol {
     

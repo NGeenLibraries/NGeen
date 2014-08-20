@@ -22,7 +22,7 @@
 
 import UIKit
 
-//MARK: Api content type
+// MARK: Api content type
 
 enum ContentType: String {
     case image = "image/"
@@ -32,7 +32,7 @@ enum ContentType: String {
     case urlEnconded = "application/x-www-form-urlencoded"
 }
 
-//MARK: Api http method
+// MARK: Api http method
 
 enum HttpMethod: String {
     case delete = "DELETE"
@@ -44,33 +44,33 @@ enum HttpMethod: String {
     case put = "PUT"
 }
 
-//MARK: Api scheme
+// MARK: Api scheme
 
 enum HttpScheme: String {
     case http = "http"
     case https = "https"
 }
 
-//MARK: Closure response
+// MARK: Closure response
 
 typealias NGeenClosure = ((object: AnyObject?, error : NSError?) -> Void)?
 
-//MARK: Database types
+// MARK: Database types
 
 enum DatabaseType: Int {
     case coreData
     case sqlite
 }
 
-//MARK: DataTask closure response
+// MARK: DataTask closure response
 
 typealias NGeenTaskClosure = ((data: NSData!, response: NSURLResponse!, error: NSError!) -> Void)?
 
-//MARK: DataTask progress closure
+// MARK: DataTask progress closure
 
 typealias NGeenProgressClosure = ((Int64!, Int64!, Int64!) -> Void)?
 
-//MARK: Overload operators
+// MARK: Overload operators
 
  func +=<K, V> (inout left: Dictionary<K, V>, right: Dictionary<K, V>) -> Dictionary<K, V> {
     for (k, v) in right {
@@ -79,7 +79,7 @@ typealias NGeenProgressClosure = ((Int64!, Int64!, Int64!) -> Void)?
     return left
 }
 
-//MARK: Policy
+// MARK: Policy
 
 enum Policy {
     case certificate
@@ -87,7 +87,7 @@ enum Policy {
     case publicKey
 }
 
-//MARK: Response type
+// MARK: Response type
 
 enum ResponseType: Int {
     case data

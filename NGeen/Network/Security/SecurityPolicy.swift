@@ -20,10 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-/* TODO: 1. create the cfarray from the certificates
-         2. Validate equal keys for chains certificates
-         3. finish validation for public keys
-*/
+// TODO: 1. create the cfarray from the certificates
+// TODO: 2. Validate equal keys for chains certificates
+// TODO: 3. finish validation for public keys
 
 import UIKit
 
@@ -35,7 +34,7 @@ class SecurityPolicy: NSObject {
     var certificates: NSArray
     var policy: Policy
     
-//MARK: Constructor
+    // MARK: Constructor
     
     override init() {
         self.allowInvalidCertificates = false
@@ -44,7 +43,7 @@ class SecurityPolicy: NSObject {
         self.policy = Policy.none
     }
     
-//MARK: Instance methods
+    // MARK: Instance methods
     
     /**
     * The function evaluate the server trust in the certificates

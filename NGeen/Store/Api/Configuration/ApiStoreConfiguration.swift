@@ -41,7 +41,7 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
     var sessionConfiguration: NSURLSessionConfiguration
     var scheme: String
     
-//MARK: Constructor
+    // MARK: Constructor
     
     override init() {
         self.bodyItems = Dictionary()

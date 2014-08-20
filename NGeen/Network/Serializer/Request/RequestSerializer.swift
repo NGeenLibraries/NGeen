@@ -24,12 +24,11 @@ import UIKit
 
 class RequestSerializer: NSObject {
 
-/*TODO: 1. allow to set json writing options
-*/
+// TODO: 1. allow to set json writing options
     
     var constructingBodyClosure: (() -> (data: NSData!, name: String!, fileName: String!, mimeType: String!))?
     
-//MARK: Instance methods
+    // MARK: Instance methods
     
     /**
     * The function serialize a given request in json format
@@ -166,7 +165,7 @@ class RequestSerializer: NSObject {
         return request
     }
     
-//MARK: Private methods
+    // MARK: Private methods
     
     /**
     * The function encode the params for the given content type

@@ -40,7 +40,7 @@ class ApiEndpoint: NSObject {
         self.modelClass = modelClass
     }
     
-//MARK: Class methods
+    // MARK: Class methods
     
     class func endpointWithPath(path: String, HttpMethod httpMethod: HttpMethod, ModelClass modelClass: NSObject.Type) -> ApiEndpoint {
         return ApiEndpoint(contentType: ContentType.json, httpMethod: httpMethod, modelClass: modelClass, path: path)
@@ -54,7 +54,7 @@ class ApiEndpoint: NSObject {
         return "\(path)_\(method!.toRaw())"
     }
     
-//MARK: Instance methods
+    // MARK: Instance methods
     
     func key() -> String {
         return ApiEndpoint.keyForPath(self.path, httpMethod: self.httpMethod)

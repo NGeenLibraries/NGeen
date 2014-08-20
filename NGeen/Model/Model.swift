@@ -22,8 +22,7 @@
 
 import UIKit
 
-/*TODO: 1. Check if iskindofclass model
-*/
+// TODO: 1. Check if iskindofclass model
 
 class Model: NSObject {
     
@@ -32,7 +31,7 @@ class Model: NSObject {
     }()
     private var queue: dispatch_queue_t
     
-//MARK: Constructor
+    // MARK: Constructor
     
     required override init() {
         self.queue = dispatch_queue_create("com.ngeen.modelqueue", DISPATCH_QUEUE_CONCURRENT)
@@ -46,7 +45,7 @@ class Model: NSObject {
         }
     }*/
     
-//MARK: Instance methods
+    // MARK: Instance methods
 
     /**
     * The function fill the properties of the model with the given dictioanry of values
@@ -60,7 +59,7 @@ class Model: NSObject {
         for (key, value) in dictionary {
             if self.hasProperty(key) {
                 if let modelClass: NSObject.Type = NSClassFromString("\(bundleName).\(key.singularize().capitalizedString)") as? NSObject.Type {
-                    //TODO: Check if iskindofclass model
+                    // TODO: Check if iskindofclass model
                     if value is [[String: AnyObject]] {
                         var models: [AnyObject] = Array()
                         for values in value as [[String: AnyObject]] {
@@ -116,7 +115,7 @@ class Model: NSObject {
         return properties
     }
     
-//MARK: NSCoding protocol
+    // MARK: NSCoding protocol
 
     func encodeWithCoder(aCoder: NSCoder!) {
         for (key, value) in self.properties() {
@@ -124,7 +123,7 @@ class Model: NSObject {
         }
     }
 
-//MARK: Private methods
+    // MARK: Private methods
 
     /**
     * The function get the properties for the class included the parents class

@@ -240,7 +240,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         return dataTask
     }
 
-//MARK: NSURLSessionData delegate
+    // MARK: NSURLSessionData delegate
     
     func URLSession(session: NSURLSession!, dataTask: NSURLSessionDataTask!, didBecomeDownloadTask downloadTask: NSURLSessionDownloadTask!) {
         let delegate: SessionTaskDelegate? = self.delegateForTask(dataTask)
@@ -261,7 +261,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         completionHandler(self.responseDisposition!)
     }
 
-//MARK: NSURLSessionDownloadTask delegate
+    // MARK: NSURLSessionDownloadTask delegate
     
     func URLSession(session: NSURLSession!, downloadTask: NSURLSessionDownloadTask!, didFinishDownloadingToURL location: NSURL!) {
         if let sessionTaskDelegate: SessionTaskDelegate = self.delegateForTask(downloadTask) {
@@ -275,7 +275,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         }
     }
     
-//MARK: NSURLSessiontask delegate
+    // MARK: NSURLSessiontask delegate
     
     func URLSession(session: NSURLSession!, didBecomeInvalidWithError error: NSError!) {
         dispatch_barrier_async(self.queue, {
@@ -328,7 +328,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         completionHandler(redirection)
     }
 
-//MARK: NSURLSessionUploadTask delegate
+    // MARK: NSURLSessionUploadTask delegate
     
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
         if let delegate: SessionTaskDelegate = self.delegateForTask(task) {
@@ -336,7 +336,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         }
     }
 
-//MARK: Private methods
+    // MARK: Private methods
 
     /**
     * The function lock and get the delegate for the given task
