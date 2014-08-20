@@ -54,17 +54,21 @@ class DiskCache: NSObject, CacheDelegate {
     
     func cache(cache: Cache, deleteFileWithName name: String, andKey key: String) {
         dispatch_async(self.queue, {
-            self.memoryCache.removeObjectForKey(key)
-            NSFileManager.defaultManager().removeItemAtPath("\(self.path)/\(name)", error: nil)
+            [weak self] in
+            let sSelf = self!
+            sSelf.memoryCache.removeObjectForKey(key)
+            NSFileManager.defaultManager().removeItemAtPath("\(self?.path)/\(name)", error: nil)
         })
     }
     
     func cache(cache: Cache, writeFileWithName name: String, data: NSPurgeableData) {
         dispatch_sync(self.queue, {
+            [weak self] in
+            let sSelf = self!
             data.beginContentAccess()
-            data.writeToFile("\(self.path)/\(name)", atomically: true)
+            data.writeToFile("\(self?.path)/\(name)", atomically: true)
             data.endContentAccess()
-            self.memoryCache.setObject(data, forKey: name)
+            sSelf.memoryCache.setObject(data, forKey: name)
         })
     }
     

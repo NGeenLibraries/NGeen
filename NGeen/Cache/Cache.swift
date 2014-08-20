@@ -47,20 +47,22 @@ class Cache: NSObject, NSCacheDelegate {
         self.queue = dispatch_queue_create("com.ngeen.databasequeue", DISPATCH_QUEUE_CONCURRENT)
         dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
         dispatch_barrier_sync(self.queue, {
+            [weak self] in
+            let sSelf = self!
             //sqlite3_config(SQLITE_CONFIG_MULTITHREAD)
-            var success = sqlite3_open_v2(cachePath.cStringUsingEncoding(NSUTF8StringEncoding)!, &self.dataBase, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nil) == SQLITE_OK
+            var success = sqlite3_open_v2(cachePath.cStringUsingEncoding(NSUTF8StringEncoding)!, &sSelf.dataBase, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nil) == SQLITE_OK
             if success {
                 var statement: COpaquePointer = nil
-                if sqlite3_prepare_v2(self.dataBase, kSchema.cStringUsingEncoding(NSUTF8StringEncoding)!, -1, &statement, nil) == SQLITE_OK {
+                if sqlite3_prepare_v2(sSelf.dataBase, kSchema.cStringUsingEncoding(NSUTF8StringEncoding)!, -1, &statement, nil) == SQLITE_OK {
                     success = sqlite3_step(statement) == SQLITE_DONE
                     sqlite3_finalize(statement)
                 }
             }
             if !success {
-                println("Error opening the database ---> ", sqlite3_errmsg(self.dataBase))
+                println("Error opening the database ---> ", sqlite3_errmsg(sSelf.dataBase))
                 return
             }
-            self.fetchDiskUsage()
+            sSelf.fetchDiskUsage()
         })
     }
 
@@ -108,17 +110,19 @@ class Cache: NSObject, NSCacheDelegate {
     func storeFileForKey(key: String, withData data: NSPurgeableData, completionHandler closure:((String!) -> Void)!) {
         assert(self.dataBase != nil, "The database should exists", file: __FUNCTION__, line: __LINE__)
         dispatch_barrier_sync(self.queue, {
+            [weak self] in
+            let sSelf = self!
             data.beginContentAccess()
             let uuidRef = CFUUIDCreate(kCFAllocatorDefault)
             let uuid = CFUUIDCreateString(kCFAllocatorDefault, uuidRef).__conversion()
             let entity = CacheEntity(key: key, uid:uuid, accessTime: CFAbsoluteTimeGetCurrent(), size: data.length)
-            self.saveEntity(entity)
-            self.currentDiskUsage += data.length
-            if self.currentDiskUsage > self.diskCapacity {
-                self.removeOldEntities()
+            sSelf.saveEntity(entity)
+            sSelf.currentDiskUsage += data.length
+            if sSelf.currentDiskUsage > sSelf.diskCapacity {
+                sSelf.removeOldEntities()
             }
-            self.cache.setObject(entity, forKey: uuid, cost: data.length)
-            self.delegate?.cache(self, writeFileWithName: uuid, data: data)
+            sSelf.cache.setObject(entity, forKey: uuid, cost: data.length)
+            sSelf.delegate?.cache(sSelf, writeFileWithName: uuid, data: data)
             if closure {
                 closure(uuid)
             }
@@ -132,7 +136,9 @@ class Cache: NSObject, NSCacheDelegate {
         var entity = obj as CacheEntity
         if entity.dirty {
             dispatch_async(self.queue, {
-                self.saveEntity(entity)
+                [weak self] in
+                let sSelf = self!
+                sSelf.saveEntity(entity)
             })
         }
     }

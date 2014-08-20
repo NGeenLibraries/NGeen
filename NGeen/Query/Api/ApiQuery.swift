@@ -543,16 +543,18 @@ class ApiQuery: NSObject, QueryProtocol {
     
     private func cachedResponseForTask(task: NSURLSessionDataTask) {
         dispatch_async(self.queue, {
+            [weak self] in
+            let sSelf = self!
             var data: NSPurgeableData = NSPurgeableData()
-            if self.configuration.sessionConfiguration.requestCachePolicy != NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData {
+            if sSelf.configuration.sessionConfiguration.requestCachePolicy != NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData {
                 data = DiskCache.defaultCache().dataForUrl(task.currentRequest.URL)
-                if self.delegate != nil && self.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 {
-                    let response: AnyObject = self.responseSerializer.responseWithConfiguration(self.configuration, endPoint: self.endPoint, data: data, error: nil)
-                    self.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response)
-                } else if self.delegate != nil && self.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 && (self.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataDontLoad ||
-                    self.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataElseLoad) {
-                    let response: AnyObject = self.responseSerializer.responseWithConfiguration(self.configuration, endPoint: self.endPoint, data: data, error: nil)
-                    self.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response)
+                if sSelf.delegate != nil && sSelf.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 {
+                    let response: AnyObject = sSelf.responseSerializer.responseWithConfiguration(sSelf.configuration, endPoint: sSelf.endPoint, data: data, error: nil)
+                    sSelf.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response)
+                } else if sSelf.delegate != nil && sSelf.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 && (sSelf.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataDontLoad ||
+                    sSelf.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataElseLoad) {
+                    let response: AnyObject = sSelf.responseSerializer.responseWithConfiguration(sSelf.configuration, endPoint: sSelf.endPoint, data: data, error: nil)
+                    sSelf.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response)
                     task.cancel()
                 }
             }
