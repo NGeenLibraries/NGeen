@@ -37,7 +37,7 @@ class DiskCache: NSObject, CacheDelegate {
     // MARK: Constructor
     
     required override init() {
-        let paths: Array = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true);
+        let paths = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true);
         self.path = "\(paths[0])/\(kCacheFolder)"
         NSFileManager.defaultManager().createDirectoryAtPath(self.path, withIntermediateDirectories: true, attributes: nil, error: nil)
         self.cache = Cache(cachePath: self.path)
@@ -54,17 +54,21 @@ class DiskCache: NSObject, CacheDelegate {
     
     func cache(cache: Cache, deleteFileWithName name: String, andKey key: String) {
         dispatch_async(self.queue, {
-            self.memoryCache.removeObjectForKey(key)
-            NSFileManager.defaultManager().removeItemAtPath("\(self.path)/\(name)", error: nil)
+            [weak self] in
+            let sSelf = self!
+            sSelf.memoryCache.removeObjectForKey(key)
+            NSFileManager.defaultManager().removeItemAtPath("\(self?.path)/\(name)", error: nil)
         })
     }
     
     func cache(cache: Cache, writeFileWithName name: String, data: NSPurgeableData) {
         dispatch_sync(self.queue, {
+            [weak self] in
+            let sSelf = self!
             data.beginContentAccess()
-            data.writeToFile("\(self.path)/\(name)", atomically: true)
+            data.writeToFile("\(self?.path)/\(name)", atomically: true)
             data.endContentAccess()
-            self.memoryCache.setObject(data, forKey: name)
+            sSelf.memoryCache.setObject(data, forKey: name)
         })
     }
     
@@ -91,7 +95,7 @@ class DiskCache: NSObject, CacheDelegate {
     */
     
     func dataForUrl(url: NSURL) -> NSPurgeableData {
-        var data: NSPurgeableData = NSPurgeableData()
+        var data = NSPurgeableData()
         if self.memoryCache.objectForKey(url) {
            data = self.memoryCache.objectForKey(url) as NSPurgeableData
         } else if let fileName = self.cache.fileNameForKey(url.absoluteString) {
@@ -117,7 +121,7 @@ class DiskCache: NSObject, CacheDelegate {
     *
     */
     
-    func storeData(data: NSPurgeableData, forUrl url: NSURL, completionHandler block: (() -> Void)!) {
+    func storeData(data: NSPurgeableData, forUrl url: NSURL, completionHandler block: (() -> Void)?) {
         data.beginContentAccess()
         self.cache.storeFileForKey(url.description, withData: data, completionHandler: {(uuid) in
             self.memoryUsage += data.length
@@ -127,9 +131,7 @@ class DiskCache: NSObject, CacheDelegate {
                 self.memoryCache.setObject(data, forKey: url)
             }
             data.endContentAccess()
-            if block {
-                block()
-            }
+            block?()
         })
     }
     

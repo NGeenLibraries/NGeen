@@ -18,26 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         self.window!.backgroundColor = UIColor.whiteColor()
         self.window!.makeKeyAndVisible()
-        /*var headers: Dictionary<String, String> = ["X-Parse-Application-Id": "BgJnryEVJitvxnMKKMjJyMm6vrBwIgDFAARtVqXn", "X-Parse-REST-API-Key": "euJT7bCipxE82sx5j6L8sHTFXm0HxNUiiBvR03ug"]
-        var apiStoreConfiguration: ApiStoreConfiguration = ApiStoreConfiguration(headers: headers, host: "api.parse.com", scheme: "https")
-        ApiStore.defaultStore().setConfiguration(apiStoreConfiguration)
-        let endPoint: ApiEndpoint = ApiEndpoint(contentType: ContentType.multiPartForm, httpMethod: HttpMethod.post, path: "/1/classes/Task")
-        ApiStore.defaultStore().setEndpoint(endPoint)
-        ApiStore.defaultStore().setResponseType(ResponseType.string)
-        let parameters = ["foo": "bar", "baz1": "1", "baz2": "2", "baz3": "3"]
-        let apiQuery = ApiStore.defaultStore().createQueryForPath("/1/classes/Task", httpMethod: HttpMethod.post)
-        apiQuery.execute(completionHandler: {(object, error) in
-            println(object)
-        })
-        
-        let docsDir: String = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as String
-        let destination: NSURL = NSURL(fileURLWithPath: "\(docsDir)/download.zip")
-        let dataTask: NSURLSessionDownloadTask = apiQuery.download(destination, progress: {(bytesRead, totalBytesRead, totalBytesExpectedToRead) in
-            println("progress")
-        }, completionHandler: {(data, response, error) in
-            println("DONE")
-        })*/
-        
+            
         return true
     }
 

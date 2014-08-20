@@ -55,7 +55,7 @@ class ApiQuery: NSObject, QueryProtocol {
         self.sessionManager = SessionManager(sessionConfiguration: self.configuration.sessionConfiguration)
         self.sessionManager!.cacheStoragePolicy = self.configuration.cacheStoragePolicy
         self.sessionManager!.securityPolicy = self.configuration.securityPolicy
-        if let credential: NSURLCredential = self.configuration.credential {
+        if let credential = self.configuration.credential {
             self.sessionManager!.setAuthenticationCredential(self.configuration.credential!, forProtectionSpace: self.configuration.protectionSpace!)
         }
         self.sessionManager!.responseDisposition = self.configuration.responseDisposition
@@ -74,8 +74,8 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func download(destination: NSURL, progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionDownloadTask {
-        let request: NSURLRequest = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
-        let downloadTask: NSURLSessionDownloadTask = self.sessionManager!.downloadTaskWithRequest(request, destination: destination, progress: handler, completionHandler: closure)
+        let request = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
+        let downloadTask = self.sessionManager!.downloadTaskWithRequest(request, destination: destination, progress: handler, completionHandler: closure)
         downloadTask.resume()
         return downloadTask
     }
@@ -92,7 +92,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func downloadWithResumeData(data: NSData, destination url: NSURL, progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionDownloadTask {
-        let downloadTask: NSURLSessionDownloadTask = self.sessionManager!.downloadTaskWithResumeData(data, destination: url, progress: handler, completionHandler: closure)
+        let downloadTask = self.sessionManager!.downloadTaskWithResumeData(data, destination: url, progress: handler, completionHandler: closure)
         downloadTask.resume()
         return downloadTask
     }
@@ -105,8 +105,8 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func execute(#completionHandler: NGeenClosure) {
-        let request: NSURLRequest = self.requestSerializer.requestSerializingWithConfiguration(self.configuration, endPoint: self.endPoint, error: nil)
-        let sessionDataTask: NSURLSessionDataTask = self.sessionManager!.dataTaskWithRequest(request, completionHandler: {(data, urlResponse, error) in
+        let request = self.requestSerializer.requestSerializingWithConfiguration(self.configuration, endPoint: self.endPoint, error: nil)
+        let sessionDataTask = self.sessionManager!.dataTaskWithRequest(request, completionHandler: {(data, urlResponse, error) in
             var response: AnyObject!
             if !error {
                 response = self.responseSerializer.responseWithConfiguration(self.configuration, endPoint: self.endPoint, data: data, error: nil)
@@ -495,8 +495,8 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func upload(data: NSData, progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) ->  NSURLSessionUploadTask {
-        let request: NSURLRequest = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
-        let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithRequest(request, data: data, progress: handler, completionHandler: closure)
+        let request = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
+        let uploadTask = self.sessionManager!.uploadTaskWithRequest(request, data: data, progress: handler, completionHandler: closure)
         uploadTask.resume()
         return uploadTask
     }
@@ -510,8 +510,8 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func upload(file: NSURL, progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionUploadTask {
-        let request: NSURLRequest = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
-        let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithRequest(request, file: file, progress: handler, completionHandler: closure)
+        let request = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
+        let uploadTask = self.sessionManager!.uploadTaskWithRequest(request, file: file, progress: handler, completionHandler: closure)
         uploadTask.resume()
         return uploadTask
     }
@@ -525,7 +525,7 @@ class ApiQuery: NSObject, QueryProtocol {
     */
     
     func upload(stream: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream), progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionUploadTask {
-        let request: NSMutableURLRequest = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint).mutableCopy() as NSMutableURLRequest
+        let request = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint).mutableCopy() as NSMutableURLRequest
         request.HTTPBodyStream = NSInputStream(data: request.HTTPBody)
         let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithStreamedRequest(request, stream: stream, progress: handler, completionHandler: closure)
         uploadTask.resume()
@@ -543,16 +543,18 @@ class ApiQuery: NSObject, QueryProtocol {
     
     private func cachedResponseForTask(task: NSURLSessionDataTask) {
         dispatch_async(self.queue, {
+            [weak self] in
+            let sSelf = self!
             var data: NSPurgeableData = NSPurgeableData()
-            if self.configuration.sessionConfiguration.requestCachePolicy != NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData {
+            if sSelf.configuration.sessionConfiguration.requestCachePolicy != NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData {
                 data = DiskCache.defaultCache().dataForUrl(task.currentRequest.URL)
-                if self.delegate != nil && self.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 {
-                    let response: AnyObject = self.responseSerializer.responseWithConfiguration(self.configuration, endPoint: self.endPoint, data: data, error: nil)
-                    self.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response)
-                } else if self.delegate != nil && self.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 && (self.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataDontLoad ||
-                    self.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataElseLoad) {
-                    let response: AnyObject = self.responseSerializer.responseWithConfiguration(self.configuration, endPoint: self.endPoint, data: data, error: nil)
-                    self.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response)
+                if sSelf.delegate != nil && sSelf.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 {
+                    let response: AnyObject = sSelf.responseSerializer.responseWithConfiguration(sSelf.configuration, endPoint: sSelf.endPoint, data: data, error: nil)
+                    sSelf.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response)
+                } else if sSelf.delegate != nil && sSelf.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 && (sSelf.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataDontLoad ||
+                    sSelf.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataElseLoad) {
+                    let response: AnyObject = sSelf.responseSerializer.responseWithConfiguration(sSelf.configuration, endPoint: sSelf.endPoint, data: data, error: nil)
+                    sSelf.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response)
                     task.cancel()
                 }
             }

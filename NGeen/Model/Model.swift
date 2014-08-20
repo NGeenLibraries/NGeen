@@ -55,10 +55,10 @@ class Model: NSObject {
     */
     
     func fill(dictionary: [String: AnyObject]) {
-        let bundleName: String = (NSBundle.mainBundle().infoDictionary as NSDictionary)[kCFBundleNameKey] as String
+        let bundleName = (NSBundle.mainBundle().infoDictionary as NSDictionary)[kCFBundleNameKey] as String
         for (key, value) in dictionary {
             if self.hasProperty(key) {
-                if let modelClass: NSObject.Type = NSClassFromString("\(bundleName).\(key.singularize().capitalizedString)") as? NSObject.Type {
+                if let modelClass = NSClassFromString("\(bundleName).\(key.singularize().capitalizedString)") as? NSObject.Type {
                     // TODO: Check if iskindofclass model
                     if value is [[String: AnyObject]] {
                         var models: [AnyObject] = Array()
@@ -143,7 +143,7 @@ class Model: NSObject {
         var cProperties: UnsafeMutablePointer<objc_property_t> = class_copyPropertyList(className, &outCount)
         for counter in 0..<outCount {
             let property: objc_property_t = cProperties[Int(counter)]
-            let propertyName: String = String.stringWithCString(property_getName(property), encoding: NSUTF8StringEncoding)!
+            let propertyName = String.stringWithCString(property_getName(property), encoding: NSUTF8StringEncoding)!
             properties[propertyName] = String.stringWithCString(property_getAttributes(property), encoding: NSUTF8StringEncoding)!
         }
         return properties

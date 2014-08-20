@@ -128,7 +128,7 @@ class ApiStoreTests: XCTestCase {
     }
     
     func testThatSetConfigurationWithKey() {
-        let config: ApiStoreConfiguration = ApiStoreConfiguration()
+        let config = ApiStoreConfiguration()
         config.host = "www.google.com"
         self.store?.setConfiguration(config, forKey: kConfigKey)
         var configFromStore: ApiStoreConfiguration = self.store?.configurationForKey(kConfigKey) as ApiStoreConfiguration
@@ -146,13 +146,13 @@ class ApiStoreTests: XCTestCase {
     }
     
     func testThatSetEndpoints() {
-        let endpoints: Array<ApiEndpoint> = [ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: ""), ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "")]
+        let endpoints = [ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: ""), ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "")]
         self.store?.setEndpoints(endpoints)
         XCTAssertGreaterThan(self.store!.endPoints.count, 0, "The endpoints should have 1 item", file: __FILE__, line: __LINE__)
     }
     
     func testThatSetEndpointsForServer() {
-        let endpoints: Array<ApiEndpoint> = [ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: ""), ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "")]
+        let endpoints = [ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: ""), ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, modelClass: Model.self, path: "")]
         self.store?.setEndpoints(endpoints, forServer: kConfigKey)
         XCTAssertGreaterThan(self.store!.endPoints.count, 0, "The endpoints should have 1 item", file: __FILE__, line: __LINE__)
     }

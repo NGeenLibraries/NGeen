@@ -36,14 +36,14 @@ class ModelTests: XCTestCase {
     }
    
     func testThatFillWithoutChildsModels() {
-        let model: ModelMockup = ModelMockup()
+        let model = ModelMockup()
         model.fill(["lastName": "bar", "name": "bar1"])
         XCTAssertEqual(model.lastName, "bar", "the last name var value should be equal to bar", file: __FILE__, line: __LINE__)
         XCTAssertEqual(model.name, "bar1", "the name var value should be equal to bar1", file: __FILE__, line: __LINE__)
     }
     
     func testThatFillWithChildsModels() {
-        let model: ModelMockup = ModelMockup()
+        let model = ModelMockup()
         model.fill(["lastName": "bar", "name": "bar1", "childs": [["foo": "bar", "foo1": "bar1"]]])
         XCTAssertEqual(model.lastName, "bar", "the last name var value should be equal to bar", file: __FILE__, line: __LINE__)
         XCTAssertEqual(model.name, "bar1", "the name var value should be equal to bar1", file: __FILE__, line: __LINE__)
@@ -53,17 +53,17 @@ class ModelTests: XCTestCase {
     }
     
     func testThatHashPropertyFalse() {
-        let model: ModelMockup = ModelMockup()
+        let model = ModelMockup()
         XCTAssertFalse(model.hasProperty("second"), "The method should return false", file: __FILE__, line: __LINE__)
     }
     
     func testThatHashPropertyTrue() {
-        let model: ModelMockup = ModelMockup()
+        let model = ModelMockup()
         XCTAssertTrue(model.hasProperty("name"), "The method should return true", file: __FILE__, line: __LINE__)
     }
     
     func testThatProperties() {
-        let model: ModelMockup = ModelMockup()
+        let model = ModelMockup()
         XCTAssertGreaterThan(model.properties().count, 0, "The method properties should return a value", file: __FILE__, line: __LINE__)
     }
     
