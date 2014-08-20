@@ -37,6 +37,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }, completionHandler: {(data, response, error) in
             println("DONE")
         })*/
+    
+        println(∑[1, 2, 3, 4, 5])
         
         return true
     }

@@ -38,7 +38,7 @@ class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownl
         self.progress = NSProgress(totalUnitCount: 0)
     }
     
-//MARK: Instance methods
+    // MARK: Instance methods
     
     /**
     * The function set the unit count to the progress
@@ -51,13 +51,13 @@ class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownl
         self.progress = NSProgress(totalUnitCount: totalUnitCount)
     }
     
-//MARK: NSURLSessionData delegate
+    // MARK: NSURLSessionData delegate
     
     func URLSession(session: NSURLSession!, dataTask: NSURLSessionDataTask!, didReceiveData data: NSData!) {
         self.data.appendData(data)
     }
     
-//MARK: NSURLSessionDownloadTask delegate
+    // MARK: NSURLSessionDownloadTask delegate
     
     func URLSession(session: NSURLSession!, downloadTask: NSURLSessionDownloadTask!, didFinishDownloadingToURL location: NSURL!) {
         if self.destinationURL != nil {
@@ -80,7 +80,7 @@ class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownl
         self.downloadProgressHandler?(bytesWritten, totalBytesWritten, totalBytesExpectedToWrite)
     }
     
-//MARK: NSURLSessionTask delegate
+    // MARK: NSURLSessionTask delegate
     
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didCompleteWithError error: NSError!) {
         dispatch_async(dispatch_get_main_queue(), {
@@ -100,7 +100,7 @@ class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownl
         completionHandler(inputStream)
     }
     
-//MARK: NSURLSessionUploadTask delegate
+    // MARK: NSURLSessionUploadTask delegate
     
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
         self.progress.totalUnitCount = totalBytesExpectedToSend

@@ -1,10 +1,24 @@
 //
-//  CacheTestMockup.swift
-//  NGeenTemplate
+// CacheTestMockup.swift
+// Copyright (c) 2014 NGeen
 //
-//  Created by NGeen on 7/9/14.
-//  Copyright (c) 2014 NGeen. All rights reserved.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 import UIKit
 
@@ -13,7 +27,7 @@ class CacheTestMockup: NSObject, CacheDelegate {
     var cache: Cache
     var path: String
     
-//MARK: Constructor
+    // MARK: Constructor
     
     override init() {
         let paths: Array = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true);
@@ -25,7 +39,7 @@ class CacheTestMockup: NSObject, CacheDelegate {
         self.cache.delegate = self
     }
     
-//MARK: Cache delegate
+    // MARK: Cache delegate
     
     func cache(cache: Cache, deleteFileWithName name: String, andKey key: String)  {
         
@@ -38,7 +52,7 @@ class CacheTestMockup: NSObject, CacheDelegate {
         data.endContentAccess()
     }
     
-//MARK: Instance methods
+    //MARK : Instance methods
     
     func fileNameForKey(key: String) -> String? {
         if let fileName = cache.fileNameForKey(key) {

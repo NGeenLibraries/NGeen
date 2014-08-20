@@ -31,7 +31,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     }
     private(set) var endPoints: [String: [String: ApiEndpoint]]
     
-//MARK: Constructor
+    // MARK: Constructor
     
     init(config: ConfigurationStoreProtocol) {
         self.configurations = Dictionary()
@@ -39,7 +39,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
         self.endPoints = Dictionary()
     }
     
-// MARK: Configurable store protocol
+    // MARK: Configurable store protocol
     
     /**
     * The function returns the default configuration from API Store
@@ -156,7 +156,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
         self.configurations[key] = configuration
     }
     
- //MARK: Instance methods
+    // MARK: Instance methods
     
     /**
     * The function return the endpoint for a given model class
@@ -893,7 +893,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
         }
     }
     
-//MARK: Singleton method
+    // MARK: Singleton method
     
     class func defaultStore() -> ApiStore {
         dispatch_once(&Static.token, {

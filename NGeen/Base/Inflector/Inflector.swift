@@ -28,7 +28,7 @@ class Inflector: NSObject {
     private var singularRules: [InflectorRule]
     private var words: NSMutableSet
     
-//MARK: Constructor
+    // MARK: Constructor
     
     override init() {
         self.pluralRules = Array()
@@ -41,7 +41,7 @@ class Inflector: NSObject {
         }
     }
     
-//MARK: Instance methods
+    // MARK: Instance methods
     
     /**
     * The function return the pluralized string.
@@ -141,7 +141,7 @@ class Inflector: NSObject {
         return self.applyRules(self.singularRules, forString: string)
     }
     
-//MARK: Private methods
+    // MARK: Private methods
     
     /**
     * The function apply the inflection rules to a given string

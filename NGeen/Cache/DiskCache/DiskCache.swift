@@ -34,7 +34,7 @@ class DiskCache: NSObject, CacheDelegate {
         static var token: dispatch_once_t = 0
     }
     
-//MARK: Constructor
+    // MARK: Constructor
     
     required override init() {
         let paths: Array = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true);
@@ -50,7 +50,7 @@ class DiskCache: NSObject, CacheDelegate {
         self.memoryCache.totalCostLimit = kMaxMemoryCacheCapacity
     }
 
-//MARK: Cache delegate
+    // MARK: Cache delegate
     
     func cache(cache: Cache, deleteFileWithName name: String, andKey key: String) {
         dispatch_async(self.queue, {
@@ -68,7 +68,7 @@ class DiskCache: NSObject, CacheDelegate {
         })
     }
     
-//MARK: Instance methods
+    // MARK: Instance methods
     
     /**
     * The function return the current memory usage for the data
@@ -133,7 +133,7 @@ class DiskCache: NSObject, CacheDelegate {
         })
     }
     
-//MARK: Singleton method
+    // MARK: Singleton method
     
     class func defaultCache() -> DiskCache {
         dispatch_once(&Static.token, {

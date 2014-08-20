@@ -24,7 +24,7 @@ import UIKit
 
 class ResponseSerializer: NSObject {
    
-//MARK: Instance methods
+    // MARK: Instance methods
     
     /**
     * The function serialize the data and return the json

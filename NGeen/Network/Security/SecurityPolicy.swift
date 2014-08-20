@@ -35,7 +35,7 @@ class SecurityPolicy: NSObject {
     var certificates: NSArray
     var policy: Policy
     
-//MARK: Constructor
+    // MARK: Constructor
     
     override init() {
         self.allowInvalidCertificates = false
@@ -44,7 +44,7 @@ class SecurityPolicy: NSObject {
         self.policy = Policy.none
     }
     
-//MARK: Instance methods
+    // MARK: Instance methods
     
     /**
     * The function evaluate the server trust in the certificates

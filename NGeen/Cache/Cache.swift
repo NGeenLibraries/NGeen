@@ -37,7 +37,7 @@ class Cache: NSObject, NSCacheDelegate {
     var diskCapacity: Int = 0
     weak var delegate: CacheDelegate?
     
-//MARK: Constructor
+    // MARK: Constructor
     
     init(var cachePath: String) {
         super.init()
@@ -64,7 +64,7 @@ class Cache: NSObject, NSCacheDelegate {
         })
     }
 
-//MARK: Instance methods
+    // MARK: Instance methods
     
     /**
     * The function return the current memory usage for the data
@@ -126,7 +126,7 @@ class Cache: NSObject, NSCacheDelegate {
         })
     }
     
-//MARK: NSCache delegate
+    // MARK: NSCache delegate
 
     func cache(cache: NSCache!, willEvictObject obj: AnyObject!) {
         var entity: CacheEntity = obj as CacheEntity
@@ -137,7 +137,7 @@ class Cache: NSObject, NSCacheDelegate {
         }
     }
     
-//MARK: Private methods
+    // MARK: Private methods
     
     /**
     * The function drop the temporal table with the old data
