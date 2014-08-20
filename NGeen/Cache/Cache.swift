@@ -88,7 +88,7 @@ class Cache: NSObject, NSCacheDelegate {
     
     func fileNameForKey(key: String) -> String? {
         assert(self.dataBase != nil, "The database should exists", file: __FUNCTION__, line: __LINE__)
-        let entity: CacheEntity? = self.readEntityForKey(key)
+        let entity = self.readEntityForKey(key)
         if entity != nil {
             entity!.dirty = true
             entity!.lastAccess = CFAbsoluteTimeGetCurrent()
@@ -110,8 +110,8 @@ class Cache: NSObject, NSCacheDelegate {
         dispatch_barrier_sync(self.queue, {
             data.beginContentAccess()
             let uuidRef = CFUUIDCreate(kCFAllocatorDefault)
-            let uuid: String = CFUUIDCreateString(kCFAllocatorDefault, uuidRef).__conversion()
-            let entity: CacheEntity = CacheEntity(key: key, uid:uuid, accessTime: CFAbsoluteTimeGetCurrent(), size: data.length)
+            let uuid = CFUUIDCreateString(kCFAllocatorDefault, uuidRef).__conversion()
+            let entity = CacheEntity(key: key, uid:uuid, accessTime: CFAbsoluteTimeGetCurrent(), size: data.length)
             self.saveEntity(entity)
             self.currentDiskUsage += data.length
             if self.currentDiskUsage > self.diskCapacity {
@@ -129,7 +129,7 @@ class Cache: NSObject, NSCacheDelegate {
     // MARK: NSCache delegate
 
     func cache(cache: NSCache!, willEvictObject obj: AnyObject!) {
-        var entity: CacheEntity = obj as CacheEntity
+        var entity = obj as CacheEntity
         if entity.dirty {
             dispatch_async(self.queue, {
                 self.saveEntity(entity)
@@ -215,13 +215,13 @@ class Cache: NSObject, NSCacheDelegate {
         let capacity = Double(self.currentDiskUsage - self.diskCapacity) * 0.8
         if sqlite3_prepare_v2(self.dataBase, ("\(kTrimQuery)\(capacity)").cStringUsingEncoding(NSUTF8StringEncoding)!, -1, &statement, nil) == SQLITE_OK {
             if sqlite3_step(statement) == SQLITE_DONE {
-                var spaceCleaned: Int = 0
-                let trimSelectQuery: String = "SELECT uid, key, size FROM trimmed"
+                var spaceCleaned = 0
+                let trimSelectQuery = "SELECT uid, key, size FROM trimmed"
                 if sqlite3_prepare_v2(self.dataBase, trimSelectQuery.cStringUsingEncoding(NSUTF8StringEncoding)!, -1, &statement, nil) == SQLITE_OK {
                     while sqlite3_step(statement) == SQLITE_ROW {
                         spaceCleaned += Int(sqlite3_column_int(statement, 2))
-                        let key: String = String.fromCString(UnsafePointer<Int8>(sqlite3_column_text(statement, 1)))!
-                        let uuid: String = String.fromCString(UnsafePointer<Int8>(sqlite3_column_text(statement, 0)))!
+                        let key = String.fromCString(UnsafePointer<Int8>(sqlite3_column_text(statement, 1)))!
+                        let uuid = String.fromCString(UnsafePointer<Int8>(sqlite3_column_text(statement, 0)))!
                         self.cache.removeObjectForKey(key)
                         self.delegate?.cache(self, deleteFileWithName: uuid, andKey: key)
                     }
@@ -255,7 +255,7 @@ class Cache: NSObject, NSCacheDelegate {
     
     private func saveEntity(entity: CacheEntity) {
         assert(NSThread.mainThread(), "The method should be called in background", file: __FUNCTION__, line: __LINE__)
-        let existing: CacheEntity? = self.readEntityForKey(entity.key!)
+        let existing = self.readEntityForKey(entity.key!)
         if existing != nil {
             self.updateEntity(entity)
             if existing!.uid != entity.uid {
@@ -263,7 +263,7 @@ class Cache: NSObject, NSCacheDelegate {
             }
             return
         }
-        let insertQuery: String = "INSERT INTO cache_index VALUES ('\(entity.uid!)', '\(entity.key!)', \(entity.lastAccess!), \(entity.size!))"
+        let insertQuery = "INSERT INTO cache_index VALUES ('\(entity.uid!)', '\(entity.key!)', \(entity.lastAccess!), \(entity.size!))"
         var statement: COpaquePointer = nil
         if sqlite3_prepare(self.dataBase, insertQuery.cStringUsingEncoding(NSUTF8StringEncoding)!, -1, &statement, nil) == SQLITE_OK {
             if sqlite3_step(statement) != SQLITE_DONE  {
@@ -284,7 +284,7 @@ class Cache: NSObject, NSCacheDelegate {
     
     private func updateEntity(entity: CacheEntity) {
         assert(NSThread.mainThread(), "The method should be called in background", file: __FUNCTION__, line: __LINE__)
-        let updateQuery: String = "UPDATE cache_index SET uid='\(entity.uid!)', last_access=\(entity.lastAccess!), size=\(entity.size!) WHERE key='\(entity.key!)'"
+        let updateQuery = "UPDATE cache_index SET uid='\(entity.uid!)', last_access=\(entity.lastAccess!), size=\(entity.size!) WHERE key='\(entity.key!)'"
         var statement: COpaquePointer = nil
         if sqlite3_prepare(self.dataBase, updateQuery.cStringUsingEncoding(NSUTF8StringEncoding)!, -1, &statement, nil) == SQLITE_OK {
             if sqlite3_step(statement) != SQLITE_DONE  {

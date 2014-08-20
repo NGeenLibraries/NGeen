@@ -30,7 +30,7 @@ class CacheTestMockup: NSObject, CacheDelegate {
     // MARK: Constructor
     
     override init() {
-        let paths: Array = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true);
+        let paths = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true);
         self.path = "\(paths[0])/\(kCacheFolder)"
         NSFileManager.defaultManager().createDirectoryAtPath(self.path, withIntermediateDirectories: true, attributes: nil, error: nil)
         self.cache = Cache(cachePath: self.path)
@@ -46,7 +46,7 @@ class CacheTestMockup: NSObject, CacheDelegate {
     }
     
     func cache(cache: Cache, writeFileWithName name: String, data: NSPurgeableData) {
-        let path: String = "\(self.path)/\(name)"
+        let path = "\(self.path)/\(name)"
         data.beginContentAccess()
         data.writeToFile(path, atomically: true)
         data.endContentAccess()
@@ -62,7 +62,7 @@ class CacheTestMockup: NSObject, CacheDelegate {
     }
     
     func storeFileForKey(key: String, completionHandler closure: ((String!) -> Void)!) {
-        let data: NSPurgeableData = NSPurgeableData(base64Encoding: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum")
+        let data = NSPurgeableData(base64Encoding: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum")
         cache.storeFileForKey(key, withData: data, completionHandler: {(uuid) in
             if closure {
                 closure("\(self.path)/\(uuid)")

@@ -64,9 +64,9 @@ class Inflector: NSObject {
     */
     
     func setIrregularRuleForSingular(singular: String, andPlural plural: String) {
-        let singularRule: String = "\(plural)$"
+        let singularRule = "\(plural)$"
         self.setSingularRule(singularRule, forReplacement: singular)
-        let pluralRule: String = "\(singular)$"
+        let pluralRule = "\(singular)$"
         self.setPluralRule(pluralRule, forReplacement: plural)
     }
     
@@ -157,7 +157,7 @@ class Inflector: NSObject {
         } else {
             for rule in rules {
                 let range = NSMakeRange(0,  string.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
-                let regex: NSRegularExpression = NSRegularExpression.regularExpressionWithPattern(rule.rule, options: NSRegularExpressionOptions.CaseInsensitive, error: nil)
+                let regex = NSRegularExpression.regularExpressionWithPattern(rule.rule, options: NSRegularExpressionOptions.CaseInsensitive, error: nil)
                 if regex.firstMatchInString(string, options: NSMatchingOptions.ReportProgress, range: range) {
                     return regex.stringByReplacingMatchesInString(string, options: NSMatchingOptions.ReportProgress, range: range, withTemplate: rule.replacement)
                 }

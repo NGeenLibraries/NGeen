@@ -502,7 +502,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setAuthenticationCredentials(user: String, password: String, forServer server: String) {
-        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
             configuration.credential = NSURLCredential(user: user, password: password, persistence: NSURLCredentialPersistence.ForSession)
             configuration.protectionSpace = NSURLProtectionSpace(host: configuration.host, port: 0, `protocol`: configuration.scheme, realm: nil, authenticationMethod: NSURLAuthenticationMethodHTTPBasic)
             self.setConfiguration(configuration, forKey: server)
@@ -520,7 +520,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setAuthenticationCredentials(user: String, password: String, authenticationMethod method: String, forServer server: String) {
-        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
             configuration.credential = NSURLCredential(user: user, password: password, persistence: NSURLCredentialPersistence.ForSession)
             configuration.protectionSpace = NSURLProtectionSpace(host: configuration.host, port: 0, `protocol`: configuration.scheme, realm: nil, authenticationMethod: method)
             self.setConfiguration(configuration, forKey: server)
@@ -547,7 +547,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setCachePolicy(policy: NSURLRequestCachePolicy, forServer server: String) {
-        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
             configuration.sessionConfiguration.requestCachePolicy = policy
             self.setConfiguration(configuration, forKey: server)
         }
@@ -573,7 +573,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setCacheStoragePolicy(policy: NSURLCacheStoragePolicy, forServer server: String) {
-        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
             configuration.cacheStoragePolicy = policy
             self.setConfiguration(configuration, forKey: server)
         }
@@ -656,7 +656,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setHeader(header: String, forKey key: String, serverName name: String) {
-        if let configuration: ApiStoreConfiguration = self.configurationForKey(name) as? ApiStoreConfiguration {
+        if let configuration = self.configurationForKey(name) as? ApiStoreConfiguration {
             configuration.headers[key] = header
             self.setConfiguration(configuration, forKey: name)
         }
@@ -708,7 +708,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setModelsPath(path: String, forServer server: String) {
-        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
             configuration.modelsPath = path
             self.setConfiguration(configuration, forKey: server)
         }
@@ -734,7 +734,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setPinnedCertificates(certificates: [NSData], forServer server: String) {
-        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
             configuration.securityPolicy.certificates = certificates
             self.setConfiguration(configuration, forKey: server)
         }
@@ -760,7 +760,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setRequestRedirection(redirection: NSURLRequest, forServer server: String) {
-        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
             configuration.redirection = redirection
             self.setConfiguration(configuration, forKey: server)
         }
@@ -786,7 +786,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setResponseDisposition(disposition: NSURLSessionResponseDisposition, forServer server: String) {
-        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
             configuration.responseDisposition = disposition
             self.setConfiguration(configuration, forKey: server)
         }
@@ -812,7 +812,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setResponseType(type: ResponseType, forServer server: String) {
-        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
             configuration.responseType = type
             self.setConfiguration(configuration, forKey: server)
         }
@@ -839,7 +839,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setSecurityPolicy(policy: Policy, forServer server: String) {
-        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
             configuration.securityPolicy.policy = policy
             self.setConfiguration(configuration, forKey: server)
         }
@@ -865,7 +865,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func setSessionConfiguration(sessionConfiguration: NSURLSessionConfiguration, forServer server: String) {
-        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
             configuration.sessionConfiguration = sessionConfiguration
             self.setConfiguration(configuration, forKey: server)
         }
