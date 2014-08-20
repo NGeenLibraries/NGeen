@@ -24,8 +24,7 @@ import UIKit
 
 class RequestSerializer: NSObject {
 
-/*TODO: 1. allow to set json writing options
-*/
+// TODO: 1. allow to set json writing options
     
     var constructingBodyClosure: (() -> (data: NSData!, name: String!, fileName: String!, mimeType: String!))?
     

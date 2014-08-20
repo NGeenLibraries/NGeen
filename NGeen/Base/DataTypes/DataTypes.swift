@@ -95,8 +95,3 @@ enum ResponseType: Int {
     case models
     case string
 }
-
-prefix operator ∑ {}
-prefix func ∑ (values: Array<Int>) -> Int {
-    return reduce(values, 1, +)
-}

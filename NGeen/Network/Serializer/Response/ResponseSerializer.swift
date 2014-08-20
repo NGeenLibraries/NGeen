@@ -22,7 +22,7 @@
 
 import UIKit
 
-/*TODO: find way to do a deep copy of the response when the dictionary have null value */
+// TODO: find way to do a deep copy of the response when the dictionary have null value */
 
 class ResponseSerializer: NSObject {
    

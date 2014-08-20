@@ -22,8 +22,7 @@
 
 import UIKit
 
-/*TODO: 1. Check if iskindofclass model
-*/
+// TODO: 1. Check if iskindofclass model
 
 class Model: NSObject {
     
@@ -60,7 +59,7 @@ class Model: NSObject {
         for (key, value) in dictionary {
             if self.hasProperty(key) {
                 if let modelClass: NSObject.Type = NSClassFromString("\(bundleName).\(key.singularize().capitalizedString)") as? NSObject.Type {
-                    //TODO: Check if iskindofclass model
+                    // TODO: Check if iskindofclass model
                     if value is [[String: AnyObject]] {
                         var models: [AnyObject] = Array()
                         for values in value as [[String: AnyObject]] {
