@@ -27,13 +27,10 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     private(set) var becomeDownloadTaskClosure: ((NSURLSession!, NSURLSessionDataTask!, NSURLSessionDownloadTask!) -> Void)?
     private var credential: NSURLCredential?
     private var dataTasksDelegates: [Int: SessionTaskDelegate]
-    private var destination: NSURL?
-    private(set) var downloadProgress: ((NSURLSession!, NSURLSessionDownloadTask!, Int64!, Int64!, Int64!) -> Void)?
     private var operationQueue: NSOperationQueue = NSOperationQueue()
     private var queue: dispatch_queue_t?
     private var session: NSURLSession?
     private var sessionConfiguration: NSURLSessionConfiguration
-    private(set) var uploadProgress: ((NSURLSession!, NSURLSessionTask!, Int64!, Int64!, Int64!) -> Void)?
     
     var cacheStoragePolicy: NSURLCacheStoragePolicy
     var redirection: NSURLRequest?
