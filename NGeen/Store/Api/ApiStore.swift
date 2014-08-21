@@ -42,40 +42,18 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     // MARK: Configurable store protocol
     
     /**
-    * The function returns the default configuration from API Store
-    *
-    * @param no need params
-    */
-    
-    func configuration() -> ConfigurationStoreProtocol {
-        return self.configurationForKey(kDefaultServerName)
-    }
-    
-    /**
     * The function returns a configuration from API Store
     *
     * @param key The Identifier of the configuration in dictionary
     *
     */
     
-    func configurationForKey(key: String) -> ConfigurationStoreProtocol {
-        if let configuration: ConfigurationStoreProtocol = self.configurations[key] {
+    func configuration(forServer server: String = kDefaultServerName) -> ConfigurationStoreProtocol {
+        if let configuration: ConfigurationStoreProtocol = self.configurations[server] {
             return configuration
         } else {
             assert(false, "The configuration can't be null", file: __FILE__, line: __LINE__)
         }
-    }
-    
-    /**
-    * The function create and return the last query setted on the default server
-    *
-    * no need params.
-    *
-    * return ApiQuery
-    */
-    
-    func createQuery() -> ApiQuery {
-        return self.createQueryForSever(kDefaultServerName)
     }
     
     /**
@@ -86,26 +64,12 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * return ApiQuery
     */
     
-    func createQueryForSever(server: String) -> ApiQuery {
+    func createQuery(forServer server: String = kDefaultServerName) -> ApiQuery {
         if let endPoints: [String: ApiEndpoint] = self.endPoints[server] {
-            return ApiQuery(configuration: self.configurationForKey(server), endPoint: endPoints.values.last!)
+            return ApiQuery(configuration: self.configuration(forServer: server), endPoint: endPoints.values.last!)
         } else {
             assert(false, "The endpoint can't be null", file: __FILE__, line: __LINE__)
         }
-    }
-    
-    /**
-    * The function create and return a query for the default server configuration
-    * and the given endopint path
-    *
-    * @param path The path of the endpoint.
-    * @param method The http method type for the request.
-    *
-    * return ApiQuery
-    */
-    
-    func createQueryForPath(path: String, httpMethod method: HttpMethod) -> ApiQuery {
-        return self.createQueryForPath(path, httpMethod: method, server: kDefaultServerName)
     }
     
     /**
@@ -118,27 +82,16 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * return ApiQuery
     */
     
-    func createQueryForPath(path: String, httpMethod method: HttpMethod, server name: String) -> ApiQuery {
+    func createQueryForPath(path: String, httpMethod method: HttpMethod, server name: String = kDefaultServerName) -> ApiQuery {
          if let endPoints = self.endPoints[name] {
             if let endPoint = endPoints[ApiEndpoint.keyForPath(path, httpMethod: method)] {
-                return ApiQuery(configuration: self.configurationForKey(name), endPoint: endPoint)
+                return ApiQuery(configuration: self.configuration(forServer: name), endPoint: endPoint)
             } else {
                 assert(false, "The endpoint can't be null", file: __FILE__, line: __LINE__)
             }
         } else {
             assert(false, "The endpoint can't be null", file: __FILE__, line: __LINE__)
         }
-    }
-    
-    /**
-    * The function add a default configuration to the API Store
-    *
-    * @param config The Object with the server configuration
-    *
-    */
-    
-    func setConfiguration(configuration: ConfigurationStoreProtocol) {
-        self.configurations[kDefaultServerName] = configuration
     }
     
     /**
@@ -149,24 +102,11 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setConfiguration(configuration: ConfigurationStoreProtocol, forKey key: String) {
-        self.configurations[key] = configuration
+    func setConfiguration(configuration: ConfigurationStoreProtocol, forServer server: String = kDefaultServerName) {
+        self.configurations[server] = configuration
     }
     
     // MARK: Instance methods
-    
-    /**
-    * The function return the endpoint for a given model class
-    *
-    * @param path The path key to search the endpoint
-    * @param method The method for the endpoint
-    *
-    * return Endpoint
-    */
-    
-    func endpointForPath(path: String, httpMethod method: HttpMethod) -> ApiEndpoint? {
-         return self.endpointForPath(path, httpMethod: method, serverName: kDefaultServerName)
-    }
     
     /**
     * The function return the endpoint for a given model class and server name
@@ -178,22 +118,10 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * return Endpoint
     */
     
-    func endpointForPath(path: String, httpMethod method: HttpMethod, serverName name: String) -> ApiEndpoint? {
+    func endpointForPath(path: String, httpMethod method: HttpMethod, serverName name: String = kDefaultServerName) -> ApiEndpoint? {
         return self.endPoints[name]?[ApiEndpoint.keyForPath(path, httpMethod: method)]
     }
    
-    /**
-    * The function get the authentication credentials the default server configuration
-    *
-    * no need params.
-    *
-    * return String
-    */
-    
-    func getAuthenticationCredentials() -> String {
-        return self.getAuthenticationCredentialsForServer(kDefaultServerName)
-    }
-    
     /**
     * The function get the authentication credentials for a given server configuration
     *
@@ -202,9 +130,9 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * return String
     */
     
-    func getAuthenticationCredentialsForServer(server: String) -> String {
+    func getAuthenticationCredentials(forServer server: String = kDefaultServerName) -> String {
         var credentials: String?
-        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+        if let configuration: ApiStoreConfiguration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             if let credential: NSURLCredential = configuration.credential {
                 credentials = "\(credential.user):\(credential.password)"
             }
@@ -234,20 +162,8 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     */
     
     func getCachePolicyForServer(server: String) -> NSURLRequestCachePolicy? {
-        let configuration = self.configurationForKey(server) as? ApiStoreConfiguration
+        let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration
         return configuration?.sessionConfiguration.requestCachePolicy
-    }
-    
-    /**
-    * The function return the cache storage policy for the default server configuration
-    *
-    * @param policy The cache policy.
-    *
-    * @return NSURLCacheStoragePolicy
-    */
-    
-    func getCacheStoragePolicy() -> NSURLCacheStoragePolicy? {
-        return self.getCacheStoragePolicyForServer(kDefaultServerName)
     }
     
     /**
@@ -259,21 +175,9 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * @return NSURLCacheStoragePolicy
     */
     
-    func getCacheStoragePolicyForServer(server: String) -> NSURLCacheStoragePolicy? {
-        let configuration = self.configurationForKey(server) as? ApiStoreConfiguration
+    func getCacheStoragePolicy(forServer server: String = kDefaultServerName) -> NSURLCacheStoragePolicy? {
+        let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration
         return configuration?.cacheStoragePolicy
-    }
-    
-    /**
-    * The function return the headers for the default server configuration
-    *
-    * no need params.
-    *
-    * @return Dictionary
-    */
-    
-    func getHeaders() -> [String: String] {
-        return self.getHeadersForServer(kDefaultServerName)
     }
     
     /**
@@ -284,21 +188,9 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * @return Dictionary
     */
     
-    func getHeadersForServer(server: String) -> [String: String] {
-        let configuration = self.configurationForKey(server) as? ApiStoreConfiguration
+    func getHeaders(forServer server: String = kDefaultServerName) -> [String: String] {
+        let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration
         return configuration?.headers ?? Dictionary()
-    }
-    
-    /**
-    * The function return the model path for the default server configuration
-    *
-    * @param path The path of the models in the api response.
-    *
-    * @return String
-    */
-    
-    func getModelsPath() -> String {
-        return self.getModelsPathForServer(kDefaultServerName)
     }
     
     /**
@@ -310,21 +202,9 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * @return String
     */
     
-    func getModelsPathForServer(server: String) -> String {
-        let configuration = self.configurationForKey(server) as? ApiStoreConfiguration
+    func getModelsPath(forServer server: String = kDefaultServerName) -> String {
+        let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration
         return configuration?.modelsPath ?? ""
-    }
-    
-    /**
-    * The function get the pinned certificates for the default api configuration
-    *
-    * no need params.
-    *
-    * return Array
-    */
-    
-    func getPinnedCertificates() -> [AnyObject] {
-        return self.getPinnedCertificatesForServer(kDefaultServerName)
     }
     
     /**
@@ -334,21 +214,9 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func getPinnedCertificatesForServer(server: String) -> [AnyObject] {
-        let configuration = self.configurationForKey(server) as? ApiStoreConfiguration
+    func getPinnedCertificates(forServer server: String = kDefaultServerName) -> [AnyObject] {
+        let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration
         return configuration?.securityPolicy.certificates ?? Array()
-    }
-    
-    /**
-    * The function get the response disposition to the default configuration
-    *
-    * no need params.
-    *
-    * @return NSURLSessionResponseDisposition
-    */
-    
-    func getResponseDisposition() -> NSURLSessionResponseDisposition? {
-        return self.getResponseDispositionForServer(kDefaultServerName)
     }
     
     /**
@@ -359,21 +227,9 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * @return NSURLSessionResponseDisposition
     */
     
-    func getResponseDispositionForServer(server: String) -> NSURLSessionResponseDisposition? {
-        let configuration = self.configurationForKey(server) as? ApiStoreConfiguration
+    func getResponseDisposition(forServer server: String = kDefaultServerName) -> NSURLSessionResponseDisposition? {
+        let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration
         return configuration?.responseDisposition
-    }
-    
-    /**
-    * The function return the response type for a server configuration
-    *
-    * @param no need params.
-    *
-    * @return ResponseType
-    */
-    
-    func getResponseType() -> ResponseType? {
-        return self.getResponseTypeForServer(kDefaultServerName)
     }
     
     /**
@@ -384,21 +240,9 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * @return ResponseType
     */
     
-    func getResponseTypeForServer(server: String) -> ResponseType? {
-        let configuration = self.configurationForKey(server) as? ApiStoreConfiguration
+    func getResponseType(forServer server: String = kDefaultServerName) -> ResponseType? {
+        let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration
         return configuration?.responseType
-    }
-    
-    /**
-    * The function get the security policy for default server configuration
-    *
-    * no need params.
-    *
-    * return Policy
-    */
-    
-    func getSecurityPolicy() -> Policy {
-        return getSecurityPolicyForServer(kDefaultServerName)
     }
     
     /**
@@ -409,21 +253,9 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * return Policy
     */
     
-    func getSecurityPolicyForServer(server: String) -> Policy {
-        let configuration = self.configurationForKey(server) as? ApiStoreConfiguration
+    func getSecurityPolicy(forServer server: String = kDefaultServerName) -> Policy {
+        let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration
         return configuration?.securityPolicy.policy ?? Policy.none
-    }
-    
-    /**
-    * The function get the session configuration for the default server config
-    *
-    * @param sessionConfiguration The session Configuration.
-    *
-    * return NSURLSessionConfiguration
-    */
-    
-    func getSessionConfiguration() -> NSURLSessionConfiguration? {
-        return self.getSessionConfigurationForServer(kDefaultServerName)
     }
     
     /**
@@ -434,22 +266,10 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     * return NSURLSessionConfiguration
     */
     
-    func getSessionConfigurationForServer(server: String) -> NSURLSessionConfiguration? {
-        let configuration = self.configurationForKey(server) as? ApiStoreConfiguration
+    func getSessionConfiguration(forServer server: String = kDefaultServerName) -> NSURLSessionConfiguration? {
+        let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration
         return configuration?.sessionConfiguration
 
-    }
-    
-    /**
-    * The function set the if the default server configuration accept invalid certificates
-    *
-    * @param allow The true or false.
-    * @param server The name of the server to store the configuration.
-    *
-    */
-    
-    func setAllowInvalidCertificates(allow: Bool) {
-        self.setAllowInvalidCertificates(allow, forServer: kDefaultServerName)
     }
     
     /**
@@ -460,36 +280,11 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setAllowInvalidCertificates(allow: Bool, forServer server: String) {
-        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+    func setAllowInvalidCertificates(allow: Bool, forServer server: String = kDefaultServerName) {
+        if let configuration: ApiStoreConfiguration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.securityPolicy.allowInvalidCertificates = allow
-            self.setConfiguration(configuration, forKey: server)
+            self.setConfiguration(configuration, forServer: server)
         }
-    }
-    
-    /**
-    * The function set the authentication credentials for the default server configuration
-    *
-    * @param user The user to the credential.
-    * @param password The password to the credential.
-    *
-    */
-    
-    func setAuthenticationCredentials(user: String, password: String) {
-        self.setAuthenticationCredentials(user, password: password, forServer: kDefaultServerName)
-    }
-    
-    /**
-    * The function set the authentication credentials for the default server configuration
-    *
-    * @param user The user to the credential.
-    * @param password The password to the credential.
-    * @param method The authentication method for the session.
-    *
-    */
-    
-    func setAuthenticationCredentials(user: String, password: String, authenticationMethod method: String) {
-        self.setAuthenticationCredentials(user, password: password, authenticationMethod: method, forServer: kDefaultServerName)
     }
     
     /**
@@ -501,11 +296,11 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setAuthenticationCredentials(user: String, password: String, forServer server: String) {
-        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
+    func setAuthenticationCredentials(user: String, password: String, forServer server: String = kDefaultServerName) {
+        if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.credential = NSURLCredential(user: user, password: password, persistence: NSURLCredentialPersistence.ForSession)
             configuration.protectionSpace = NSURLProtectionSpace(host: configuration.host, port: 0, `protocol`: configuration.scheme, realm: nil, authenticationMethod: NSURLAuthenticationMethodHTTPBasic)
-            self.setConfiguration(configuration, forKey: server)
+            self.setConfiguration(configuration, forServer: server)
         }
     }
     
@@ -519,23 +314,12 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setAuthenticationCredentials(user: String, password: String, authenticationMethod method: String, forServer server: String) {
-        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
+    func setAuthenticationCredentials(user: String, password: String, authenticationMethod method: String, forServer server: String = kDefaultServerName) {
+        if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.credential = NSURLCredential(user: user, password: password, persistence: NSURLCredentialPersistence.ForSession)
             configuration.protectionSpace = NSURLProtectionSpace(host: configuration.host, port: 0, `protocol`: configuration.scheme, realm: nil, authenticationMethod: method)
-            self.setConfiguration(configuration, forKey: server)
+            self.setConfiguration(configuration, forServer: server)
         }
-    }
-    
-    /**
-    * The function set the cache request policy for the default server configuration
-    *
-    * @param policy The cache policy.
-    *
-    */
-    
-    func setCachePolicy(policy: NSURLRequestCachePolicy) {
-        self.setCachePolicy(policy, forServer: kDefaultServerName)
     }
     
     /**
@@ -546,22 +330,11 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setCachePolicy(policy: NSURLRequestCachePolicy, forServer server: String) {
-        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
+    func setCachePolicy(policy: NSURLRequestCachePolicy, forServer server: String = kDefaultServerName) {
+        if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.sessionConfiguration.requestCachePolicy = policy
-            self.setConfiguration(configuration, forKey: server)
+            self.setConfiguration(configuration, forServer: server)
         }
-    }
-    
-    /**
-    * The function set the cache storage policy for the default server configuration
-    *
-    * @param policy The cache policy.
-    *
-    */
-    
-    func setCacheStoragePolicy(policy: NSURLCacheStoragePolicy) {
-        self.setCacheStoragePolicy(policy, forServer: kDefaultServerName)
     }
     
     /**
@@ -572,22 +345,11 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setCacheStoragePolicy(policy: NSURLCacheStoragePolicy, forServer server: String) {
-        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
+    func setCacheStoragePolicy(policy: NSURLCacheStoragePolicy, forServer server: String = kDefaultServerName) {
+        if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.cacheStoragePolicy = policy
-            self.setConfiguration(configuration, forKey: server)
+            self.setConfiguration(configuration, forServer: server)
         }
-    }
-    
-    /**
-    * The function store the endpoint in the local dictionary
-    *
-    * @param endpoint The given endpoint to store
-    *
-    */
-    
-    func setEndpoint(endpoint: ApiEndpoint) {
-        self.setEndpoint(endpoint, forServer: kDefaultServerName)
     }
     
     /**
@@ -598,7 +360,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setEndpoint(endpoint: ApiEndpoint, forServer server: String) {
+    func setEndpoint(endpoint: ApiEndpoint, forServer server: String = kDefaultServerName) {
         var endPoints: [String: ApiEndpoint] = Dictionary()
         if let serverEndpoints: [String: ApiEndpoint] = self.endPoints[server] {
             endPoints = serverEndpoints
@@ -609,16 +371,6 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
         self.endPoints[server] = endPoints
     }
     
-    /**
-    * The function store the endpoints in the local dictionary
-    *
-    * @param endpoints The array with the endpoints for the server.
-    *
-    */
-    
-    func setEndpoints(var endpoints: Array<ApiEndpoint>) {
-        self.setEndpoints(endpoints, forServer: kDefaultServerName)
-    }
     
     /**
     * The function store the endpoint for a given server name in the local dictionary
@@ -628,24 +380,12 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setEndpoints(var endpoints: Array<ApiEndpoint>, forServer server: String) {
+    func setEndpoints(var endpoints: Array<ApiEndpoint>, forServer server: String = kDefaultServerName) {
         for endpoint in endpoints {
             self.setEndpoint(endpoint, forServer: server)
         }
     }
-    
-    /**
-    * The function set a headers for the default server configuration
-    *
-    * @param header The value for the header.
-    * @param key The value for the header field.
-    *
-    */
-    
-    func setHeader(header: String, forKey key: String) {
-        self.setHeader(header, forKey: key, serverName: kDefaultServerName)
-    }
-    
+
     /**
     * The function set a headers for the default server configuration
     *
@@ -655,22 +395,11 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setHeader(header: String, forKey key: String, serverName name: String) {
-        if let configuration = self.configurationForKey(name) as? ApiStoreConfiguration {
+    func setHeader(header: String, forKey key: String, forServer server: String = kDefaultServerName) {
+        if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.headers[key] = header
-            self.setConfiguration(configuration, forKey: name)
+            self.setConfiguration(configuration, forServer: server)
         }
-    }
-    
-    /**
-    * The function set the headers for the default server configuration
-    *
-    * @param headers The dictionary with the headers.
-    *
-    */
-    
-    func setHeaders(headers: Dictionary<String, String>) {
-        self.setHeaders(headers, forServer: kDefaultServerName)
     }
     
     /**
@@ -681,24 +410,13 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setHeaders(headers: Dictionary<String, String>, forServer server: String) {
-        if let configuration: ApiStoreConfiguration = self.configurationForKey(server) as? ApiStoreConfiguration {
+    func setHeaders(headers: Dictionary<String, String>, forServer server: String = kDefaultServerName) {
+        if let configuration: ApiStoreConfiguration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.headers += headers
-            self.setConfiguration(configuration, forKey: server)
+            self.setConfiguration(configuration, forServer: server)
         }
     }
-    
-    /**
-    * The function set the model path for the default server configuration
-    *
-    * @param path The path of the models in the api response.
-    *
-    */
-    
-    func setModelsPath(path: String) {
-        self.setModelsPath(path, forServer: kDefaultServerName)
-    }
-    
+
     /**
     * The function set the model path for the given server name
     *
@@ -707,24 +425,13 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setModelsPath(path: String, forServer server: String) {
-        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
+    func setModelsPath(path: String, forServer server: String = kDefaultServerName) {
+        if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.modelsPath = path
-            self.setConfiguration(configuration, forKey: server)
+            self.setConfiguration(configuration, forServer: server)
         }
     }
-    
-    /**
-    * The function set the pinned certificates for the api configuration
-    *
-    * @param certificates The array with the trusted certificates.
-    *
-    */
-    
-    func setPinnedCertificates(certificates: [NSData]) {
-        self.setPinnedCertificates(certificates, forServer: kDefaultServerName)
-    }
-    
+
     /**
     * The function set the pinned certificates for the api configuration
     *
@@ -733,22 +440,11 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setPinnedCertificates(certificates: [NSData], forServer server: String) {
-        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
+    func setPinnedCertificates(certificates: [NSData], forServer server: String = kDefaultServerName) {
+        if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.securityPolicy.certificates = certificates
-            self.setConfiguration(configuration, forKey: server)
+            self.setConfiguration(configuration, forServer: server)
         }
-    }
-    
-    /**
-    * The function set the request to redirect the http request
-    *
-    * @param redirection The request to redirect.
-    *
-    */
-    
-    func setRequestRedirection(redirection: NSURLRequest) {
-        self.setRequestRedirection(redirection, forServer: kDefaultServerName)
     }
     
     /**
@@ -759,24 +455,13 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setRequestRedirection(redirection: NSURLRequest, forServer server: String) {
-        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
+    func setRequestRedirection(redirection: NSURLRequest, forServer server: String = kDefaultServerName) {
+        if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.redirection = redirection
-            self.setConfiguration(configuration, forKey: server)
+            self.setConfiguration(configuration, forServer: server)
         }
     }
-    
-    /**
-    * The function set the response disposition to the API Store
-    *
-    * @param disposition The disposition for the request.
-    *
-    */
-    
-    func setResponseDisposition(disposition: NSURLSessionResponseDisposition) {
-        self.setResponseDisposition(disposition, forServer: kDefaultServerName)
-    }
-    
+
     /**
     * The function set the response disposition to the API Store
     *
@@ -785,22 +470,11 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setResponseDisposition(disposition: NSURLSessionResponseDisposition, forServer server: String) {
-        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
+    func setResponseDisposition(disposition: NSURLSessionResponseDisposition, forServer server: String = kDefaultServerName) {
+        if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.responseDisposition = disposition
-            self.setConfiguration(configuration, forKey: server)
+            self.setConfiguration(configuration, forServer: server)
         }
-    }
-    
-    /**
-    * The function set the response type for the server configuration
-    *
-    * @param type The type of the response.
-    *
-    */
-    
-    func setResponseType(type: ResponseType) {
-        self.setResponseType(type, forServer: kDefaultServerName)
     }
     
     /**
@@ -811,23 +485,11 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setResponseType(type: ResponseType, forServer server: String) {
-        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
+    func setResponseType(type: ResponseType, forServer server: String = kDefaultServerName) {
+        if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.responseType = type
-            self.setConfiguration(configuration, forKey: server)
+            self.setConfiguration(configuration, forServer: server)
         }
-    }
-    
-    /**
-    * The function set the security policy for the auth chanllenge for the default 
-    * server configuration
-    *
-    * @param policy The type of the policy.
-    *
-    */
-    
-    func setSecurityPolicy(policy: Policy) {
-        self.setSecurityPolicy(policy, forServer: kDefaultServerName)
     }
     
     /**
@@ -838,22 +500,11 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setSecurityPolicy(policy: Policy, forServer server: String) {
-        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
+    func setSecurityPolicy(policy: Policy, forServer server: String = kDefaultServerName) {
+        if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.securityPolicy.policy = policy
-            self.setConfiguration(configuration, forKey: server)
+            self.setConfiguration(configuration, forServer: server)
         }
-    }
-    
-    /**
-    * The function set the session configuration for the default server config
-    *
-    * @param sessionConfiguration The session Configuration.
-    *
-    */
-    
-    func setSessionConfiguration(sessionConfiguration: NSURLSessionConfiguration) {
-        self.setSessionConfiguration(sessionConfiguration, forServer: kDefaultServerName)
     }
     
     /**
@@ -864,10 +515,10 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     *
     */
     
-    func setSessionConfiguration(sessionConfiguration: NSURLSessionConfiguration, forServer server: String) {
-        if let configuration = self.configurationForKey(server) as? ApiStoreConfiguration {
+    func setSessionConfiguration(sessionConfiguration: NSURLSessionConfiguration, forServer server: String = kDefaultServerName) {
+        if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.sessionConfiguration = sessionConfiguration
-            self.setConfiguration(configuration, forKey: server)
+            self.setConfiguration(configuration, forServer: server)
         }
     }
     

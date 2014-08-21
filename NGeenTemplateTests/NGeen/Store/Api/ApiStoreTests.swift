@@ -33,7 +33,7 @@ class ApiStoreTests: XCTestCase {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         self.apiConfiguration = ApiStoreConfiguration()
         self.store = ApiStore(config: self.apiConfiguration!)
-        self.store?.setConfiguration(self.apiConfiguration!, forKey: kConfigKey)
+        self.store?.setConfiguration(self.apiConfiguration!, forServer: kConfigKey)
         self.store?.setEndpoint(ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, path: "example"))
     }
     
@@ -49,7 +49,7 @@ class ApiStoreTests: XCTestCase {
     }
     
     func testThatCreateQueryWithConfigurationKey() {
-        self.store?.setConfiguration(self.apiConfiguration!, forKey: kConfigKey)
+        self.store?.setConfiguration(self.apiConfiguration!, forServer: kConfigKey)
         XCTAssert(self.store!.createQuery().isKindOfClass(ApiQuery.self), "Invalid api query class", file: __FILE__, line: __LINE__)
     }
     
@@ -98,7 +98,7 @@ class ApiStoreTests: XCTestCase {
     
     func testThatSetAuthenticationCredentialsForServer() {
         self.store!.setAuthenticationCredentials("test", password: "test", forServer: kConfigKey)
-        XCTAssertEqual(self.store!.getAuthenticationCredentialsForServer(kConfigKey), "test:test", "The authentication string should be equal to test:test", file: __FUNCTION__, line: __LINE__)
+        XCTAssertEqual(self.store!.getAuthenticationCredentials(forServer: kConfigKey), "test:test", "The authentication string should be equal to test:test", file: __FUNCTION__, line: __LINE__)
     }
     
     func testTharSetCachePolicy() {
@@ -118,7 +118,7 @@ class ApiStoreTests: XCTestCase {
     
     func testThatSetCacheStoragePolicyForServer() {
         self.store!.setCacheStoragePolicy(NSURLCacheStoragePolicy.Allowed, forServer: kConfigKey)
-        XCTAssertEqual(self.store!.getCacheStoragePolicyForServer(kConfigKey)!, NSURLCacheStoragePolicy.Allowed, "The cache storage policy should be equal to allowed", file: __FUNCTION__, line: __LINE__)
+        XCTAssertEqual(self.store!.getCacheStoragePolicy(forServer: kConfigKey)!, NSURLCacheStoragePolicy.Allowed, "The cache storage policy should be equal to allowed", file: __FUNCTION__, line: __LINE__)
     }
     
     func testThatSetConfiguration() {
@@ -130,8 +130,8 @@ class ApiStoreTests: XCTestCase {
     func testThatSetConfigurationWithKey() {
         let config = ApiStoreConfiguration()
         config.host = "www.google.com"
-        self.store?.setConfiguration(config, forKey: kConfigKey)
-        var configFromStore: ApiStoreConfiguration = self.store?.configurationForKey(kConfigKey) as ApiStoreConfiguration
+        self.store?.setConfiguration(config, forServer: kConfigKey)
+        var configFromStore: ApiStoreConfiguration = self.store?.configuration(forServer: kConfigKey) as ApiStoreConfiguration
         XCTAssertEqual(config.host, configFromStore.host, "Configuration with key is not correctly setted")
     }
     
@@ -163,8 +163,8 @@ class ApiStoreTests: XCTestCase {
     }
     
     func testThatSetHeaderForServer() {
-        self.store?.setHeader("test", forKey: "test", serverName: kConfigKey)
-        XCTAssertGreaterThan(self.store!.getHeadersForServer(kConfigKey).count, 0, "The headers should be greater than 0", file: __FILE__, line: __LINE__)
+        self.store?.setHeader("test", forKey: "test", forServer: kConfigKey)
+        XCTAssertGreaterThan(self.store!.getHeaders(forServer: kConfigKey).count, 0, "The headers should be greater than 0", file: __FILE__, line: __LINE__)
     }
     
     func testThatSetHeaders() {
@@ -174,7 +174,7 @@ class ApiStoreTests: XCTestCase {
     
     func testThatSetHeadersForServer() {
         self.store?.setHeaders(["test": "test"], forServer: kConfigKey)
-        XCTAssertGreaterThan(self.store!.getHeadersForServer(kConfigKey).count, 0, "The headers should be greater than 0", file: __FILE__, line: __LINE__)
+        XCTAssertGreaterThan(self.store!.getHeaders(forServer: kConfigKey).count, 0, "The headers should be greater than 0", file: __FILE__, line: __LINE__)
     }
     
     func testThatSetModelsPath() {
@@ -184,7 +184,7 @@ class ApiStoreTests: XCTestCase {
     
     func testThatSetModelsPathForServer() {
         self.store?.setModelsPath("test.path", forServer: kConfigKey)
-        XCTAssertEqual(self.store!.getModelsPathForServer(kConfigKey), "test.path", "The model path should be equal to test.path", file: __FILE__, line: __LINE__)
+        XCTAssertEqual(self.store!.getModelsPath(forServer: kConfigKey), "test.path", "The model path should be equal to test.path", file: __FILE__, line: __LINE__)
     }
     
     func testThatSetPinnedCertificates() {
@@ -194,7 +194,7 @@ class ApiStoreTests: XCTestCase {
     
     func testThatSetPinnedCertificatesForServer() {
         self.store?.setPinnedCertificates(["test.path".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)], forServer: kConfigKey)
-        XCTAssertGreaterThan(self.store!.getPinnedCertificatesForServer(kConfigKey).count, 0, "The pinned certificates should be greater than 0", file: __FILE__, line: __LINE__)
+        XCTAssertGreaterThan(self.store!.getPinnedCertificates(forServer: kConfigKey).count, 0, "The pinned certificates should be greater than 0", file: __FILE__, line: __LINE__)
     }
     
     func testThatSetResponseDisposition() {
@@ -204,7 +204,7 @@ class ApiStoreTests: XCTestCase {
     
     func testThatSetResponseDispositionForServer() {
         self.store?.setResponseDisposition(NSURLSessionResponseDisposition.Cancel, forServer: kConfigKey)
-        XCTAssertEqual(self.store!.getResponseDispositionForServer(kConfigKey)!, NSURLSessionResponseDisposition.Cancel, "The response disposition should be cancel", file: __FILE__, line: __LINE__)
+        XCTAssertEqual(self.store!.getResponseDisposition(forServer: kConfigKey)!, NSURLSessionResponseDisposition.Cancel, "The response disposition should be cancel", file: __FILE__, line: __LINE__)
     }
     
     func testThatSetResponseType() {
@@ -224,7 +224,7 @@ class ApiStoreTests: XCTestCase {
     
     func testThatSetSecurityPolicyForServer() {
         self.store?.setSecurityPolicy(Policy.certificate, forServer: kConfigKey)
-        XCTAssert(self.store!.getSecurityPolicyForServer(kConfigKey) != Policy.none, "The security policy should be different than security policy none", file: __FILE__, line: __LINE__)
+        XCTAssert(self.store!.getSecurityPolicy(forServer: kConfigKey) != Policy.none, "The security policy should be different than security policy none", file: __FILE__, line: __LINE__)
     }
     
 }

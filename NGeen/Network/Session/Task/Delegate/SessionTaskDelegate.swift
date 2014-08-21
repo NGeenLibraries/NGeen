@@ -28,10 +28,10 @@ class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownl
     private(set) var data: NSMutableData
     
     var closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?
-    var downloadProgressHandler: NGeenProgressClosure
+    var downloadProgressHandler: NGeenProgressTaskClosure
     var destinationURL: NSURL?
     var streamHandler: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream)?
-    var uploadProgressHandler: NGeenProgressClosure
+    var uploadProgressHandler: NGeenProgressTaskClosure
     
     override init() {
         self.data = NSMutableData()
