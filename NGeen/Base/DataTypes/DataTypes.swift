@@ -68,7 +68,11 @@ typealias NGeenTaskClosure = ((data: NSData!, response: NSURLResponse!, error: N
 
 // MARK: DataTask progress closure
 
-typealias NGeenProgressClosure = ((Int64!, Int64!, Int64!) -> Void)?
+typealias NGeenProgressTaskClosure = ((Int64!, Int64!, Int64!) -> Void)?
+
+// MARK: DataTask stream closure
+
+typealias NGeenTaskStreamClosure = ((NSURLSession!, NSURLSessionTask!) -> NSInputStream)
 
 // MARK: Overload operators
 

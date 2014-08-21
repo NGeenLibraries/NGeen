@@ -73,7 +73,7 @@ class ApiQuery: NSObject, QueryProtocol {
     * return NSURLSessionDownloadTask
     */
     
-    func download(destination: NSURL, progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionDownloadTask {
+    func download(destination: NSURL, progress handler: NGeenProgressTaskClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionDownloadTask {
         let request = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
         let downloadTask = self.sessionManager!.downloadTaskWithRequest(request, destination: destination, progress: handler, completionHandler: closure)
         downloadTask.resume()
@@ -91,50 +91,39 @@ class ApiQuery: NSObject, QueryProtocol {
     * return NSURLSessionDownloadTask
     */
     
-    func downloadWithResumeData(data: NSData, destination url: NSURL, progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionDownloadTask {
+    func downloadWithResumeData(data: NSData, destination url: NSURL, progress handler: NGeenProgressTaskClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionDownloadTask {
         let downloadTask = self.sessionManager!.downloadTaskWithResumeData(data, destination: url, progress: handler, completionHandler: closure)
         downloadTask.resume()
         return downloadTask
     }
     
     /**
-    * The function execute the task
+    * The function execute the request
     *
+    * @params parameters The optional dictionary with the parameters for the request.
     * @param completionHandler The closure to be called when the function end.
     *
     */
     
-    func execute(#completionHandler: NGeenClosure) {
+    func execute(parameters: [String: String] = Dictionary(), completionHandler closure: NGeenClosure) {
+        switch self.endPoint.httpMethod {
+            case .delete, .get, .head:
+                self.configuration.queryItems += parameters
+            case .patch, .post, .put:
+                self.configuration.bodyItems += parameters
+            default:
+                assert(false, "Invalid http method", file: __FILE__, line: __LINE__)
+        }
         let request = self.requestSerializer.requestSerializingWithConfiguration(self.configuration, endPoint: self.endPoint, error: nil)
         let sessionDataTask = self.sessionManager!.dataTaskWithRequest(request, completionHandler: {(data, urlResponse, error) in
             var response: AnyObject!
             if !error {
                 response = self.responseSerializer.responseWithConfiguration(self.configuration, endPoint: self.endPoint, data: data, error: nil)
             }
-            completionHandler?(object: response, error: error)
+            closure?(object: response, error: error)
         })
         self.cachedResponseForTask(sessionDataTask)
         sessionDataTask.resume()
-    }
-    
-    /**
-    * The function execute the request
-    *
-    * @params parameters The parameters for the request.
-    * @param completionHandler The closure to be called when the function end.
-    *
-    */
-    
-    func execute(parameters: [String: String], completionHandler closure: NGeenClosure) {
-        switch self.endPoint.httpMethod {
-        case .delete, .get, .head:
-            self.setQueryItems(parameters)
-        case .patch, .post, .put:
-            self.configuration.bodyItems += parameters
-        default:
-            assert(false, "Invalid http method", file: __FILE__, line: __LINE__)
-        }
-        self.execute(completionHandler: closure)
     }
     
     /**
@@ -494,7 +483,7 @@ class ApiQuery: NSObject, QueryProtocol {
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(data: NSData, progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) ->  NSURLSessionUploadTask {
+    func upload(data: NSData, progress handler: NGeenProgressTaskClosure, completionHandler closure: NGeenTaskClosure) ->  NSURLSessionUploadTask {
         let request = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
         let uploadTask = self.sessionManager!.uploadTaskWithRequest(request, data: data, progress: handler, completionHandler: closure)
         uploadTask.resume()
@@ -509,7 +498,7 @@ class ApiQuery: NSObject, QueryProtocol {
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(file: NSURL, progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionUploadTask {
+    func upload(file: NSURL, progress handler: NGeenProgressTaskClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionUploadTask {
         let request = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint)
         let uploadTask = self.sessionManager!.uploadTaskWithRequest(request, file: file, progress: handler, completionHandler: closure)
         uploadTask.resume()
@@ -524,7 +513,7 @@ class ApiQuery: NSObject, QueryProtocol {
     * @param completionHandler The closure to be called when the function end.
     */
     
-    func upload(stream: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream), progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionUploadTask {
+    func upload(stream: NGeenTaskStreamClosure, progress handler: NGeenProgressTaskClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionUploadTask {
         let request = self.requestSerializer.requestWithConfiguration(configuration, endPoint: self.endPoint).mutableCopy() as NSMutableURLRequest
         request.HTTPBodyStream = NSInputStream(data: request.HTTPBody)
         let uploadTask: NSURLSessionUploadTask = self.sessionManager!.uploadTaskWithStreamedRequest(request, stream: stream, progress: handler, completionHandler: closure)

@@ -41,31 +41,18 @@ import UIKit
 
 // MARK: Configurable Store protocol
 
-protocol ConfigurableStoreProtocol: NSObjectProtocol {
+@objc protocol ConfigurableStoreProtocol: NSObjectProtocol {
     
     var configurations: [String: ConfigurationStoreProtocol] { get }
     
-    func configuration() -> ConfigurationStoreProtocol
-    func configurationForKey(key: String) -> ConfigurationStoreProtocol
-    func setConfiguration(configuration: ConfigurationStoreProtocol, forKey key: String)
-    func setConfiguration(configuration: ConfigurationStoreProtocol)
+    func configuration(forServer server: String) -> ConfigurationStoreProtocol
+    func setConfiguration(configuration: ConfigurationStoreProtocol, forServer server: String)
     
 }
 
 // MARK: Configuration Store protocol
 
 @objc protocol ConfigurationStoreProtocol: NSObjectProtocol {
-    
-}
-
-// MARK: Persistence protocol
-
-@objc protocol PersistenceProtocol: NSObjectProtocol {
-    
-    func create(completionHandler closure: NGeenClosure)
-    func delete(completionHandler closure: NGeenClosure)
-    func read(completionHandler closure: NGeenClosure)
-    func update(completionHandler closure: NGeenClosure)
     
 }
 

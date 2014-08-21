@@ -92,7 +92,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     * @return NSURLSessionDownloadTask
     */
 
-    func downloadTaskWithRequest(request: NSURLRequest, destination url: NSURL, progress handler: NGeenProgressClosure,  completionHandler closure: NGeenTaskClosure) -> NSURLSessionDownloadTask {
+    func downloadTaskWithRequest(request: NSURLRequest, destination url: NSURL, progress handler: NGeenProgressTaskClosure,  completionHandler closure: NGeenTaskClosure) -> NSURLSessionDownloadTask {
         let dataTask: NSURLSessionDownloadTask = self.session!.downloadTaskWithRequest(request)
         self.setDelegateForDownloadTask(dataTask, destination: url, progress: handler, completionHandler: closure)
         return dataTask
@@ -108,7 +108,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     * @return NSURLSessionDownloadTask
     */
 
-    func downloadTaskWithResumeData(data: NSData, destination url: NSURL, progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionDownloadTask {
+    func downloadTaskWithResumeData(data: NSData, destination url: NSURL, progress handler: NGeenProgressTaskClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionDownloadTask {
         let dataTask: NSURLSessionDownloadTask = self.session!.downloadTaskWithResumeData(data)
         self.setDelegateForDownloadTask(dataTask, destination: url, progress: handler, completionHandler: closure)
         return dataTask
@@ -195,7 +195,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     * @return NSURLSessionUploadTask
     */
 
-    func uploadTaskWithRequest(request: NSURLRequest, file fileURL: NSURL, progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionUploadTask {
+    func uploadTaskWithRequest(request: NSURLRequest, file fileURL: NSURL, progress handler: NGeenProgressTaskClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionUploadTask {
         var dataTask: NSURLSessionUploadTask = self.session!.uploadTaskWithRequest(request, fromFile: fileURL)
         if dataTask == nil && !self.session!.configuration.identifier.isEmpty {
             for _ in 1...5 {
@@ -216,7 +216,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     * @return NSURLSessionUploadTask
     */
 
-    func uploadTaskWithRequest(request: NSURLRequest, data bodyData: NSData, progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionUploadTask {
+    func uploadTaskWithRequest(request: NSURLRequest, data bodyData: NSData, progress handler: NGeenProgressTaskClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionUploadTask {
         var dataTask: NSURLSessionUploadTask = self.session!.uploadTaskWithRequest(request, fromData: bodyData)
         self.setDelegateForUploadTask(dataTask, stream: nil, progress: handler, completionHandler: closure)
         return dataTask
@@ -231,7 +231,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     * @return NSURLSessionUploadTask
     */
 
-    func uploadTaskWithStreamedRequest(request: NSURLRequest, stream streamHandler: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream), progress handler: NGeenProgressClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionUploadTask {
+    func uploadTaskWithStreamedRequest(request: NSURLRequest, stream streamHandler: NGeenTaskStreamClosure, progress handler: NGeenProgressTaskClosure, completionHandler closure: NGeenTaskClosure) -> NSURLSessionUploadTask {
         var dataTask: NSURLSessionUploadTask = self.session!.uploadTaskWithStreamedRequest(request)
         self.setDelegateForUploadTask(dataTask, stream: streamHandler, progress: handler, completionHandler: closure)
         return dataTask
@@ -288,7 +288,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
                         DiskCache.defaultCache().storeData(NSPurgeableData(data: delegate.data), forUrl: task.currentRequest.URL, completionHandler: nil)
                     }
                 default:
-                    ""
+                    println("not a head, options or get method")
             }
             delegate.URLSession(session, task: task, didCompleteWithError: error)
             self.removeDelegateForTask(task)
@@ -400,7 +400,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     *
     */
 
-    private func setDelegateForDownloadTask(task: NSURLSessionDownloadTask, destination: NSURL?, progress handler: NGeenProgressClosure, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)!) {
+    private func setDelegateForDownloadTask(task: NSURLSessionDownloadTask, destination: NSURL?, progress handler: NGeenProgressTaskClosure, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)!) {
         let sessionTaskDelegate: SessionTaskDelegate = SessionTaskDelegate()
         sessionTaskDelegate.closure = closure
         sessionTaskDelegate.destinationURL = destination
@@ -417,7 +417,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     *
     */
 
-    private func setDelegateForUploadTask(task: NSURLSessionUploadTask, stream streamHandler: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream)?, progress handler: NGeenProgressClosure, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)!) {
+    private func setDelegateForUploadTask(task: NSURLSessionUploadTask, stream streamHandler: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream)?, progress handler: NGeenProgressTaskClosure, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)!) {
         let sessionTaskDelegate: SessionTaskDelegate = SessionTaskDelegate()
         sessionTaskDelegate.closure = closure
         sessionTaskDelegate.streamHandler = streamHandler

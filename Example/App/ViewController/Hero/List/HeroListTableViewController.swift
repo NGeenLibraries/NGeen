@@ -42,7 +42,7 @@ class HeroListTableViewController: UITableViewController, ApiQueryDelegate {
 //MARK: Private methods
     
     private func readHeros() {
-        let apiQuery: ApiQuery = ApiStore.defaultStore().createQueryForPath("/v1/public/characters", httpMethod: HttpMethod.get, server: kMarvelServer)
+        let apiQuery = ApiStore.defaultStore().createQueryForPath("/v1/public/characters", httpMethod: HttpMethod.get, server: kMarvelServer)
         apiQuery.delegate = self
         apiQuery.execute(completionHandler: {(object, error) in
             if let response: NSDictionary = object as? NSDictionary {
