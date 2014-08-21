@@ -31,6 +31,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication!, didFinishLaunchingWithOptions launchOptions: NSDictionary!) -> Bool {
         // Override point for customization after application launch.
         ApiConfiguration.startConfiguration()
+        
+        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+        let session = NSURLSession(configuration: configuration)
+        let request: NSMutableURLRequest = NSMutableURLRequest(URL: NSURL(string: "https://httpbin.org/post"))
+        request.HTTPMethod = "multipart/form-data"
+        let data: NSData = "Lorem ipsum dolor sit amet".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+        let uploadTask = session.uploadTaskWithRequest(request, fromData: data) {(data, urlResponse, error) in
+        }
+        uploadTask.resume()
+        
+        
         return true
     }
 
