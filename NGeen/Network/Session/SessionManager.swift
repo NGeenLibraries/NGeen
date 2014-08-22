@@ -338,7 +338,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     /**
     * The function lock and get the delegate for the given task
     *
-    * @param task The task to get the identifier.
+    * @param task The current task to set the delegate.
     *
     */
 
@@ -353,7 +353,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     /**
     * The function lock and delete the delegate for the given task
     *
-    * @param task The task to get the identifier.
+    * @param task The current task to remove the delegate.
     *
     */
 
@@ -367,7 +367,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     * The function set the delegate for the given task
     *
     * @Param delegate The instance of the delegate.
-    * @param task The task to set the delegate.
+    * @param task The current task to perform the job.
     *
     */
     
@@ -381,13 +381,14 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     /**
     * The function add a new delegate for the given task
     *
-    * @param task The task to get the identifier.
+    * @param task The task to perform the job.
+    * @param completionHandler The closure to invoke when the task ends.
     *
     */
 
     private func setDelegateForTask(task: NSURLSessionTask, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)!) {
         let sessionTaskDelegate: SessionTaskDelegate = SessionTaskDelegate()
-        sessionTaskDelegate.closure = closure
+        sessionTaskDelegate.completedClosure = closure
         dispatch_barrier_async(self.queue, {
             self.dataTasksDelegates[task.taskIdentifier] = sessionTaskDelegate
         })
@@ -396,15 +397,18 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     /**
     * The function add a new delegate for the given task
     *
-    * @param task The task to get the identifier.
+    * @param task The task to perform the download.
+    * @param destination The url to move the partial file when the download ends.
+    * @param progress The closure to invoke while the task is performing the download.
+    * @param completionHandler The closure to invoke when the task ends.
     *
     */
 
-    private func setDelegateForDownloadTask(task: NSURLSessionDownloadTask, destination: NSURL?, progress handler: NGeenProgressTaskClosure, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)!) {
+    private func setDelegateForDownloadTask(task: NSURLSessionDownloadTask, destination: NSURL?, progress downloadProgressClosure: NGeenProgressTaskClosure, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)!) {
         let sessionTaskDelegate: SessionTaskDelegate = SessionTaskDelegate()
-        sessionTaskDelegate.closure = closure
+        sessionTaskDelegate.completedClosure = closure
         sessionTaskDelegate.destinationURL = destination
-        sessionTaskDelegate.downloadProgressHandler = handler
+        sessionTaskDelegate.downloadProgressClosure = downloadProgressClosure
         dispatch_barrier_async(self.queue, {
             self.dataTasksDelegates[task.taskIdentifier] = sessionTaskDelegate
         })
@@ -413,15 +417,18 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     /**
     * The function add a new delegate for the given task
     *
-    * @param task The task to get the identifier.
+    * @param task The task to perform the upload.
+    * @param stream The closure to invoke when the task need a new body stream.
+    * @param progress The closure to invoke while the task is performing the upload.
+    * @param completionHandler The closure to invoke when the task ends.
     *
     */
 
-    private func setDelegateForUploadTask(task: NSURLSessionUploadTask, stream streamHandler: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream)?, progress handler: NGeenProgressTaskClosure, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)!) {
+    private func setDelegateForUploadTask(task: NSURLSessionUploadTask, stream streamClosure: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream)?, progress uploadProgressClosure: NGeenProgressTaskClosure, completionHandler closure: ((NSData!, NSURLResponse!, NSError!) -> Void)!) {
         let sessionTaskDelegate: SessionTaskDelegate = SessionTaskDelegate()
-        sessionTaskDelegate.closure = closure
-        sessionTaskDelegate.streamHandler = streamHandler
-        sessionTaskDelegate.uploadProgressHandler = handler
+        sessionTaskDelegate.completedClosure = closure
+        sessionTaskDelegate.streamClosure = streamClosure
+        sessionTaskDelegate.uploadProgressClosure = uploadProgressClosure
         var totalCount: Int64 = task.countOfBytesSent
         if totalCount == NSURLSessionTransferSizeUnknown {
             let contentLength: NSString = task.originalRequest.valueForHTTPHeaderField("Content-Length")

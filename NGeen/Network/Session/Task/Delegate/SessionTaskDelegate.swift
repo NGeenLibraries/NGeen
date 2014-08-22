@@ -27,11 +27,11 @@ class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownl
     private(set) var progress: NSProgress
     private(set) var data: NSMutableData
     
-    var closure: ((NSData!, NSURLResponse!, NSError!) -> Void)?
-    var downloadProgressHandler: NGeenProgressTaskClosure
+    var completedClosure: ((NSData!, NSURLResponse!, NSError!) -> Void)?
+    var downloadProgressClosure: NGeenProgressTaskClosure
     var destinationURL: NSURL?
-    var streamHandler: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream)?
-    var uploadProgressHandler: NGeenProgressTaskClosure
+    var streamClosure: ((NSURLSession!, NSURLSessionTask!) -> NSInputStream)?
+    var uploadProgressClosure: NGeenProgressTaskClosure
     
     override init() {
         self.data = NSMutableData()
@@ -77,22 +77,22 @@ class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownl
     func URLSession(session: NSURLSession!, downloadTask: NSURLSessionDownloadTask!, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         self.progress.totalUnitCount = totalBytesExpectedToWrite
         self.progress.completedUnitCount = totalBytesWritten
-        self.downloadProgressHandler?(bytesWritten, totalBytesWritten, totalBytesExpectedToWrite)
+        self.downloadProgressClosure?(bytesWritten, totalBytesWritten, totalBytesExpectedToWrite)
     }
     
     // MARK: NSURLSessionTask delegate
     
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didCompleteWithError error: NSError!) {
         dispatch_async(dispatch_get_main_queue(), {
-            if self.closure != nil {
-                self.closure!(self.data, task.response, error)
+            if self.completedClosure != nil {
+                self.completedClosure!(self.data, task.response, error)
             }
         })
     }
     
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, needNewBodyStream completionHandler: ((NSInputStream!) -> Void)!) {
         var inputStream: NSInputStream? = nil
-        if let stream: NSInputStream = self.streamHandler?(session, task) {
+        if let stream: NSInputStream = self.streamClosure?(session, task) {
             inputStream = stream
         } else {
             inputStream = task.originalRequest.HTTPBodyStream
@@ -105,7 +105,7 @@ class SessionTaskDelegate: NSObject, NSURLSessionDataDelegate, NSURLSessionDownl
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
         self.progress.totalUnitCount = totalBytesExpectedToSend
         self.progress.completedUnitCount = totalBytesSent
-        self.uploadProgressHandler?(bytesSent, totalBytesSent, totalBytesExpectedToSend)
+        self.uploadProgressClosure?(bytesSent, totalBytesSent, totalBytesExpectedToSend)
     }
     
 }
