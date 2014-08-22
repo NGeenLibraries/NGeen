@@ -257,6 +257,24 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     func URLSession(session: NSURLSession!, dataTask: NSURLSessionDataTask!, didReceiveResponse response: NSURLResponse!, completionHandler: ((NSURLSessionResponseDisposition) -> Void)!) {
         completionHandler(self.responseDisposition!)
     }
+    
+    // MARK: NSURLSession delegate
+    
+    func URLSession(session: NSURLSession!, didReceiveChallenge challenge: NSURLAuthenticationChallenge!, completionHandler: ((NSURLSessionAuthChallengeDisposition, NSURLCredential!) -> Void)!) {
+        var disposition: NSURLSessionAuthChallengeDisposition = NSURLSessionAuthChallengeDisposition.PerformDefaultHandling
+        var credential: NSURLCredential? = self.credential
+        if credential == nil {
+            if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust {
+                if self.securityPolicy.trustedServer(challenge.protectionSpace.serverTrust, forDomain: challenge.protectionSpace.host) {
+                    disposition = NSURLSessionAuthChallengeDisposition.UseCredential
+                    credential =  NSURLCredential(forTrust: challenge.protectionSpace.serverTrust)
+                } else {
+                    disposition = NSURLSessionAuthChallengeDisposition.CancelAuthenticationChallenge
+                }
+            }
+        }
+        completionHandler(disposition, credential)
+    }
 
     // MARK: NSURLSessionDownloadTask delegate
     
@@ -295,7 +313,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         }
     }
     
-    func URLSession(session: NSURLSession!, didReceiveChallenge challenge: NSURLAuthenticationChallenge!, completionHandler: ((NSURLSessionAuthChallengeDisposition, NSURLCredential!) -> Void)!) {
+    func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didReceiveChallenge challenge: NSURLAuthenticationChallenge!, completionHandler: ((NSURLSessionAuthChallengeDisposition, NSURLCredential!) -> Void)!) {
         var disposition: NSURLSessionAuthChallengeDisposition = NSURLSessionAuthChallengeDisposition.PerformDefaultHandling
         var credential: NSURLCredential? = self.credential
         if credential == nil {
