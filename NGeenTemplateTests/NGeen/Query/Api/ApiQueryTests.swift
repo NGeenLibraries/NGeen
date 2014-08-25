@@ -71,11 +71,6 @@ class ApiQueryTests: XCTestCase {
         XCTAssert(self.apiQuery!.getHttpHeaders().count > 0, "The headers should have 1 more item", file: __FUNCTION__, line: __LINE__)
     }
     
-    func testThatSetModelsPath() {
-        self.apiQuery!.setModelsPath("model.test")
-        XCTAssertEqual(self.apiQuery!.getModelsPath(), "model.test", "The models path should be equal to model.test", file: __FUNCTION__, line: __LINE__)
-    }
-    
     func testThatSetPathItem() {
         self.apiQuery!.setPathItem("", forKey: "")
         XCTAssert(self.apiQuery!.getPathItems().count > 0, "The path items should have 1 more item", file: __FUNCTION__, line: __LINE__)
@@ -91,11 +86,6 @@ class ApiQueryTests: XCTestCase {
     func testThatSetResponseDisposition() {
         self.apiQuery!.setResponseDisposition(NSURLSessionResponseDisposition.Cancel)
         XCTAssertEqual(self.apiQuery!.getResponseDisposition(), NSURLSessionResponseDisposition.Cancel, "The response disposition should be cancel", file: __FILE__, line: __LINE__)
-    }
-    
-    func testThatSetResponseType() {
-        self.apiQuery!.setResponseType(ResponseType.json)
-        XCTAssert(self.apiQuery!.getResponseType() != ResponseType.data, "The response type should be different than response type data", file: __FILE__, line: __LINE__)
     }
     
     func testThatSetSecurityPolicy() {

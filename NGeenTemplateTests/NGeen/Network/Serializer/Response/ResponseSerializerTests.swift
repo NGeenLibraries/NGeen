@@ -29,33 +29,33 @@ class Test: Model {
 }
 
 class ResponseSerializerTests: XCTestCase {
-
-    var responseSerializer: ResponseSerializer?
     
     override func setUp() {
         super.setUp()
-        self.responseSerializer = ResponseSerializer()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
-        self.responseSerializer = nil
     }
     
     func testThatResponseInJsonFormat() {
         let data: NSData = NSJSONSerialization.dataWithJSONObject(["foo": "bar", "foo1": "bar1"], options: NSJSONWritingOptions.PrettyPrinted, error: nil)
         let validJson: NSDictionary = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: nil) as NSDictionary
-        let response: NSDictionary = self.responseSerializer!.responseInJSONFormatForData(data, error: nil) as NSDictionary
-        XCTAssert(response.isEqual(validJson) , "The json response is not valid", file: __FILE__, line: __LINE__)
+        let responseSerializer = JSONResponseSerializer(JSONReadingOptions: NSJSONReadingOptions.AllowFragments)
+        let response: NSDictionary? = responseSerializer.responseObjectForData(data, urlResponse: nil, error: nil) as? NSDictionary
+        XCTAssert(response != nil, "The response should not be nil", file: __FILE__, line: __LINE__)
+        XCTAssert(response!.isEqual(validJson) , "The json response is not valid", file: __FILE__, line: __LINE__)
     }
     
     func testThatResponseInModelsFormat() {
         let expectation: XCTestExpectation = self.expectationWithDescription("model serialization block")
         let data: NSData = NSJSONSerialization.dataWithJSONObject(["foo": "bar", "foo1": "bar1", "models": [["foo": "bar", "foo1": "bar1"]]], options: NSJSONWritingOptions.PrettyPrinted, error: nil)
-        let response = self.responseSerializer!.responseInModelsForData(data, modelClass: Test.self, modelsPath: "models", error: nil)
-        let models: Array<Test> = response[kNGeenModelsField]! as Array
+        let responseSerializer = ModelsResponseSerializer(modelClass: Test.self, path: "models")
+        let response: NSDictionary? = responseSerializer.responseObjectForData(data, urlResponse: nil, error: nil) as? NSDictionary
+        XCTAssert(response != nil, "The response should not be nil", file: __FILE__, line: __LINE__)
+        let models: Array<Test> = response!["models"]! as Array
         let test: Test = models.first!
         XCTAssertEqual(test.foo, "bar", "the foo var value should be equal to bar", file: __FILE__, line: __LINE__)
         XCTAssertEqual(test.foo1, "bar1", "the foo1 var value should be equal to bar1", file: __FILE__, line: __LINE__)
@@ -66,8 +66,10 @@ class ResponseSerializerTests: XCTestCase {
     func testThatResponseInStringFormat() {
         let data: NSData = NSJSONSerialization.dataWithJSONObject(["foo": "bar", "foo1": "bar1"], options: NSJSONWritingOptions.PrettyPrinted, error: nil)
         let validString: NSString = NSString(data: data, encoding: NSUTF8StringEncoding)
-        let response: NSString = self.responseSerializer!.responseInStringFormatForData(data, error: nil)
-        XCTAssert(response.isKindOfClass(NSString.self), "The response should be string class", file: __FILE__, line: __LINE__)
-        XCTAssertEqual(response, validString, "The response should be equal to \(validString)", file: __FILE__, line: __LINE__)
+        let responseSerializer = ResponseSerializer()
+        let response: NSString? = responseSerializer.responseObjectForData(data, urlResponse: nil, error: nil) as? NSString
+        XCTAssert(response != nil, "The response should not be nil", file: __FILE__, line: __LINE__)
+        XCTAssert(response!.isKindOfClass(NSString.self), "The response should be string class", file: __FILE__, line: __LINE__)
+        XCTAssertEqual(response!, validString, "The response should be equal to \(validString)", file: __FILE__, line: __LINE__)
     }
 }

@@ -30,14 +30,12 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
     var credential: NSURLCredential?
     var headers: [String: String]
     var host: String
-    var modelsPath: String
     var pathItems: [String: String]
     var securityPolicy: SecurityPolicy
     var protectionSpace: NSURLProtectionSpace?
     var queryItems: [String: AnyObject]
     var redirection: NSURLRequest?
     var responseDisposition: NSURLSessionResponseDisposition
-    var responseType: ResponseType
     var sessionConfiguration: NSURLSessionConfiguration
     var scheme: String
     
@@ -50,11 +48,9 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
         self.headers = Dictionary()
         self.host = ""
         self.scheme = "http"
-        self.modelsPath = ""
         self.pathItems = Dictionary()
         self.queryItems = Dictionary()
         self.responseDisposition = NSURLSessionResponseDisposition.Allow
-        self.responseType = ResponseType.data
         self.securityPolicy = SecurityPolicy()
         self.sessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
         self.sessionConfiguration.requestCachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData

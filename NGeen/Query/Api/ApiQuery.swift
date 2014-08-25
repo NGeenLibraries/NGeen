@@ -36,9 +36,9 @@ class ApiQuery: NSObject, QueryProtocol {
     private var endPoint: ApiEndpoint
     private var queue: dispatch_queue_t?
     private var requestSerializer: RequestSerializer
-    private var responseSerializer: ResponseSerializer
     private var sessionManager: SessionManager?
     
+    var responseSerializer: ResponseSerializer
     weak var delegate: ApiQueryDelegate?
     
     // MARK: Constructor
@@ -118,7 +118,7 @@ class ApiQuery: NSObject, QueryProtocol {
         let sessionDataTask = self.sessionManager!.dataTaskWithRequest(request, completionHandler: {(data, urlResponse, error) in
             var response: AnyObject!
             if !error {
-                response = self.responseSerializer.responseWithConfiguration(self.configuration, endPoint: self.endPoint, data: data, error: nil)
+                response = self.responseSerializer.responseObjectForData(data, urlResponse: urlResponse, error: error)
             }
             closure?(object: response, error: error)
         })
@@ -209,18 +209,6 @@ class ApiQuery: NSObject, QueryProtocol {
     }
     
     /**
-    * The function return model path
-    *
-    * @param no need params.
-    *
-    * @return String
-    */
-    
-    func getModelsPath() -> String {
-        return self.configuration.modelsPath
-    }
-    
-    /**
     * The function return the path items
     *
     * @param no need params.
@@ -254,18 +242,6 @@ class ApiQuery: NSObject, QueryProtocol {
     
     func getResponseDisposition() -> NSURLSessionResponseDisposition {
         return self.configuration.responseDisposition
-    }
-    
-    /**
-    * The function return the response type for the session
-    *
-    * @param no need params.
-    *
-    * @return ResponseType
-    */
-    
-    func getResponseType() -> ResponseType {
-        return self.configuration.responseType
     }
     
     /**
@@ -371,17 +347,6 @@ class ApiQuery: NSObject, QueryProtocol {
     }
 
     /**
-    * The function set the model path for the api response
-    *
-    * @param path The path of the models in the api response.
-    *
-    */
-    
-    func setModelsPath(path: String) {
-        self.configuration.modelsPath = path
-    }
-   
-    /**
     * The function store a path item in a local dictionary
     *
     * @param item The path item.
@@ -440,17 +405,6 @@ class ApiQuery: NSObject, QueryProtocol {
     
     func setResponseDisposition(disposition: NSURLSessionResponseDisposition) {
         self.configuration.responseDisposition = disposition
-    }
-    
-    /**
-    * The function set the response type for the query
-    *
-    * @param type The response type.
-    *
-    */
-    
-    func setResponseType(type: ResponseType) {
-        self.configuration.responseType = type
     }
     
     /**
@@ -536,14 +490,19 @@ class ApiQuery: NSObject, QueryProtocol {
             let sSelf = self!
             var data: NSPurgeableData = NSPurgeableData()
             if sSelf.configuration.sessionConfiguration.requestCachePolicy != NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData {
+                var error: NSError = NSError()
                 data = DiskCache.defaultCache().dataForUrl(task.currentRequest.URL)
                 if sSelf.delegate != nil && sSelf.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 {
-                    let response: AnyObject = sSelf.responseSerializer.responseWithConfiguration(sSelf.configuration, endPoint: sSelf.endPoint, data: data, error: nil)
-                    sSelf.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response)
+                    let response: AnyObject? = sSelf.responseSerializer.responseObjectForData(data, urlResponse: nil, error: error)
+                    if response != nil  && error != nil {
+                        sSelf.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response!)
+                    }
                 } else if sSelf.delegate != nil && sSelf.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 && (sSelf.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataDontLoad ||
                     sSelf.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataElseLoad) {
-                    let response: AnyObject = sSelf.responseSerializer.responseWithConfiguration(sSelf.configuration, endPoint: sSelf.endPoint, data: data, error: nil)
-                    sSelf.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response)
+                    let response: AnyObject? = sSelf.responseSerializer.responseObjectForData(data, urlResponse: nil, error: error)
+                    if response != nil  && error != nil {
+                        sSelf.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response!)
+                    }
                     task.cancel()
                 }
             }

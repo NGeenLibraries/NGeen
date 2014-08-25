@@ -123,26 +123,20 @@ ApiStore.defaultStore().setEndpoints([taskEndpoint, exampleEndpoint])
 #### Setting models serialization from server response
 
 ```swift 
-ApiStore.defaultStore().setModelsPath("results")
-ApiStore.defaultStore().setResponseType(ResponseType.models)
+apiQuery.responseSerializer = ModelsResponseSerializer(modelClass: Test.self, path: "models")
 ```
 
 #### Setting response type
 
 ```swift 
-ApiStore.defaultStore().setResponseType(ResponseType.dictionary)
+apiQuery.responseSerializer = JSONResponseSerializer(JSONReadingOptions: NSJSONReadingOptions.AllowFragments)
 ```
 
 Supported responses:
 
-```swift
-enum ResponseType: Int {
-    case data
-    case json
-    case models
-    case string
-}
-```
+ - JSON
+ - models
+ - String (Default)
 
 ### GET Request
 

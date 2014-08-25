@@ -25,6 +25,7 @@ import UIKit
 let kCacheFileName: String = "NGeenCache.db"
 let kCacheFolder: String = "NGeenCache"
 let kDefaultServerName: String = "__kDefaultServerName"
+let kNGeenResponseSerializationErrorDomain: String = "com.ngeen.error.serialization.response";
 let kMaxDiskCacheCapacity = 10 * 1024 * 1024; // 10MB
 let kMaxMemoryCacheCapacity = 8 * 1024 * 1024; // 8MB
 let kNGeenModelsField = "__NGeenModelsField"

@@ -194,20 +194,6 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     }
     
     /**
-    * The function return the model path for the given server name
-    *
-    * @param path The path of the models in the api response.
-    * @param name The name of the server to store the configuration.
-    *
-    * @return String
-    */
-    
-    func getModelsPath(forServer server: String = kDefaultServerName) -> String {
-        let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration
-        return configuration?.modelsPath ?? ""
-    }
-    
-    /**
     * The function get the pinned certificates for the given server
     *
     * @param server The name of the server to store the configuration.
@@ -230,19 +216,6 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     func getResponseDisposition(forServer server: String = kDefaultServerName) -> NSURLSessionResponseDisposition? {
         let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration
         return configuration?.responseDisposition
-    }
-    
-    /**
-    * The function return the response type for a server configuration
-    *
-    * @param server The server to get the configuration.
-    *
-    * @return ResponseType
-    */
-    
-    func getResponseType(forServer server: String = kDefaultServerName) -> ResponseType? {
-        let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration
-        return configuration?.responseType
     }
     
     /**
@@ -418,21 +391,6 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     }
 
     /**
-    * The function set the model path for the given server name
-    *
-    * @param path The path of the models in the api response.
-    * @param server The name of the server to store the configuration.
-    *
-    */
-    
-    func setModelsPath(path: String, forServer server: String = kDefaultServerName) {
-        if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
-            configuration.modelsPath = path
-            self.setConfiguration(configuration, forServer: server)
-        }
-    }
-
-    /**
     * The function set the pinned certificates for the api configuration
     *
     * @param certificates The array with the trusted certificates.
@@ -473,21 +431,6 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     func setResponseDisposition(disposition: NSURLSessionResponseDisposition, forServer server: String = kDefaultServerName) {
         if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.responseDisposition = disposition
-            self.setConfiguration(configuration, forServer: server)
-        }
-    }
-    
-    /**
-    * The function set the response type for the server configuration
-    *
-    * @param type The type of the response.
-    * @param server The name for the server to store the configuration.
-    *
-    */
-    
-    func setResponseType(type: ResponseType, forServer server: String = kDefaultServerName) {
-        if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
-            configuration.responseType = type
             self.setConfiguration(configuration, forServer: server)
         }
     }
