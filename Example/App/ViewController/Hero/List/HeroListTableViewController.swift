@@ -44,6 +44,7 @@ class HeroListTableViewController: UITableViewController, ApiQueryDelegate {
     private func readHeros() {
         let apiQuery = ApiStore.defaultStore().createQueryForPath("/v1/public/characters", httpMethod: HttpMethod.get, server: kMarvelServer)
         apiQuery.delegate = self
+        apiQuery.responseSerializer = ModelsResponseSerializer(modelClass: Hero.self, path: "data.results")
         apiQuery.execute(completionHandler: {(object, error) in
             if let response: NSDictionary = object as? NSDictionary {
                 if let heros: [Hero] = response.valueForKeyPath(kNGeenModelsField) as? [Hero] {
