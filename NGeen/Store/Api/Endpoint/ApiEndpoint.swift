@@ -26,7 +26,6 @@ class ApiEndpoint: NSObject {
     
     var contentType: ContentType
     var httpMethod: HttpMethod
-    var modelClass: NSObject.Type? = nil
     var path: String
     
      init(contentType: ContentType, httpMethod: HttpMethod, path: String) {
@@ -35,19 +34,14 @@ class ApiEndpoint: NSObject {
         self.path = path
     }
     
-    convenience init(contentType: ContentType, httpMethod: HttpMethod, modelClass: NSObject.Type, path: String) {
-        self.init(contentType: contentType, httpMethod: httpMethod, path: path)
-        self.modelClass = modelClass
-    }
-    
     // MARK: Class methods
     
-    class func endpointWithPath(path: String, HttpMethod httpMethod: HttpMethod, ModelClass modelClass: NSObject.Type) -> ApiEndpoint {
-        return ApiEndpoint(contentType: ContentType.json, httpMethod: httpMethod, modelClass: modelClass, path: path)
+    class func endpointWithPath(path: String, HttpMethod httpMethod: HttpMethod) -> ApiEndpoint {
+        return ApiEndpoint(contentType: ContentType.json, httpMethod: httpMethod, path: path)
     }
     
-    class func endpointWithPath(path: String, contentType: ContentType, HttpMethod httpMethod: HttpMethod, ModelClass modelClass: NSObject.Type) -> ApiEndpoint {
-        return ApiEndpoint(contentType: contentType, httpMethod: httpMethod, modelClass: modelClass, path: path)
+    class func endpointWithPath(path: String, contentType: ContentType, HttpMethod httpMethod: HttpMethod) -> ApiEndpoint {
+        return ApiEndpoint(contentType: contentType, httpMethod: httpMethod, path: path)
     }
     
     class func keyForPath(path: String, httpMethod method: HttpMethod?) -> String {

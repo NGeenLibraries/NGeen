@@ -57,26 +57,28 @@ class Model: NSObject {
     func fill(dictionary: [String: AnyObject]) {
         let bundleName = (NSBundle.mainBundle().infoDictionary as NSDictionary)[kCFBundleNameKey] as String
         for (key, value) in dictionary {
-            if self.hasProperty(key) {
-                if let modelClass = NSClassFromString("\(bundleName).\(key.singularize().capitalizedString)") as? NSObject.Type {
-                    // TODO: Check if iskindofclass model
-                    if value is [[String: AnyObject]] {
-                        var models: [AnyObject] = Array()
-                        for values in value as [[String: AnyObject]] {
-                            let model = modelClass() as Model
-                            model.fill(values as [String: AnyObject])
-                            models.append(model)
+            autoreleasepool({
+                if self.hasProperty(key) {
+                    if let modelClass = NSClassFromString("\(bundleName).\(key.singularize().capitalizedString)") as? NSObject.Type {
+                        // TODO: Check if iskindofclass model
+                        if value is [[String: AnyObject]] {
+                            var models: [AnyObject] = Array()
+                            for values in value as [[String: AnyObject]] {
+                                let model = modelClass() as Model
+                                model.fill(values as [String: AnyObject])
+                                models.append(model)
+                            }
+                            self.setValue(models, forKey: key)
+                        } else if value is [String: AnyObject] {
+                            let model: Model = modelClass() as Model
+                            model.fill(value as [String: AnyObject])
+                            self.setValue(model, forKey: key)
                         }
-                        self.setValue(models, forKey: key)
-                    } else if value is [String: AnyObject] {
-                        let model: Model = modelClass() as Model
-                        model.fill(value as [String: AnyObject])
-                        self.setValue(model, forKey: key)
+                    } else if value != nil && !value.isKindOfClass(NSNull.self) {
+                        self.setValue(value, forKey: key)
                     }
-                } else if value != nil && !value.isKindOfClass(NSNull.self) {
-                    self.setValue(value, forKey: key)
                 }
-            }
+            })
         }
     }
     

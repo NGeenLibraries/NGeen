@@ -90,12 +90,3 @@ enum Policy {
     case none
     case publicKey
 }
-
-// MARK: Response type
-
-enum ResponseType: Int {
-    case data
-    case json
-    case models
-    case string
-}

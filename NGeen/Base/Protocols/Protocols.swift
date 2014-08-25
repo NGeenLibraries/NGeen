@@ -72,6 +72,14 @@ import UIKit
     //func setData(data: AnyObject, forKey key: String)
 }
 
+// MARK: ResponseSerializer protocol
+
+@objc protocol ResponseSerializerProtocol: NSObjectProtocol {
+    
+    func responseObjectForData(data: NSData, urlResponse: NSURLResponse?, error: NSError?) -> AnyObject?
+    
+}
+
 // MARK: SessionTask delegate
 
 @objc protocol SessionDelegate: NSObjectProtocol {
