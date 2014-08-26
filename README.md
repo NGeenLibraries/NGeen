@@ -105,11 +105,10 @@ Supported Authentication Schemes
 
 #### Setting cache policy
 
-The library provides cache for requests based on sqlite and files, regardless if the server returns the cache content in the headers, to allow this capacity you have to implement the ApiQueryDelegate and add the following code to the configuration.
+The library allows to the user the hability of use the ngeen cache class to store the response from the requests based on sqlite and files, regardless if the server returns the cache content in the headers, to allow this capacity you have to implement the ApiQueryDelegate and add the following code to the configuration.
 
 ```swift 
-ApiStore.defaultStore().setCacheStoragePolicy(NSURLCacheStoragePolicy.Allowed)
-ApiStore.defaultStore().setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataElseLoad)
+ApiStore.defaultStore().setOptions(NGeenOptions.useNGeenCacheReturnCacheDataContinueLoading)
 ```
 
 #### Setting the endpoints
