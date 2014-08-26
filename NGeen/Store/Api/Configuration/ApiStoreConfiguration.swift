@@ -25,11 +25,11 @@ import UIKit
 class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
 
     var bodyItems: [String: AnyObject]
-    var cacheStoragePolicy: NSURLCacheStoragePolicy
     var configurations: [String: ConfigurationStoreProtocol]
     var credential: NSURLCredential?
     var headers: [String: String]
     var host: String
+    var options: NGeenOptions?
     var pathItems: [String: String]
     var securityPolicy: SecurityPolicy
     var protectionSpace: NSURLProtectionSpace?
@@ -43,7 +43,6 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
     
     override init() {
         self.bodyItems = Dictionary()
-        self.cacheStoragePolicy = NSURLCacheStoragePolicy.NotAllowed
         self.configurations = Dictionary()
         self.headers = Dictionary()
         self.host = ""
@@ -53,7 +52,6 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
         self.responseDisposition = NSURLSessionResponseDisposition.Allow
         self.securityPolicy = SecurityPolicy()
         self.sessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
-        self.sessionConfiguration.requestCachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData
         self.sessionConfiguration.timeoutIntervalForRequest = 30
         self.sessionConfiguration.timeoutIntervalForResource = 30
     }

@@ -53,7 +53,7 @@ class ApiQuery: NSObject, QueryProtocol {
         self.queue = dispatch_queue_create("com.ngeen.requestqueue", DISPATCH_QUEUE_CONCURRENT)
         dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
         self.sessionManager = SessionManager(sessionConfiguration: self.configuration.sessionConfiguration)
-        self.sessionManager!.cacheStoragePolicy = self.configuration.cacheStoragePolicy
+        self.sessionManager!.options = self.configuration.options
         self.sessionManager!.securityPolicy = self.configuration.securityPolicy
         if let credential = self.configuration.credential {
             self.sessionManager!.setAuthenticationCredential(self.configuration.credential!, forProtectionSpace: self.configuration.protectionSpace!)
@@ -105,7 +105,7 @@ class ApiQuery: NSObject, QueryProtocol {
     *
     */
     
-    func execute(parameters: [String: String] = Dictionary(), completionHandler closure: NGeenClosure) {
+    func execute(parameters: [String: String] = Dictionary(), options: NGeenOptions = nil, completionHandler closure: NGeenClosure) {
         switch self.endPoint.httpMethod {
             case .delete, .get, .head:
                 self.configuration.queryItems += parameters
@@ -114,6 +114,7 @@ class ApiQuery: NSObject, QueryProtocol {
             default:
                 assert(false, "Invalid http method", file: __FILE__, line: __LINE__)
         }
+        self.sessionManager!.options = (options != nil ? options : self.sessionManager!.options)
         let request = self.requestSerializer.requestSerializingWithConfiguration(self.configuration, endPoint: self.endPoint, error: nil)
         let sessionDataTask = self.sessionManager!.dataTaskWithRequest(request, completionHandler: {(data, urlResponse, error) in
             var response: AnyObject!
@@ -148,18 +149,6 @@ class ApiQuery: NSObject, QueryProtocol {
     
     func getCachePolicy() -> NSURLRequestCachePolicy {
         return self.configuration.sessionConfiguration.requestCachePolicy
-    }
-    
-    /**
-    * The function return the cache request policy for a server configuration
-    *
-    * @param policy The cache policy.
-    *
-    * @return NSURLRequestCachePolicy
-    */
-    
-    func getCacheStoragePolicy() -> NSURLCacheStoragePolicy {
-        return self.configuration.cacheStoragePolicy
     }
     
     /**
@@ -299,17 +288,6 @@ class ApiQuery: NSObject, QueryProtocol {
     
     func setCachePolicy(policy: NSURLRequestCachePolicy) {
         self.configuration.sessionConfiguration.requestCachePolicy = policy
-    }
-    
-    /**
-    * The function set the cache storage policy for a server configuration
-    *
-    * @param policy The cache policy.
-    *
-    */
-    
-    func setCacheStoragePolicy(policy: NSURLCacheStoragePolicy) {
-        self.configuration.cacheStoragePolicy = policy
     }
     
     /**
@@ -489,21 +467,17 @@ class ApiQuery: NSObject, QueryProtocol {
             [weak self] in
             let sSelf = self!
             var data: NSPurgeableData = NSPurgeableData()
-            if sSelf.configuration.sessionConfiguration.requestCachePolicy != NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData {
+            if sSelf.delegate != nil && sSelf.configuration.options != nil && !(NGeenOptions.useURLCache & sSelf.configuration.options!) && !(NGeenOptions.ignoreCache & sSelf.configuration.options!) {
                 var error: NSError = NSError()
                 data = DiskCache.defaultCache().dataForUrl(task.currentRequest.URL)
-                if sSelf.delegate != nil && sSelf.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 {
+                if sSelf.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 {
+                    if (NGeenOptions.useNGeenCacheReturnCacheDataDontLoad & sSelf.configuration.options!) || (NGeenOptions.useNGeenCacheReturnCacheDataElseLoad & sSelf.configuration.options!) {
+                        task.suspend()
+                    }
                     let response: AnyObject? = sSelf.responseSerializer.responseObjectForData(data, urlResponse: nil, error: error)
                     if response != nil  && error != nil {
                         sSelf.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response!)
                     }
-                } else if sSelf.delegate != nil && sSelf.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 && (sSelf.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataDontLoad ||
-                    sSelf.configuration.sessionConfiguration.requestCachePolicy == NSURLRequestCachePolicy.ReturnCacheDataElseLoad) {
-                    let response: AnyObject? = sSelf.responseSerializer.responseObjectForData(data, urlResponse: nil, error: error)
-                    if response != nil  && error != nil {
-                        sSelf.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response!)
-                    }
-                    task.cancel()
                 }
             }
         })

@@ -51,11 +51,6 @@ class ApiQueryTests: XCTestCase {
         XCTAssertEqual(self.apiQuery!.getCachePolicy(), NSURLRequestCachePolicy.ReturnCacheDataElseLoad, "The cache policy should be equal to ReturnCacheDataElseLoad", file: __FUNCTION__, line: __LINE__)
     }
     
-    func testThatSetCacheStoragePolicy() {
-        self.apiQuery!.setCacheStoragePolicy(NSURLCacheStoragePolicy.Allowed)
-        XCTAssertEqual(self.apiQuery!.getCacheStoragePolicy(), NSURLCacheStoragePolicy.Allowed, "The cache storage policy should be equal to Allowed", file: __FUNCTION__, line: __LINE__)
-    }
-    
     func testThatSetBodyItem() {
         self.apiQuery!.setBodyItem("", forKey: "")
         XCTAssert(self.apiQuery!.getBodyItems().count > 0, "The body items should have 1 more item", file: __FUNCTION__, line: __LINE__)

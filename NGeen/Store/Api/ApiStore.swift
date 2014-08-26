@@ -167,20 +167,6 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     }
     
     /**
-    * The function return the cache storage policy for a server configuration
-    *
-    * @param policy The cache policy.
-    * @param server The name of the server to store the configuration.
-    *
-    * @return NSURLCacheStoragePolicy
-    */
-    
-    func getCacheStoragePolicy(forServer server: String = kDefaultServerName) -> NSURLCacheStoragePolicy? {
-        let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration
-        return configuration?.cacheStoragePolicy
-    }
-    
-    /**
     * The function return the headers for a server configuration
     *
     * @param server The server to get the configuration.
@@ -313,14 +299,14 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     /**
     * The function set the cache storage policy for a server configuration
     *
-    * @param policy The cache policy.
+    * @param options The NGeen options.
     * @param server The name of the server to store the configuration.
     *
     */
     
-    func setCacheStoragePolicy(policy: NSURLCacheStoragePolicy, forServer server: String = kDefaultServerName) {
+    func setOptions(options: NGeenOptions, forServer server: String = kDefaultServerName) {
         if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
-            configuration.cacheStoragePolicy = policy
+            configuration.options = options
             self.setConfiguration(configuration, forServer: server)
         }
     }
@@ -343,7 +329,6 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
         }
         self.endPoints[server] = endPoints
     }
-    
     
     /**
     * The function store the endpoint for a given server name in the local dictionary

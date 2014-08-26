@@ -33,6 +33,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     private var sessionConfiguration: NSURLSessionConfiguration
     
     var cacheStoragePolicy: NSURLCacheStoragePolicy
+    var options: NGeenOptions?
     var redirection: NSURLRequest?
     var responseDisposition: NSURLSessionResponseDisposition?
     var securityPolicy: SecurityPolicy
@@ -237,7 +238,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         return dataTask
     }
 
-    // MARK: NSURLSessionData delegate
+    // MARK: NSURLSessionDataTask delegate
     
     func URLSession(session: NSURLSession!, dataTask: NSURLSessionDataTask!, didBecomeDownloadTask downloadTask: NSURLSessionDownloadTask!) {
         let delegate: SessionTaskDelegate? = self.delegateForTask(dataTask)
@@ -256,6 +257,12 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     
     func URLSession(session: NSURLSession!, dataTask: NSURLSessionDataTask!, didReceiveResponse response: NSURLResponse!, completionHandler: ((NSURLSessionResponseDisposition) -> Void)!) {
         completionHandler(self.responseDisposition!)
+    }
+    
+    func URLSession(session: NSURLSession!, dataTask: NSURLSessionDataTask!, willCacheResponse proposedResponse: NSCachedURLResponse!, completionHandler: ((NSCachedURLResponse!) -> Void)!) {
+        if self.options != nil && NGeenOptions.useURLCache & self.options! {
+            completionHandler(proposedResponse)
+        }
     }
 
     // MARK: NSURLSessionDownloadTask delegate
