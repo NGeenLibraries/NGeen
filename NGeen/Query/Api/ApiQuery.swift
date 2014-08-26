@@ -124,7 +124,9 @@ class ApiQuery: NSObject, QueryProtocol {
             closure?(object: response, error: error)
         })
         self.cachedResponseForTask(sessionDataTask)
-        sessionDataTask.resume()
+        if self.configuration.options == nil || !(NGeenOptions.useNGeenCacheReturnCacheDataDontLoad & self.configuration.options!) {
+            sessionDataTask.resume()
+        }
     }
     
     /**
@@ -471,9 +473,6 @@ class ApiQuery: NSObject, QueryProtocol {
                 var error: NSError = NSError()
                 data = DiskCache.defaultCache().dataForUrl(task.currentRequest.URL)
                 if sSelf.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 {
-                    if (NGeenOptions.useNGeenCacheReturnCacheDataDontLoad & sSelf.configuration.options!) || (NGeenOptions.useNGeenCacheReturnCacheDataElseLoad & sSelf.configuration.options!) {
-                        task.suspend()
-                    }
                     let response: AnyObject? = sSelf.responseSerializer.responseObjectForData(data, urlResponse: nil, error: error)
                     if response != nil  && error != nil {
                         sSelf.delegate!.cachedResponseForUrl!(task.currentRequest.URL, cachedData: response!)

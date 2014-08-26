@@ -47,7 +47,7 @@ class HeroListTableViewController: UITableViewController, ApiQueryDelegate {
         apiQuery.responseSerializer = ModelsResponseSerializer(modelClass: Hero.self, path: "data.results")
         apiQuery.execute(completionHandler: {(object, error) in
             if let response: NSDictionary = object as? NSDictionary {
-                if let heros: [Hero] = response.valueForKeyPath(kNGeenModelsField) as? [Hero] {
+                if let heros: [Hero] = response.valueForKeyPath("data.results") as? [Hero] {
                     self.datasource.tableData = heros
                     self.tableView.reloadData()
                 }

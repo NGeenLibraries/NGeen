@@ -45,7 +45,7 @@ class RequestSerializer: NSObject {
             case .patch, .post, .put:
                 mutableRequest.HTTPBody = NSJSONSerialization.dataWithJSONObject(configuration.bodyItems, options: NSJSONWritingOptions.PrettyPrinted, error: error)
             default:
-                println("not a patch, post or put method")
+                ""
         }
         return mutableRequest
     }

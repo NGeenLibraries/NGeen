@@ -87,9 +87,9 @@ struct NGeenOptions: RawOptionSetType {
     
     static var useURLCache: NGeenOptions { return self(1 << 2) }
     static var useNGeenCacheReturnCacheDataDontLoad: NGeenOptions { return self(1 << 3) }
-    static var useNGeenCacheReturnCacheDataElseLoad: NGeenOptions { return self(1 << 4) }
+    static var useNGeenCacheReturnCacheDataContinueLoading: NGeenOptions { return self(1 << 4) }
     static var ignoreCache: NGeenOptions { return self(1 << 5) }
-    static var allowInvalidCertificates: NGeenOptions { return self(1 << 6) }
+    static var allowInvalidCertificates: NGeenOptions { return self(1 << 7) }
 }
 
 // MARK: Overload operators

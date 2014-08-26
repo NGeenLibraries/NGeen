@@ -34,8 +34,7 @@ class ApiConfiguration: NSObject {
         let marvelConfiguration = ApiStoreConfiguration(host: "gateway.marvel.com", scheme: "http")
         marvelConfiguration.queryItems = ["ts": "429930524.650837", "apikey": kMarvelPublicKey, "hash": "3f5b36b299f829c987e3fefadab2a0b5"]
         ApiStore.defaultStore().setConfiguration(marvelConfiguration, forServer: kMarvelServer)
-        ApiStore.defaultStore().setCacheStoragePolicy(NSURLCacheStoragePolicy.Allowed, forServer: kMarvelServer)
-        ApiStore.defaultStore().setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataElseLoad, forServer: kMarvelServer)
+        ApiStore.defaultStore().setOptions(NGeenOptions.useNGeenCacheReturnCacheDataDontLoad, forServer: kMarvelServer)
         let heroEndpint = ApiEndpoint(contentType: ContentType.json, httpMethod: HttpMethod.get, path: "/v1/public/characters")
         ApiStore.defaultStore().setEndpoint(heroEndpint, forServer: kMarvelServer)
         let parseConfiguration: ApiStoreConfiguration = ApiStoreConfiguration(host: "api.parse.com", scheme: "https")

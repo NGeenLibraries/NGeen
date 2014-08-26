@@ -139,32 +139,6 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
         }
         return credentials ?? ""
     }
-
-    /**
-    * The function return the cache policy for the default server configuration
-    *
-    * @param policy The cache policy.
-    *
-    * @return NSURLRequestCachePolicy
-    */
-    
-    func getCachePolicy() -> NSURLRequestCachePolicy? {
-        return self.getCachePolicyForServer(kDefaultServerName)
-    }
-    
-    /**
-    * The function return the cache policy for a server configuration
-    *
-    * @param policy The cache policy.
-    * @param server The name of the server to store the configuration.
-    *
-    * @return NSURLRequestCachePolicy
-    */
-    
-    func getCachePolicyForServer(server: String) -> NSURLRequestCachePolicy? {
-        let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration
-        return configuration?.sessionConfiguration.requestCachePolicy
-    }
     
     /**
     * The function return the headers for a server configuration
@@ -277,21 +251,6 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
         if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.credential = NSURLCredential(user: user, password: password, persistence: NSURLCredentialPersistence.ForSession)
             configuration.protectionSpace = NSURLProtectionSpace(host: configuration.host, port: 0, `protocol`: configuration.scheme, realm: nil, authenticationMethod: method)
-            self.setConfiguration(configuration, forServer: server)
-        }
-    }
-    
-    /**
-    * The function set the cache request policy for a server configuration
-    *
-    * @param policy The cache policy.
-    * @param server The name of the server to store the configuration.
-    *
-    */
-    
-    func setCachePolicy(policy: NSURLRequestCachePolicy, forServer server: String = kDefaultServerName) {
-        if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
-            configuration.sessionConfiguration.requestCachePolicy = policy
             self.setConfiguration(configuration, forServer: server)
         }
     }
