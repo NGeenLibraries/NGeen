@@ -101,16 +101,6 @@ class ApiStoreTests: XCTestCase {
         XCTAssertEqual(self.store!.getAuthenticationCredentials(forServer: kConfigKey), "test:test", "The authentication string should be equal to test:test", file: __FUNCTION__, line: __LINE__)
     }
     
-    func testTharSetCachePolicy() {
-        self.store!.setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataElseLoad)
-        XCTAssertEqual(self.store!.getCachePolicy()!, NSURLRequestCachePolicy.ReturnCacheDataElseLoad, "The cache policy should be equal to ReturnCacheDataElseLoad", file: __FUNCTION__, line: __LINE__)
-    }
-    
-    func testTharSetCachePolicyForServer() {
-        self.store!.setCachePolicy(NSURLRequestCachePolicy.ReturnCacheDataElseLoad, forServer: kConfigKey)
-        XCTAssertEqual(self.store!.getCachePolicyForServer(kConfigKey)!, NSURLRequestCachePolicy.ReturnCacheDataElseLoad, "The cache policy should be equal to ReturnCacheDataElseLoad", file: __FUNCTION__, line: __LINE__)
-    }
-    
     func testThatSetConfiguration() {
         self.store?.setConfiguration(self.apiConfiguration!)
         var configFromStore: ApiStoreConfiguration = self.store?.configuration() as ApiStoreConfiguration
