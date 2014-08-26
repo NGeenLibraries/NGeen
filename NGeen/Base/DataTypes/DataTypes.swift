@@ -74,6 +74,24 @@ typealias NGeenProgressTaskClosure = ((Int64!, Int64!, Int64!) -> Void)?
 
 typealias NGeenTaskStreamClosure = ((NSURLSession!, NSURLSessionTask!) -> NSInputStream)
 
+// MARK: NGeen options
+
+struct NGeenOptions: RawOptionSetType {
+    private var value: UInt = 0
+    init(_ value: UInt) { self.value = value }
+    var boolValue: Bool { return self.value != 0 }
+    func toRaw() -> UInt { return self.value }
+    static func fromRaw(raw: UInt) -> NGeenOptions? { return self(raw) }
+    static func fromMask(raw: UInt) -> NGeenOptions { return self(raw) }
+    static func convertFromNilLiteral() -> NGeenOptions { return self(0) }
+    
+    static var useURLCache: NGeenOptions { return self(1 << 2) }
+    static var useNGeenCacheReturnCacheDataDontLoad: NGeenOptions { return self(1 << 3) }
+    static var useNGeenCacheReturnCacheDataContinueLoading: NGeenOptions { return self(1 << 4) }
+    static var ignoreCache: NGeenOptions { return self(1 << 5) }
+    static var allowInvalidCertificates: NGeenOptions { return self(1 << 7) }
+}
+
 // MARK: Overload operators
 
  func +=<K, V> (inout left: Dictionary<K, V>, right: Dictionary<K, V>) -> Dictionary<K, V> {

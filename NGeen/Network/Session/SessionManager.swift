@@ -32,7 +32,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     private var session: NSURLSession?
     private var sessionConfiguration: NSURLSessionConfiguration
     
-    var cacheStoragePolicy: NSURLCacheStoragePolicy
+    var options: NGeenOptions?
     var redirection: NSURLRequest?
     var responseDisposition: NSURLSessionResponseDisposition?
     var securityPolicy: SecurityPolicy
@@ -40,7 +40,6 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
 // MARK: Constructor
     
     init(sessionConfiguration: NSURLSessionConfiguration) {
-        self.cacheStoragePolicy = NSURLCacheStoragePolicy.NotAllowed
         self.dataTasksDelegates = Dictionary()
         self.queue = dispatch_queue_create("com.ngeen.sessionmanagerqueue", DISPATCH_QUEUE_CONCURRENT)
         dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
@@ -237,7 +236,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         return dataTask
     }
 
-    // MARK: NSURLSessionData delegate
+    // MARK: NSURLSessionDataTask delegate
     
     func URLSession(session: NSURLSession!, dataTask: NSURLSessionDataTask!, didBecomeDownloadTask downloadTask: NSURLSessionDownloadTask!) {
         let delegate: SessionTaskDelegate? = self.delegateForTask(dataTask)
@@ -256,6 +255,12 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     
     func URLSession(session: NSURLSession!, dataTask: NSURLSessionDataTask!, didReceiveResponse response: NSURLResponse!, completionHandler: ((NSURLSessionResponseDisposition) -> Void)!) {
         completionHandler(self.responseDisposition!)
+    }
+    
+    func URLSession(session: NSURLSession!, dataTask: NSURLSessionDataTask!, willCacheResponse proposedResponse: NSCachedURLResponse!, completionHandler: ((NSCachedURLResponse!) -> Void)!) {
+        if self.options != nil && NGeenOptions.useURLCache & self.options! {
+            completionHandler(proposedResponse)
+        }
     }
 
     // MARK: NSURLSessionDownloadTask delegate
@@ -284,11 +289,11 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         if let delegate: SessionTaskDelegate = self.delegateForTask(task) {
             switch task.currentRequest.HTTPMethod {
                 case HttpMethod.head.toRaw(), HttpMethod.options.toRaw(), HttpMethod.get.toRaw():
-                    if self.cacheStoragePolicy != NSURLCacheStoragePolicy.NotAllowed && !error {
+                    if self.options != nil && !(NGeenOptions.ignoreCache & self.options!) && !(NGeenOptions.useURLCache & self.options!) && !error  {
                         DiskCache.defaultCache().storeData(NSPurgeableData(data: delegate.data), forUrl: task.currentRequest.URL, completionHandler: nil)
                     }
                 default:
-                    println("not a head, options or get method")
+                    ""
             }
             delegate.URLSession(session, task: task, didCompleteWithError: error)
             self.removeDelegateForTask(task)

@@ -57,7 +57,7 @@ class DiskCache: NSObject, CacheDelegate {
             [weak self] in
             let sSelf = self!
             sSelf.memoryCache.removeObjectForKey(key)
-            NSFileManager.defaultManager().removeItemAtPath("\(self?.path)/\(name)", error: nil)
+            NSFileManager.defaultManager().removeItemAtPath("\(sSelf.path)/\(name)", error: nil)
         })
     }
     
@@ -66,7 +66,7 @@ class DiskCache: NSObject, CacheDelegate {
             [weak self] in
             let sSelf = self!
             data.beginContentAccess()
-            data.writeToFile("\(self?.path)/\(name)", atomically: true)
+            data.writeToFile("\(sSelf.path)/\(name)", atomically: true)
             data.endContentAccess()
             sSelf.memoryCache.setObject(data, forKey: name)
         })

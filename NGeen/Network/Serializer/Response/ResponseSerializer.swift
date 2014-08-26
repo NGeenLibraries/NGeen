@@ -57,7 +57,7 @@ class ResponseSerializer: NSObject, ResponseSerializerProtocol {
         } else if JSONObject.isKindOfClass(NSDictionary.self) {
             let mutableDictionary = (JSONObject as NSDictionary).mutableCopy() as NSMutableDictionary
             for (key, value) in (JSONObject as NSDictionary) {
-                if value.isEqual(NSNull.self) {
+                if value.isKindOfClass(NSNull.self) {
                     mutableDictionary.removeObjectForKey(key)
                 } else if value.isKindOfClass(NSArray.self) || value.isKindOfClass(NSDictionary.self) {
                     mutableDictionary.setObject(self.removeNullValues(value), forKey: (key as String))
@@ -98,14 +98,14 @@ class ResponseSerializer: NSObject, ResponseSerializerProtocol {
         var valid = true
         var validationError: NSError?
         if urlResponse.isKindOfClass(NSHTTPURLResponse.self) {
-            if let contains = self.acceptableContentTypes?.containsObject(urlResponse.MIMEType) {
+            if self.acceptableContentTypes != nil && !self.acceptableContentTypes!.containsObject(urlResponse.MIMEType) {
                 if data.length > 0 {
                     let userInfo = [NSLocalizedDescriptionKey: "unacceptable content-type: \(urlResponse.MIMEType)", NSURLErrorFailingURLErrorKey: urlResponse.URL, "object": urlResponse]
                     validationError = NSError(domain: kNGeenResponseSerializationErrorDomain, code: NSURLErrorCannotDecodeContentData, userInfo: userInfo)
                 }
                 valid = false
             }
-            if self.acceptableStatusCodes.containsIndex((urlResponse as NSHTTPURLResponse).statusCode) {
+            if !self.acceptableStatusCodes.containsIndex((urlResponse as NSHTTPURLResponse).statusCode) {
                 let userInfo = [NSLocalizedDescriptionKey: "Request failed", NSURLErrorFailingURLErrorKey: urlResponse.URL, "object": urlResponse]
                 validationError = NSError(domain: kNGeenResponseSerializationErrorDomain, code: NSURLErrorBadServerResponse, userInfo: userInfo)
                 valid = false
@@ -192,7 +192,7 @@ class ModelsResponseSerializer: ResponseSerializer, ResponseSerializerProtocol {
             error = NSError(domain: kNGeenResponseSerializationErrorDomain, code: NSURLErrorCannotDecodeContentData, userInfo: userInfo)
         }
         if jsonDictionary != nil {
-            var response: NSMutableDictionary = CFPropertyListCreateDeepCopy(kCFAllocatorDefault, jsonDictionary!, 1) as NSMutableDictionary
+            var response: NSMutableDictionary = CFPropertyListCreateDeepCopy(kCFAllocatorDefault, self.removeNullValues(jsonDictionary!), 1) as NSMutableDictionary
             let values: AnyObject! = jsonDictionary?.valueForKeyPath(self.path)
             if values is Array<NSDictionary> {
                 var models: Array<Model> = Array<Model>()
