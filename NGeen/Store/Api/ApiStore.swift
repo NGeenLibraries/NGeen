@@ -206,21 +206,6 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     }
     
     /**
-    * The function set the if the given server configuration accept invalid certificates
-    *
-    * @param allow The true or false.
-    * @param server The name of the server to store the configuration.
-    *
-    */
-    
-    func setAllowInvalidCertificates(allow: Bool, forServer server: String = kDefaultServerName) {
-        if let configuration: ApiStoreConfiguration = self.configuration(forServer: server) as? ApiStoreConfiguration {
-            configuration.securityPolicy.allowInvalidCertificates = allow
-            self.setConfiguration(configuration, forServer: server)
-        }
-    }
-    
-    /**
     * The function set the authentication credentials for a given server configuration
     *
     * @param user The user to the credential.
@@ -266,6 +251,7 @@ class ApiStore: NSObject, ConfigurableStoreProtocol {
     func setOptions(options: NGeenOptions, forServer server: String = kDefaultServerName) {
         if let configuration = self.configuration(forServer: server) as? ApiStoreConfiguration {
             configuration.options = options
+            configuration.securityPolicy.allowInvalidCertificates = (NGeenOptions.allowInvalidCertificates & options).boolValue
             self.setConfiguration(configuration, forServer: server)
         }
     }
