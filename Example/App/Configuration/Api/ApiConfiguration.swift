@@ -39,6 +39,7 @@ class ApiConfiguration: NSObject {
         ApiStore.defaultStore().setEndpoint(heroEndpint, forServer: kMarvelServer)
         let parseConfiguration: ApiStoreConfiguration = ApiStoreConfiguration(host: "api.parse.com", scheme: "https")
         ApiStore.defaultStore().setConfiguration(parseConfiguration, forServer: kParseServer)
+        NSRegularExpression(pattern: "", options: NSRegularExpressionOptions.CaseInsensitive | NSRegularExpressionOptions.AnchorsMatchLines, error: nil)
     }
     
 }
