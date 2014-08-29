@@ -27,6 +27,10 @@ class RequestSerializer: NSObject {
 // TODO: 1. allow to set json writing options
     
     var constructingBodyClosure: (() -> (data: NSData!, name: String!, fileName: String!, mimeType: String!))?
+    var allowsCellularAccess = false
+    var HTTPShouldHandleCookies = false
+    var HTTPShouldUsePipelining = true
+    
     
     // MARK: Instance methods
     
@@ -156,6 +160,9 @@ class RequestSerializer: NSObject {
         let charset = CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding))
         let request = NSMutableURLRequest(URL: urlComponents.URL)
         request.HTTPMethod = endpoint.httpMethod.toRaw()
+        request.allowsCellularAccess = self.allowsCellularAccess
+        request.HTTPShouldHandleCookies = self.HTTPShouldHandleCookies
+        request.HTTPShouldUsePipelining = self.HTTPShouldUsePipelining
         request.setValue("\(ContentType.json.toRaw()); charset=\(charset)", forHTTPHeaderField: "Content-Type")
         for (key, value) in configuration.headers {
             if !request.valueForHTTPHeaderField(key) {

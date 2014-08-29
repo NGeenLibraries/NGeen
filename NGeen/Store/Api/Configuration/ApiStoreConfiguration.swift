@@ -29,7 +29,7 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
     var credential: NSURLCredential?
     var headers: [String: String]
     var host: String
-    var options: NGeenOptions?
+    var options: NGeenOptions
     var pathItems: [String: String]
     var securityPolicy: SecurityPolicy
     var protectionSpace: NSURLProtectionSpace?
@@ -46,10 +46,11 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
         self.configurations = Dictionary()
         self.headers = Dictionary()
         self.host = ""
-        self.scheme = "http"
+        self.options = NGeenOptions.none
         self.pathItems = Dictionary()
         self.queryItems = Dictionary()
         self.responseDisposition = NSURLSessionResponseDisposition.Allow
+        self.scheme = "http"
         self.securityPolicy = SecurityPolicy()
         self.sessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
         self.sessionConfiguration.timeoutIntervalForRequest = 30

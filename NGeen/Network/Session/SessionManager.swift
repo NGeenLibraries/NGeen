@@ -32,7 +32,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     private var session: NSURLSession?
     private var sessionConfiguration: NSURLSessionConfiguration
     
-    var options: NGeenOptions?
+    var options: NGeenOptions
     var redirection: NSURLRequest?
     var responseDisposition: NSURLSessionResponseDisposition?
     var securityPolicy: SecurityPolicy
@@ -41,6 +41,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     
     init(sessionConfiguration: NSURLSessionConfiguration) {
         self.dataTasksDelegates = Dictionary()
+        self.options = NGeenOptions.none
         self.queue = dispatch_queue_create("com.ngeen.sessionmanagerqueue", DISPATCH_QUEUE_CONCURRENT)
         dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
         self.securityPolicy = SecurityPolicy()
@@ -258,7 +259,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     }
     
     func URLSession(session: NSURLSession!, dataTask: NSURLSessionDataTask!, willCacheResponse proposedResponse: NSCachedURLResponse!, completionHandler: ((NSCachedURLResponse!) -> Void)!) {
-        if self.options != nil && NGeenOptions.useURLCache & self.options! {
+        if NGeenOptions.useURLCache & self.options {
             completionHandler(proposedResponse)
         }
     }

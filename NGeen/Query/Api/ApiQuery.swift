@@ -52,8 +52,10 @@ class ApiQuery: NSObject, QueryProtocol {
         self.config = configuration
         self.queue = dispatch_queue_create("com.ngeen.requestqueue", DISPATCH_QUEUE_CONCURRENT)
         dispatch_set_target_queue(self.queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
+        self.requestSerializer.allowsCellularAccess = (NGeenOptions.allowInvalidCertificates & self.configuration.options).boolValue
+        self.requestSerializer.HTTPShouldHandleCookies = (NGeenOptions.HTTPShouldHandleCookies & self.configuration.options).boolValue
+        self.requestSerializer.HTTPShouldUsePipelining = (NGeenOptions.HTTPShouldUsePipelining & self.configuration.options).boolValue
         self.sessionManager = SessionManager(sessionConfiguration: self.configuration.sessionConfiguration)
-        self.sessionManager!.options = self.configuration.options
         self.sessionManager!.securityPolicy = self.configuration.securityPolicy
         if let credential = self.configuration.credential {
             self.sessionManager!.setAuthenticationCredential(self.configuration.credential!, forProtectionSpace: self.configuration.protectionSpace!)
@@ -105,7 +107,7 @@ class ApiQuery: NSObject, QueryProtocol {
     *
     */
     
-    func execute(parameters: [String: String] = Dictionary(), options: NGeenOptions = nil, completionHandler closure: NGeenClosure) {
+    func execute(parameters: [String: String] = Dictionary(), options: NGeenOptions = NGeenOptions.none, completionHandler closure: NGeenClosure) {
         switch self.endPoint.httpMethod {
             case .delete, .get, .head:
                 self.configuration.queryItems += parameters
@@ -114,7 +116,7 @@ class ApiQuery: NSObject, QueryProtocol {
             default:
                 assert(false, "Invalid http method", file: __FILE__, line: __LINE__)
         }
-        self.sessionManager!.options = (options != nil ? options : self.sessionManager!.options)
+        self.sessionManager!.options = options | self.configuration.options
         let request = self.requestSerializer.requestSerializingWithConfiguration(self.configuration, endPoint: self.endPoint, error: nil)
         let sessionDataTask = self.sessionManager!.dataTaskWithRequest(request, completionHandler: {(data, urlResponse, error) in
             var response: AnyObject!
@@ -124,7 +126,7 @@ class ApiQuery: NSObject, QueryProtocol {
             closure?(object: response, error: error)
         })
         self.cachedResponseForTask(sessionDataTask)
-        if self.configuration.options == nil || !(NGeenOptions.useNGeenCacheReturnCacheDataDontLoad & self.configuration.options!) {
+        if !(NGeenOptions.useNGeenCacheReturnCacheDataDontLoad & self.configuration.options) {
             sessionDataTask.resume()
         }
     }
@@ -469,7 +471,7 @@ class ApiQuery: NSObject, QueryProtocol {
             [weak self] in
             let sSelf = self!
             var data: NSPurgeableData = NSPurgeableData()
-            if sSelf.delegate != nil && sSelf.configuration.options != nil && !(NGeenOptions.useURLCache & sSelf.configuration.options!) && !(NGeenOptions.ignoreCache & sSelf.configuration.options!) {
+            if sSelf.delegate != nil && !(NGeenOptions.useURLCache & sSelf.configuration.options) && !(NGeenOptions.ignoreCache & sSelf.configuration.options) {
                 var error: NSError = NSError()
                 data = DiskCache.defaultCache().dataForUrl(task.currentRequest.URL)
                 if sSelf.delegate!.respondsToSelector("cachedResponseForUrl:cachedData:") && data.length > 0 {
