@@ -85,11 +85,15 @@ struct NGeenOptions: RawOptionSetType {
     static func fromMask(raw: UInt) -> NGeenOptions { return self(raw) }
     static func convertFromNilLiteral() -> NGeenOptions { return self(0) }
     
+    static var none: NGeenOptions { return self(1 << 0) }
     static var useURLCache: NGeenOptions { return self(1 << 1) } /* Ignore the ngeen cache use the default behavior of the NSURLCache */
     static var useNGeenCacheReturnCacheDataDontLoad: NGeenOptions { return self(1 << 2) } /* Use the ngeen cache but don't load data from the server */
     static var useNGeenCacheReturnCacheDataContinueLoading: NGeenOptions { return self(1 << 3) } /* Use the ngeen cache and load data from the server */
     static var ignoreCache: NGeenOptions { return self(1 << 4) } /* Ignore both cache */
-    static var allowInvalidCertificates: NGeenOptions { return self(1 << 5) } /* Allow to use invalid certificates */
+    static var allowCellularAccess: NGeenOptions { return self(1 << 5) } /* Allow to use cellular access */
+    static var allowInvalidCertificates: NGeenOptions { return self(1 << 6) } /* Allow to use invalid certificates */
+    static var HTTPShouldHandleCookies: NGeenOptions { return self(1 << 7) } /* Allow the request handle cookies */
+    static var HTTPShouldUsePipelining: NGeenOptions { return self(1 << 7) } /* Allow the request use pipelining */
 }
 
 // MARK: Overload operators
