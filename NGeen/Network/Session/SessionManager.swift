@@ -290,7 +290,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         if let delegate: SessionTaskDelegate = self.delegateForTask(task) {
             switch task.currentRequest.HTTPMethod {
                 case HttpMethod.head.toRaw(), HttpMethod.options.toRaw(), HttpMethod.get.toRaw():
-                    if self.options != nil && !(NGeenOptions.ignoreCache & self.options!) && !(NGeenOptions.useURLCache & self.options!) && !error  {
+                    if self.options != nil && !(NGeenOptions.ignoreCache & self.options) && !(NGeenOptions.useURLCache & self.options) && !error  {
                         DiskCache.defaultCache().storeData(NSPurgeableData(data: delegate.data), forUrl: task.currentRequest.URL, completionHandler: nil)
                     }
                 default:
