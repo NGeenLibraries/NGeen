@@ -75,7 +75,7 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
         self.scheme = scheme
     }
     
-// MARK: Class methods
+    // MARK: Class methods
     
     /**
     *  The function return a instance for the api store configuration class
@@ -91,5 +91,5 @@ class ApiStoreConfiguration: NSObject, ConfigurationStoreProtocol {
     class func configWithContentType(headers: [String: String], host: String, scheme: String) -> ApiStoreConfiguration {
         return ApiStoreConfiguration(headers: headers, host: host, scheme: scheme)
     }
-    
+
 }
