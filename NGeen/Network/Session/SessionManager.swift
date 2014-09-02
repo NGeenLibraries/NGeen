@@ -282,7 +282,9 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     
     func URLSession(session: NSURLSession!, didBecomeInvalidWithError error: NSError!) {
         dispatch_barrier_async(self.queue, {
-            self.dataTasksDelegates.removeAll(keepCapacity: false)
+            [weak self] in
+            let sSelf = self!
+            sSelf.dataTasksDelegates.removeAll(keepCapacity: false)
         })
     }
 
@@ -351,7 +353,9 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     private func delegateForTask(task: NSURLSessionTask) -> SessionTaskDelegate? {
         var delegate: SessionTaskDelegate?
         dispatch_barrier_sync(self.queue, {
-            delegate = self.dataTasksDelegates[task.taskIdentifier]
+            [weak self] in
+            let sSelf = self!
+            delegate = sSelf.dataTasksDelegates[task.taskIdentifier]
         })
         return delegate
     }
@@ -365,7 +369,9 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
 
     private func removeDelegateForTask(task: NSURLSessionTask) {
         dispatch_barrier_async(self.queue, {
-            self.dataTasksDelegates[task.taskIdentifier] = nil
+            [weak self] in
+            let sSelf = self!
+            sSelf.dataTasksDelegates[task.taskIdentifier] = nil
         })
     }
 
@@ -380,7 +386,9 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     private func setDelegate(delegate: SessionTaskDelegate, ForTask task: NSURLSessionTask) {
         let sessionTaskDelegate: SessionTaskDelegate = SessionTaskDelegate()
         dispatch_barrier_async(self.queue, {
-            self.dataTasksDelegates[task.taskIdentifier] = sessionTaskDelegate
+            [weak self] in
+            let sSelf = self!
+            sSelf.dataTasksDelegates[task.taskIdentifier] = sessionTaskDelegate
         })
     }
     
@@ -395,7 +403,9 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         let sessionTaskDelegate: SessionTaskDelegate = SessionTaskDelegate()
         sessionTaskDelegate.closure = closure
         dispatch_barrier_async(self.queue, {
-            self.dataTasksDelegates[task.taskIdentifier] = sessionTaskDelegate
+            [weak self] in
+            let sSelf = self!
+            sSelf.dataTasksDelegates[task.taskIdentifier] = sessionTaskDelegate
         })
     }
     
@@ -412,7 +422,9 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         sessionTaskDelegate.destinationURL = destination
         sessionTaskDelegate.downloadProgressHandler = handler
         dispatch_barrier_async(self.queue, {
-            self.dataTasksDelegates[task.taskIdentifier] = sessionTaskDelegate
+            [weak self] in
+            let sSelf = self!
+            sSelf.dataTasksDelegates[task.taskIdentifier] = sessionTaskDelegate
         })
     }
 
@@ -443,7 +455,9 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
             task.suspend()
         })
         dispatch_barrier_async(self.queue, {
-            self.dataTasksDelegates[task.taskIdentifier] = sessionTaskDelegate
+            [weak self] in
+            let sSelf = self!
+            sSelf.dataTasksDelegates[task.taskIdentifier] = sessionTaskDelegate
         })
     }
 
