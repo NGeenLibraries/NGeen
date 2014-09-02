@@ -243,7 +243,7 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         let delegate: SessionTaskDelegate? = self.delegateForTask(dataTask)
         if delegate != nil {
             self.removeDelegateForTask(dataTask)
-            self.setDelegate(delegate!, ForTask: dataTask)
+            self.setDelegate(delegate!, forTask: dataTask)
         }
         self.becomeDownloadTaskClosure?(session, dataTask, downloadTask)
     }
@@ -383,12 +383,11 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
     *
     */
     
-    private func setDelegate(delegate: SessionTaskDelegate, ForTask task: NSURLSessionTask) {
-        let sessionTaskDelegate: SessionTaskDelegate = SessionTaskDelegate()
+    private func setDelegate(delegate: SessionTaskDelegate, forTask task: NSURLSessionTask) {
         dispatch_barrier_async(self.queue, {
             [weak self] in
             let sSelf = self!
-            sSelf.dataTasksDelegates[task.taskIdentifier] = sessionTaskDelegate
+            sSelf.dataTasksDelegates[task.taskIdentifier] = delegate
         })
     }
     
