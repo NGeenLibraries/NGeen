@@ -318,7 +318,23 @@ class SessionManager: NSObject, NSURLSessionDataDelegate, NSURLSessionDelegate, 
         }
         completionHandler(disposition, credential)
     }
-
+    
+    func URLSession(session: NSURLSession!, task: NSURLSessionTask!, didReceiveChallenge challenge: NSURLAuthenticationChallenge!, completionHandler: ((NSURLSessionAuthChallengeDisposition, NSURLCredential!) -> Void)!) {
+        var disposition: NSURLSessionAuthChallengeDisposition = NSURLSessionAuthChallengeDisposition.PerformDefaultHandling
+        var credential: NSURLCredential? = self.credential
+        if credential == nil {
+            if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust {
+                if self.securityPolicy.trustedServer(challenge.protectionSpace.serverTrust, forDomain: challenge.protectionSpace.host) {
+                    disposition = NSURLSessionAuthChallengeDisposition.UseCredential
+                    credential =  NSURLCredential(forTrust: challenge.protectionSpace.serverTrust)
+                } else {
+                    disposition = NSURLSessionAuthChallengeDisposition.CancelAuthenticationChallenge
+                }
+            }
+        }
+        completionHandler(disposition, credential)
+    }
+   
     func URLSession(session: NSURLSession!, task: NSURLSessionTask!, needNewBodyStream completionHandler: ((NSInputStream!) -> Void)!) {
         if let delegate: SessionTaskDelegate = self.delegateForTask(task) {
             delegate.URLSession(session, task: task, needNewBodyStream: completionHandler)
